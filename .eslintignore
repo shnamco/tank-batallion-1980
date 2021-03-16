@@ -2,3 +2,5 @@ node_modules
 dist
 tsconfig.json
 webpack.config.js
+postcss.config.js
+src/index.html

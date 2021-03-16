@@ -2,21 +2,20 @@ const path = require('path');
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 const isProd = process.env.NODE_ENV === 'production';
 const isDev = !isProd;
 const filename = (ext) => (isDev ? `bundle.${ext}` : `bundle.[hash].${ext}`);
 
 module.exports = {
-  mode: 'development',
+  mode: isDev ? 'development' : 'production',
   entry: path.resolve(__dirname, 'src/index.tsx'),
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: filename('js')
   },
   resolve: {
-    extensions: ['.ts', '.js', '.json']
+    extensions: ['.ts', '.tsx', '.js', '.json']
   },
   devtool: isDev ? 'source-map' : false,
   devServer: {
@@ -26,12 +25,6 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new ForkTsCheckerWebpackPlugin({
-      async: false,
-      eslint: {
-        files: path.resolve(__dirname, 'src/**/*'),
-      },
-    }),
     new HTMLWebpackPlugin({
       template: path.resolve(__dirname, 'src/index.html'),
       minify: {
@@ -46,18 +39,9 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.s[ac]ss$/i,
-        use: [
-          {
-            loader: 'style-loader'
-          },
-          {
-            loader: 'css-loader',
-            options: {
-              sourceMap: isDev
-            }
-          }
-        ]
+        test: /\.pcss$/,
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
+        exclude: /node_modules/
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
