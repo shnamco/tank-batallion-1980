@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import './Form.pcss';
+import './form.pcss';
 
-class Login extends Component {
-  state = {};
+export class Form extends Component {
+  public state = {};
 
-  render() {
+  public render(): JSX.Element {
     return (
       <main className="login">
         <h1 className="login__title">LOG IN TO PLAY</h1>
@@ -44,5 +44,3 @@ class Login extends Component {
     );
   }
 }
-
-export default Login;
