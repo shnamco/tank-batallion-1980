@@ -1,0 +1,87 @@
+.login {
+  padding-top: 50px;
+}
+
+.login__title {
+  margin: 0;
+  text-align: center;
+  font-size: 50px;
+  line-height: 1;
+  color: #fff;
+}
+
+.login__form {
+  display: flex;
+  justify-content: center;
+  padding-top: 90px;
+}
+
+.login__form-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 40%;
+}
+
+.login__form-control {
+  margin-bottom: 50px;
+
+  &.active {
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      background-image: url(../../assets/tank_1.svg);
+      background-size: contain;
+      background-repeat: no-repeat;
+      width: 50px;
+      height: 50px;
+      left: -60px;
+    }
+  }
+
+  input {
+    display: block;
+    width: 100%;
+    font-size: 16px;
+    line-height: 2;
+    color: #fff;
+    background: none;
+    border: none;
+  }
+}
+
+.low-dash {
+  background-color: #fff;
+  width: 55px;
+  height: 5px;
+  margin-right: 7px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.dash-line {
+  display: flex;
+}
+
+.login__button {
+  margin-bottom: 60px;
+  font-size: 40px;
+  line-height: 1;
+  color: #fff;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  text-shadow: #df5934 2px -2px 0, #df5934 2px 2px 0, #df5934 -2px 2px 0, #df5934 -2px -2px 0;
+}
+
+.login__link {
+  font-size: 20px;
+  line-height: 1;
+  color: #fff;
+  text-decoration: none;
+}
