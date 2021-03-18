@@ -40,4 +40,4 @@ Forms should be "assymetric", with the CTA and secondary buttons _on a side_ to 
 
 Example:
 
-![Tank in SVG](./assets/enemy_tank.svg)
+![Tank in SVG](docs/enemy_tank.svg)
