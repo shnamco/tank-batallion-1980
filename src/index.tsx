@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-const App = () => <h1>Tank Battalion 1980</h1>;
+import './normalize.pcss';
+import './index.pcss';
+import App from './components/App';
 
 ReactDOM.render(<App />, document.getElementById('root'));

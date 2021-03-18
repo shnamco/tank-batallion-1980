@@ -46,7 +46,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.pcss$/,
+        test: /\.p?css$/,
         use: ['style-loader', 'css-loader', 'postcss-loader'],
         exclude: /node_modules/
       },
