@@ -1,4 +1,5 @@
 import React, { Component, createRef, MouseEvent } from 'react';
+import { Link } from 'react-router-dom';
 import './form.pcss';
 
 export class Form extends Component {
@@ -10,13 +11,12 @@ export class Form extends Component {
 
   public password = createRef<HTMLDivElement>();
 
-  activeInputHandler = (e: MouseEvent, input: HTMLDivElement | null): void => {
+  public activeInputHandler = (e: MouseEvent, input: HTMLDivElement | null): void => {
     const control = (e.target as HTMLElement).closest('.login__form-control');
 
     input?.classList.remove('active');
 
     control?.classList.add('active');
-    console.log(control);
   };
 
   public render(): JSX.Element {
@@ -50,9 +50,9 @@ export class Form extends Component {
           </div>
           <div className="login__form-block">
             <button className="login__button">LOG IN</button>
-            <a href="/" className="login__link">
+            <Link to="signup" className="login__link">
               SIGN UP
-            </a>
+            </Link>
           </div>
         </form>
       </main>
