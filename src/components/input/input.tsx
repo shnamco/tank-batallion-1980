@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './input.pcss';
 
 export interface InputProps {
   type: string;
@@ -18,13 +19,13 @@ class Input extends Component<InputProps, InputState> {
     type: 'text'
   };
 
-  inputHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  public inputHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value;
 
     this.setState({ value });
   };
 
-  render(): React.ReactElement {
+  public render(): React.ReactElement {
     return (
       <>
         <input type={this.props.type} placeholder={this.props.placeholder} onChange={this.inputHandler} value={this.state.value} />

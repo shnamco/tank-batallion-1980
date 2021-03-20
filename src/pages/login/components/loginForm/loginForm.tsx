@@ -1,9 +1,9 @@
 import React, { Component, createRef, MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
-import './form.pcss';
+import './loginForm.pcss';
 import Input from '../../../../components/input/input';
 
-export class Form extends Component {
+export default class LoginForm extends Component {
   public state = {
     activeInput: 'login'
   };

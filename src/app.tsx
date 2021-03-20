@@ -1,7 +1,8 @@
 import React from 'react';
-import { Route, Switch, BrowserRouter, Redirect } from 'react-router-dom';
-import { Login } from './pages/login/login';
 import './app.pcss';
+import { Route, Switch, BrowserRouter, Redirect } from 'react-router-dom';
+import Login from './pages/login/login';
+import Signup from './pages/signup/signup';
 
 export const App = (): JSX.Element => {
   return (
@@ -9,6 +10,7 @@ export const App = (): JSX.Element => {
       <div className="container">
         <Switch>
           <Route path="/login" component={Login} />
+          <Route path="/signup" component={Signup} />
           <Route
             exact
             path="/"

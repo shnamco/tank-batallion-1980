@@ -1,13 +1,15 @@
-import { Header } from '../../components/header/header';
-import { Form } from './components/form/form';
+import Header from '../../components/header/header';
+import LoginForm from './components/loginForm/loginForm';
 import React from 'react';
 import './login.pcss';
 
-export const Login = (): JSX.Element => {
+const Login: React.FC = (): React.ReactElement => {
   return (
     <>
       <Header />
-      <Form />
+      <LoginForm />
     </>
   );
 };
+
+export default Login;
