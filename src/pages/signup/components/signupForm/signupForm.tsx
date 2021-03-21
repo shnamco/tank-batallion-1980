@@ -5,7 +5,7 @@ import Input from '../../../../components/input/input';
 
 class SignupForm extends Component {
   public state = {
-    activeInput: ''
+    activeInput: 'first-name'
   };
 
   public activeInputHandler = (activeInput: string): void => {

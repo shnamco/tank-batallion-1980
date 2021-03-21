@@ -4,6 +4,7 @@ import './input.pcss';
 export interface InputProps {
   type: string;
   placeholder?: string;
+  className?: string;
 }
 
 export interface InputState {
@@ -16,7 +17,8 @@ class Input extends Component<InputProps, InputState> {
   };
 
   public static defaultProps: InputProps = {
-    type: 'text'
+    type: 'text',
+    className: 'input'
   };
 
   public inputHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -28,7 +30,13 @@ class Input extends Component<InputProps, InputState> {
   public render(): React.ReactElement {
     return (
       <>
-        <input type={this.props.type} placeholder={this.props.placeholder} onChange={this.inputHandler} value={this.state.value} />
+        <input
+          className={this.props.className}
+          type={this.props.type}
+          placeholder={this.props.placeholder}
+          onChange={this.inputHandler}
+          value={this.state.value}
+        />
         <div className="dash-line">
           <div className="low-dash" />
           <div className="low-dash" />
