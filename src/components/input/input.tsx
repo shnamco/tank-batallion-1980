@@ -15,7 +15,7 @@ class Input extends Component<InputProps, InputState> {
     value: ''
   };
 
-  static defaultProps: InputProps = {
+  public static defaultProps: InputProps = {
     type: 'text'
   };
 

@@ -4,7 +4,7 @@ import { Route, Switch, BrowserRouter, Redirect } from 'react-router-dom';
 import Login from './pages/login/login';
 import Signup from './pages/signup/signup';
 
-export const App = (): JSX.Element => {
+const App: React.FC = () => {
   return (
     <BrowserRouter>
       <div className="container">
@@ -23,3 +23,5 @@ export const App = (): JSX.Element => {
     </BrowserRouter>
   );
 };
+
+export default App;

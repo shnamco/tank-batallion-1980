@@ -3,7 +3,7 @@ import LoginForm from './components/loginForm/loginForm';
 import React from 'react';
 import './login.pcss';
 
-const Login: React.FC = (): React.ReactElement => {
+const Login: React.FC = () => {
   return (
     <>
       <Header />
