@@ -5,6 +5,7 @@ export interface InputProps {
   type: string;
   placeholder?: string;
   className?: string;
+  name?: string;
 }
 
 export interface InputState {
@@ -32,9 +33,10 @@ export class Input extends Component<InputProps, InputState> {
       <>
         <div className="login__form-control">
           <input
-            id={this.props.className}
+            id={this.props.name}
             className={this.props.className}
             type={this.props.type}
+            name={this.props.name}
             placeholder={this.props.placeholder}
             onChange={this.inputHandler}
             value={this.state.value}
