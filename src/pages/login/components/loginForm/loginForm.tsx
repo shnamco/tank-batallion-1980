@@ -1,20 +1,10 @@
-import React, { Component, createRef, MouseEvent } from 'react';
+import React, { Component, createRef } from 'react';
 import { Link } from 'react-router-dom';
 import './loginForm.pcss';
-import Input from '../../../../components/input/input';
+import { Input } from '../../../../components/input/input';
 
 export default class LoginForm extends Component {
   public login = createRef<HTMLDivElement>();
-
-  public password = createRef<HTMLDivElement>();
-
-  public activeInputHandler = (e: MouseEvent, ref: HTMLDivElement | null): void => {
-    const control = (e.target as HTMLElement).closest('.login__form-control');
-
-    ref?.classList.remove('active');
-
-    control?.classList.add('active');
-  };
 
   public render(): React.ReactElement {
     return (
@@ -22,12 +12,8 @@ export default class LoginForm extends Component {
         <h1 className="login__title">LOG IN TO PLAY</h1>
         <form className="login__form">
           <div className="login__form-block">
-            <div className="login__form-control active" ref={this.login} onClick={(e) => this.activeInputHandler(e, this.password.current)}>
-              <Input placeholder="Login" />
-            </div>
-            <div className="login__form-control" ref={this.password} onClick={(e) => this.activeInputHandler(e, this.login.current)}>
-              <Input type="password" placeholder="Password" />
-            </div>
+            <Input placeholder="Login" />
+            <Input type="password" placeholder="Password" />
           </div>
           <div className="login__form-block">
             <button className="login__button">LOG IN</button>

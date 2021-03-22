@@ -11,7 +11,7 @@ export interface InputState {
   value: string;
 }
 
-class Input extends Component<InputProps, InputState> {
+export class Input extends Component<InputProps, InputState> {
   state = {
     value: ''
   };
@@ -30,24 +30,26 @@ class Input extends Component<InputProps, InputState> {
   public render(): React.ReactElement {
     return (
       <>
-        <input
-          className={this.props.className}
-          type={this.props.type}
-          placeholder={this.props.placeholder}
-          onChange={this.inputHandler}
-          value={this.state.value}
-        />
-        <div className="dash-line">
-          <div className="low-dash" />
-          <div className="low-dash" />
-          <div className="low-dash" />
-          <div className="low-dash" />
-          <div className="low-dash" />
-          <div className="low-dash" />
+        <div className="login__form-control">
+          <input
+            id={this.props.className}
+            className={this.props.className}
+            type={this.props.type}
+            placeholder={this.props.placeholder}
+            onChange={this.inputHandler}
+            value={this.state.value}
+          />
+          <label htmlFor={this.props.className}></label>
+          <div className="dash-line">
+            <div className="low-dash" />
+            <div className="low-dash" />
+            <div className="low-dash" />
+            <div className="low-dash" />
+            <div className="low-dash" />
+            <div className="low-dash" />
+          </div>
         </div>
       </>
     );
   }
 }
-
-export default Input;

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import './signupForm.pcss';
 import { Link } from 'react-router-dom';
-import Input from '../../../../components/input/input';
+import { Input } from '../../../../components/input/input';
 
-class SignupForm extends Component {
+export class SignupForm extends Component {
   public state = {
     activeInput: 'first-name'
   };
@@ -22,42 +22,12 @@ class SignupForm extends Component {
         <h1 className="login__title">LOG IN TO PLAY</h1>
         <form className="login__form">
           <div className="login__form-block">
-            <div
-              className={`login__form-control ${this.createClassName('first-name') ? 'active' : ''}`}
-              onClick={() => this.activeInputHandler('first-name')}
-            >
-              <Input placeholder="FIRST NAME" />
-            </div>
-            <div
-              className={`login__form-control ${this.createClassName('must-be') ? 'active' : ''}`}
-              onClick={() => this.activeInputHandler('must-be')}
-            >
-              <Input placeholder="MUST BE PRESENT" />
-            </div>
-            <div
-              className={`login__form-control ${this.createClassName('email') ? 'active' : ''}`}
-              onClick={() => this.activeInputHandler('email')}
-            >
-              <Input type="email" placeholder="EMAIL" />
-            </div>
-            <div
-              className={`login__form-control ${this.createClassName('login') ? 'active' : ''}`}
-              onClick={() => this.activeInputHandler('login')}
-            >
-              <Input placeholder="LOGIN" />
-            </div>
-            <div
-              className={`login__form-control ${this.createClassName('password') ? 'active' : ''}`}
-              onClick={() => this.activeInputHandler('password')}
-            >
-              <Input type="password" placeholder="Password" />
-            </div>
-            <div
-              className={`login__form-control ${this.createClassName('phone') ? 'active' : ''}`}
-              onClick={() => this.activeInputHandler('phone')}
-            >
-              <Input type="phone" placeholder="PHONE" />
-            </div>
+            <Input placeholder="FIRST NAME" />
+            <Input placeholder="MUST BE PRESENT" />
+            <Input type="email" placeholder="EMAIL" />
+            <Input placeholder="LOGIN" />
+            <Input type="password" placeholder="Password" />
+            <Input type="phone" placeholder="PHONE" />
           </div>
           <div className="login__form-block">
             <button className="login__button">SIGN UP</button>
@@ -70,5 +40,3 @@ class SignupForm extends Component {
     );
   }
 }
-
-export default SignupForm;

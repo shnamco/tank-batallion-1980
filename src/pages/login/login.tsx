@@ -3,7 +3,7 @@ import LoginForm from './components/loginForm/loginForm';
 import React from 'react';
 import './login.pcss';
 
-const Login: React.FC = () => {
+export const Login: React.FC = () => {
   return (
     <>
       <Header />
@@ -11,5 +11,3 @@ const Login: React.FC = () => {
     </>
   );
 };
-
-export default Login;
