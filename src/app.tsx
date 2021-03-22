@@ -5,7 +5,7 @@ import { Signup } from './pages/signup/signup';
 import { Game } from './pages/game/game';
 import './app.pcss';
 
-const App: React.FC = () => {
+export const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Switch>
@@ -23,5 +23,3 @@ const App: React.FC = () => {
     </BrowserRouter>
   );
 };
-
-export default App;
