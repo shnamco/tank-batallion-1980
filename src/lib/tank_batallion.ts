@@ -1,3 +1,5 @@
+// It's a mega-class FOR NOW, to be broken down as we add to game
+
 // Compass - Grad
 enum Direction {
   East = 0,
@@ -15,6 +17,8 @@ interface GameObject {
   size: number;
 }
 
+// For a quick demo we now account for a single bullet,
+// but we need an array to do all bullets on screen.
 interface Bullet extends GameObject {
   speed: number;
   hot: boolean;
@@ -54,6 +58,9 @@ export class TankBatallion {
     }
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+    // For now we initialize it here, but as we pull in more assets from Figma these will
+    // be factored out in a separate module.
     this.playerTank = {
       // SVG format
       path:
@@ -67,8 +74,8 @@ export class TankBatallion {
 
   private drawBullet = (color: string) => {
     let [x, y] = [0, 0];
-
     if (!this.bullet.hot) return;
+
     this.ctx.save();
     this.ctx.beginPath();
     this.ctx.fillStyle = color;
@@ -106,7 +113,6 @@ export class TankBatallion {
   };
 
   private fireBullet = () => {
-    console.log('fire!');
     this.bullet.hot = true;
     this.bullet.pos = { ...this.player.pos };
     this.bullet.dir = this.player.dir;
@@ -114,7 +120,6 @@ export class TankBatallion {
 
   private drawTank = (color: string, x: number, y: number, dir: Direction): void => {
     const svgPath = new Path2D(this.playerTank.path);
-
     this.ctx.save();
     this.ctx.beginPath();
     this.ctx.fillStyle = color;
