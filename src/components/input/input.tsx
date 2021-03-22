@@ -32,7 +32,6 @@ export class Input extends Component<InputProps, InputState> {
       <>
         <div className="login__form-control">
           <input
-            id={this.props.className}
             className={this.props.className}
             type={this.props.type}
             placeholder={this.props.placeholder}

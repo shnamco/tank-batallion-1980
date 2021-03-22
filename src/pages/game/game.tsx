@@ -1,6 +1,6 @@
 import React from 'react';
 import './game.pcss';
-import { TankBatallion } from '../../core/tank_batallion';
+import { TankBatallion } from '@core/tank_batallion';
 
 type GameProps = Record<string, unknown>;
 type GameState = Record<string, unknown>;

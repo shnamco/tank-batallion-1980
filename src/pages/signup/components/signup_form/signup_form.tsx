@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './signup_form.pcss';
 import { Link } from 'react-router-dom';
-import { Input } from '../../../../components/input/input';
+import { Input } from '@components/input/input';
 
 export class SignupForm extends Component {
   public state = {

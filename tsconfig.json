@@ -1,5 +1,12 @@
 {
   "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@components/*": ["src/components/*"],
+      "@pages/*": ["src/pages/*"],
+      "@core/*": ["src/core/*"],
+      "@styles/*": ["src/styles/*"],
+    },
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
