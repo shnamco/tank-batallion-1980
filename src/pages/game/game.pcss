@@ -1,0 +1,35 @@
+.game__wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  min-width: 1200px;
+  margin: 0 auto;
+  background: url('../../assets/arcade_bg.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: black;
+}
+
+/* These are pixel-perfect, keep in pixels */
+
+.game__centerpiece {
+  width: 582px;
+  height: 582px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background: url('../../assets/checkers.svg');
+}
+
+#game-canvas {
+  background-color: black;
+  min-width: 94%;
+  min-height: 94%;
+  max-width: 94%;
+  max-height: 94%;
+}
