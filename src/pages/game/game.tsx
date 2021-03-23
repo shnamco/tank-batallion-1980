@@ -23,7 +23,7 @@ export class Game extends React.Component<GameProps, GameState> {
   render(): React.ReactNode {
     return (
       <React.Fragment>
-        <div className="game__wrapper">
+        <div className="arcade__background arcade__background-game">
           <div className="game__centerpiece">
             <canvas id="game-canvas" ref={this.canvas} width={420} height={420}></canvas>
           </div>

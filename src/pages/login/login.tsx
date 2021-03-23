@@ -4,7 +4,7 @@ import './login.pcss';
 
 export const Login: React.FC = () => {
   return (
-    <div className="arcade__background">
+    <div className="arcade__background arcade__background-all arcade-login">
       <LoginForm />
     </div>
   );
