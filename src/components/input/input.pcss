@@ -30,11 +30,6 @@
   &::placeholder {
     text-transform: uppercase;
   }
-  &:focus,
-  &:active {
-    outline: none;
-  }
-
   &:focus + label {
     &::before {
       content: '';
@@ -48,5 +43,9 @@
       left: -60px;
       top: 0;
     }
+  }
+  &:focus,
+  &:active {
+    outline: none;
   }
 }

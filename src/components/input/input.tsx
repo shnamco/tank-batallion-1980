@@ -5,6 +5,7 @@ export interface InputProps {
   type: string;
   placeholder?: string;
   className?: string;
+  disabled?: boolean;
 }
 
 export interface InputState {
@@ -18,7 +19,8 @@ export class Input extends Component<InputProps, InputState> {
 
   public static defaultProps: InputProps = {
     type: 'text',
-    className: 'input'
+    className: 'input',
+    disabled: false
   };
 
   public inputHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -32,6 +34,7 @@ export class Input extends Component<InputProps, InputState> {
       <>
         <div className="login__form-control">
           <input
+            disabled={this.props.disabled}
             className={this.props.className}
             type={this.props.type}
             placeholder={this.props.placeholder}
