@@ -4,6 +4,7 @@
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "target": "ES2015",
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",

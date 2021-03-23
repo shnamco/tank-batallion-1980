@@ -11,7 +11,9 @@ export const App: React.FC = () => {
       <Switch>
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
-        <Route path="/game" component={Game} />
+        <Route path="/game">
+          <Game level={1}></Game>
+        </Route>
         <Route
           exact
           path="/"

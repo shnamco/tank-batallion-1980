@@ -2,7 +2,9 @@ import React from 'react';
 import './game.pcss';
 import { TankBatallion } from '../../core/tank_batallion';
 
-type GameProps = Record<string, unknown>;
+type GameProps = {
+  level: number;
+};
 type GameState = Record<string, unknown>;
 
 export class Game extends React.Component<GameProps, GameState> {
@@ -15,7 +17,7 @@ export class Game extends React.Component<GameProps, GameState> {
 
   componentDidMount(): void {
     if (this.canvas.current) {
-      const tb = new TankBatallion(this.canvas.current);
+      const tb = new TankBatallion(this.canvas.current, 1);
       tb.play();
     }
   }
@@ -25,7 +27,7 @@ export class Game extends React.Component<GameProps, GameState> {
       <React.Fragment>
         <div className="game__wrapper">
           <div className="game__centerpiece">
-            <canvas id="game-canvas" ref={this.canvas} width={420} height={420}></canvas>
+            <canvas id="game-canvas" ref={this.canvas} width={448} height={448}></canvas>
           </div>
         </div>
       </React.Fragment>
