@@ -2,13 +2,22 @@ import React, { Component } from 'react';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import './login_form.pcss';
 import { Input } from '../../../../components/input/input';
-import { yandxApi } from '../../../../service/api';
-import { loginReq } from '../../../../dataTypes';
+import { authApi, loginReq, reason } from '../../../../service/auth_api';
 
-class Form extends Component<RouteComponentProps> {
+type formState = {
+  error: string;
+};
+
+class Form extends Component<RouteComponentProps, formState> {
+  public state = {
+    error: ''
+  };
+
   componentDidMount(): void {
-    yandxApi.getProfile().then((res) => {
-      console.log(res); // if (isLogin) => {reason: "Cookie is not valid"}
+    authApi.getProfile().then((res) => {
+      if (res.status === 200) {
+        this.props.history.push('game');
+      }
     });
   }
 
@@ -26,23 +35,25 @@ class Form extends Component<RouteComponentProps> {
       requestData[key] = formData.get(key) as string;
     });
 
-    yandxApi.login(requestData as loginReq).then((res) => {
-      console.log(res);
-      if (res === 'OK' || res.reason === 'user already in system') {
+    authApi.login(requestData as loginReq).then((res) => {
+      if (res.status === 200) {
         this.props.history.push('game');
+      } else {
+        this.setState({
+          error: (res.response as reason).reason
+        });
       }
     });
   };
 
   public render(): React.ReactElement {
-    console.log(this.props);
     return (
       <main className="login">
         <h1 className="login__title">LOG IN TO PLAY</h1>
         <form className="login__form" onSubmit={this.formSubmit}>
           <div className="login__form-block">
             <Input name="login" placeholder="Login" />
-            <Input name="password" type="password" placeholder="Password" />
+            <Input name="password" type="password" placeholder="Password" error={this.state.error} />
           </div>
           <div className="login__form-block">
             <button className="login__button">LOG IN</button>
@@ -56,6 +67,4 @@ class Form extends Component<RouteComponentProps> {
   }
 }
 
-const LoginForm = withRouter(Form);
-
-export { LoginForm };
+export const LoginForm = withRouter(Form);

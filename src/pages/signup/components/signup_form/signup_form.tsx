@@ -1,11 +1,22 @@
 import React, { Component } from 'react';
 import './signup_form.pcss';
-import { Link } from 'react-router-dom';
+import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import { Input } from '../../../../components/input/input';
-import { yandxApi } from '../../../../service/api';
-import { signUpReq } from '../../../../dataTypes';
+import { authApi, signUpReq, reason } from '../../../../service/auth_api';
 
-export class SignupForm extends Component {
+type formState = {
+  loginError: string;
+  emailError: string;
+  phoneError: string;
+};
+
+class Form extends Component<RouteComponentProps, formState> {
+  public state = {
+    loginError: '',
+    emailError: '',
+    phoneError: ''
+  };
+
   public formSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
 
@@ -24,14 +35,56 @@ export class SignupForm extends Component {
       requestData[key] = formData.get(key) as string;
     });
 
-    console.log(requestData);
+    authApi.signUp(requestData as signUpReq).then((res) => {
+      if (res.status === 200) {
+        this.props.history.push('game');
+      }
 
-    yandxApi.signUp(requestData as signUpReq).then((res) => {
-      console.log(res);
+      if (res.status === 409) {
+        const reason = (res.response as reason).reason;
+
+        if (reason === 'Login already exists') {
+          this.setState({
+            loginError: reason,
+            phoneError: '',
+            emailError: ''
+          });
+        }
+
+        if (reason === 'Email already exists') {
+          this.setState({
+            emailError: reason,
+            loginError: '',
+            phoneError: ''
+          });
+        }
+      }
+
+      if (res.status === 400) {
+        const reason = (res.response as reason).reason;
+
+        if (reason === 'email is not valid') {
+          this.setState({
+            emailError: reason,
+            loginError: '',
+            phoneError: ''
+          });
+        }
+
+        if (reason === 'phone is not valid') {
+          this.setState({
+            phoneError: reason,
+            emailError: '',
+            loginError: ''
+          });
+        }
+      }
     });
   };
 
   public render(): React.ReactElement {
+    const { emailError, loginError, phoneError } = this.state;
+
     return (
       <main className="login">
         <h1 className="login__title">LOG IN TO PLAY</h1>
@@ -39,10 +92,10 @@ export class SignupForm extends Component {
           <div className="login__form-block">
             <Input name="first_name" placeholder="FIRST NAME" />
             <Input name="second_name" placeholder="SECOND NAME" />
-            <Input name="email" type="email" placeholder="EMAIL" />
-            <Input name="login" placeholder="LOGIN" />
+            <Input name="email" type="email" placeholder="EMAIL" error={emailError} />
+            <Input name="login" placeholder="LOGIN" error={loginError} />
             <Input name="password" type="password" placeholder="Password" />
-            <Input name="phone" type="phone" placeholder="PHONE" />
+            <Input name="phone" type="phone" placeholder="PHONE" error={phoneError} />
           </div>
           <div className="login__form-block">
             <button className="login__button">SIGN UP</button>
@@ -55,3 +108,5 @@ export class SignupForm extends Component {
     );
   }
 }
+
+export const SignupForm = withRouter(Form);

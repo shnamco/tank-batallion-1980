@@ -1,6 +1,21 @@
-.login__form-control {
-  margin-bottom: 40px;
+.form-control {
+	height: 32px;
+  margin-bottom: 35px;
 	position: relative;
+
+	&.invalid {
+
+		&::after {
+			content: '';
+			display: block;
+			position: absolute;
+			width: 29px;
+			height: 30px;
+			background-image: url(../../assets/boom.png);
+			right: -40px;
+			top: 0;
+		}
+	}
 }
 
 .low-dash {
@@ -39,12 +54,20 @@
 			position: absolute;
 			display: block;
 			background-image: url(../../assets/tank_1.svg);
-			background-size: contain;
-			background-repeat: no-repeat;
-			width: 40px;
-			height: 40px;
+			width: 41px;
+			height: 32px;
 			left: -60px;
-			top: 0;
+			top: 0px;
 		}
 	}
+}
+
+.form-control__error {
+	color: red;
+	font-size: 10px;
+}
+
+.form-control__invalid {
+	font-size: 10px;
+	color: #D84D40;
 }
