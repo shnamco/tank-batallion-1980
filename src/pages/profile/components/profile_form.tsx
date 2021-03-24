@@ -19,9 +19,9 @@ export class ProfileForm extends Component {
             <Input disabled type="phone" placeholder="PHONE" />
           </div>
           <div className="profile__form-actions">
-            <button className="profile__button">EDIT PROFILE</button>
+            <button className="profile__button">UPDATE PROFILE</button>
             <Link to="game" className="profile__link">
-              TO THE GAME
+              BACK TO THE GAME
             </Link>
           </div>
         </form>
