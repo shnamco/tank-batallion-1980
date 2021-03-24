@@ -4,12 +4,6 @@ The task is to reproduce the original arcade game ["Tank Batallion"](https://en.
 
 ![Game screen](./docs/game.png)
 
-## Coding conventions
-
-- `snake_case` for file names
-- game logic in `src/core`
-- `.pcss` extension for PostCSS files
-
 ## Gameplay references
 
 - [Original gameplay video](https://www.youtube.com/watch?v=Qv67z84ypS0)

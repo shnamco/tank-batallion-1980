@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import './signup_form.pcss';
 import { Link } from 'react-router-dom';
-import { Input } from '../../../../components/input/input';
+import { Input } from '@components/input/input';
+import './signup_form.pcss';
+import '@styles/login.pcss';
 
 export class SignupForm extends Component {
   public state = {
@@ -19,7 +20,6 @@ export class SignupForm extends Component {
   public render(): React.ReactElement {
     return (
       <main className="login">
-        <h1 className="login__title">LOG IN TO PLAY</h1>
         <form className="login__form">
           <div className="login__form-block">
             <Input placeholder="FIRST NAME" />

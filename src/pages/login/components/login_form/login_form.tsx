@@ -1,7 +1,9 @@
 import React, { Component, createRef } from 'react';
 import { Link } from 'react-router-dom';
+import { Input } from '@components/input/input';
 import './login_form.pcss';
-import { Input } from '../../../../components/input/input';
+import '@styles/variables.pcss';
+import '@styles/login.pcss';
 
 export class LoginForm extends Component {
   public login = createRef<HTMLDivElement>();
