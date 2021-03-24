@@ -1,18 +1,18 @@
-export type loginReq = {
+export type LoginReq = {
   login: string;
   password: string;
 };
 
-export type reason = {
+export type Reason = {
   reason: string;
 };
 
-export type response = {
+export type Resp = {
   status: number;
-  response: string | reason;
+  response: string | Reason;
 };
 
-export type signUpReq = {
+export type SignUpReq = {
   first_name: string;
   second_name: string;
   login: string;
@@ -21,7 +21,7 @@ export type signUpReq = {
   phone: string;
 };
 
-export type profile = {
+export type Profile = {
   id: number;
   first_name: string;
   second_name: string;
@@ -35,7 +35,7 @@ export type profile = {
 class Api {
   constructor(public baseUrl: string) {}
 
-  login = async (data: loginReq): Promise<response> => {
+  login = async (data: LoginReq): Promise<Resp> => {
     const options = {
       method: 'POST',
       body: JSON.stringify(data),
@@ -63,7 +63,7 @@ class Api {
     }
   };
 
-  signUp = async (data: signUpReq): Promise<response> => {
+  signUp = async (data: SignUpReq): Promise<Resp> => {
     const options = {
       method: 'POST',
       body: JSON.stringify(data),
@@ -83,7 +83,7 @@ class Api {
     };
   };
 
-  getProfile = async (): Promise<response> => {
+  getProfile = async (): Promise<Resp> => {
     const options = {
       method: 'GET',
       credentials: 'include' as RequestCredentials

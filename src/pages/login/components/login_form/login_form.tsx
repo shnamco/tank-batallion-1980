@@ -3,7 +3,7 @@ import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import './login_form.pcss';
 import '@styles/variables.pcss';
 import '@styles/login.pcss';
-import { authApi, loginReq, reason } from '../../../../service/auth_api';
+import { authApi, LoginReq, Reason } from '@service/auth_api';
 import { Input } from '@components/input/input';
 
 type FormState = {
@@ -37,12 +37,12 @@ class Form extends Component<RouteComponentProps, FormState> {
       requestData[key] = formData.get(key) as string;
     });
 
-    authApi.login(requestData as loginReq).then((res) => {
+    authApi.login(requestData as LoginReq).then((res) => {
       if (res.status === 200) {
         this.props.history.push('game');
       } else {
         this.setState({
-          error: (res.response as reason).reason
+          error: (res.response as Reason).reason
         });
       }
     });

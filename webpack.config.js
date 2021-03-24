@@ -21,6 +21,7 @@ module.exports = {
       '@pages': path.resolve(__dirname, './src/pages/'),
       '@core': path.resolve(__dirname, './src/core/'),
       '@styles': path.resolve(__dirname, './src/styles/'),
+      '@service': path.resolve(__dirname, './src/service/'),
     },
     extensions: ['.ts', '.tsx', '.js', '.json']
   },

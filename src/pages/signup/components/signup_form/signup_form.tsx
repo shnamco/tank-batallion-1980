@@ -2,16 +2,16 @@ import React, { Component } from 'react';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import './signup_form.pcss';
 import '@styles/login.pcss';
-import { authApi, signUpReq, reason } from '../../../../service/auth_api';
+import { authApi, SignUpReq, Reason } from '@service/auth_api';
 import { Input } from '@components/input/input';
 
-type formState = {
+type FormState = {
   loginError: string;
   emailError: string;
   phoneError: string;
 };
 
-class Form extends Component<RouteComponentProps, formState> {
+class Form extends Component<RouteComponentProps, FormState> {
   public state = {
     loginError: '',
     emailError: '',
@@ -36,13 +36,13 @@ class Form extends Component<RouteComponentProps, formState> {
       requestData[key] = formData.get(key) as string;
     });
 
-    authApi.signUp(requestData as signUpReq).then((res) => {
+    authApi.signUp(requestData as SignUpReq).then((res) => {
       if (res.status === 200) {
         this.props.history.push('game');
       }
 
       if (res.status === 409) {
-        const reason = (res.response as reason).reason;
+        const reason = (res.response as Reason).reason;
 
         if (reason === 'Login already exists') {
           this.setState({
@@ -62,7 +62,7 @@ class Form extends Component<RouteComponentProps, formState> {
       }
 
       if (res.status === 400) {
-        const reason = (res.response as reason).reason;
+        const reason = (res.response as Reason).reason;
 
         if (reason === 'email is not valid') {
           this.setState({
@@ -88,7 +88,6 @@ class Form extends Component<RouteComponentProps, formState> {
 
     return (
       <main className="login">
-        <h1 className="login__title">LOG IN TO PLAY</h1>
         <form className="login__form" onSubmit={this.formSubmit}>
           <div className="login__form-block">
             <Input name="first_name" placeholder="FIRST NAME" />
