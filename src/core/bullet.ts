@@ -20,6 +20,7 @@ export class Bullet implements Bulletable {
   public speed: number;
   public hot: boolean;
   public firedBy: GameObject;
+  public collidedWithWall = false;
 
   constructor(private ctx: CanvasRenderingContext2D, private opts: Bulletable) {
     // Initial positions
@@ -58,7 +59,9 @@ export class Bullet implements Bulletable {
         y = this.y + this.firedBy.size;
       }
 
-      this.ctx.fillRect(x, y, this.size, this.size);
+      if (!this.collidedWithWall) {
+        this.ctx.fillRect(x, y, this.size, this.size);
+      }
     });
   };
 
@@ -74,5 +77,9 @@ export class Bullet implements Bulletable {
       this.y += dt * this.speed;
     }
     this.draw();
+  }
+
+  public collideWithWall(): void {
+    this.collidedWithWall = true;
   }
 }

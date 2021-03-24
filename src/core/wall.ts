@@ -1,11 +1,13 @@
-import { drawObject } from './helpers';
+import { Direction, GameObject } from './game_types';
+import { drawObject, between } from './helpers';
 import { WALL_BASE64_SVG } from './wall_base64';
 
-interface Wallable {
+export interface Wallable {
   x: number;
   y: number;
   w: number;
   h: number;
+  checkCollisions: ((gameObjects: GameObject[]) => void) | (() => never);
 }
 
 export class Wall implements Wallable {
@@ -30,6 +32,51 @@ export class Wall implements Wallable {
       const pattern = this.ctx.createPattern(bricks, 'repeat');
       this.ctx.fillStyle = pattern as CanvasPattern;
       this.ctx.fillRect(this.x, this.y, this.w, this.h);
+    });
+  };
+
+  // Walls are responsible for checking collisions with and bullets tanks
+  public checkCollisions = (gameObjects: GameObject[]): void => {
+    gameObjects.forEach((go) => {
+      let collided = false;
+      // margin of error delta
+      const d = 1;
+      if (go.dir === Direction.South) {
+        collided =
+          (between(go.y + go.size, this.y - d, this.y + d) && between(go.x, this.x - d, this.x + this.w + d)) ||
+          (between(go.y + go.size, this.y - d, this.y + d) && between(go.x + go.size, this.x - d, this.x + this.w + d));
+        if (collided) {
+          console.log(`collided with ${go.constructor.name} heading South!`);
+          if (go.collideWithWall) go.collideWithWall();
+        }
+      }
+      if (go.dir === Direction.North) {
+        collided =
+          (between(go.y, this.y + this.h - d, this.y + this.h + d) && between(go.x, this.x - d, this.x + this.w + d)) ||
+          (between(go.y, this.y + this.h - d, this.y + this.h + d) && between(go.x + go.size, this.x - d, this.x + this.w + d));
+        if (collided) {
+          console.log(`collided with ${go.constructor.name} heading North!`);
+          if (go.collideWithWall) go.collideWithWall();
+        }
+      }
+      if (go.dir === Direction.West) {
+        collided =
+          (between(go.x, this.x + this.w - d, this.x + this.w + d) && between(go.y, this.y - d, this.y + this.h + d)) ||
+          (between(go.x, this.x + this.w - d, this.x + this.w + d) && between(go.y + go.size, this.y - d, this.y + this.h + d));
+        if (collided) {
+          console.log(`collided with ${go.constructor.name} heading West!`);
+          if (go.collideWithWall) go.collideWithWall();
+        }
+      }
+      if (go.dir === Direction.East) {
+        collided =
+          (between(go.x + go.size, this.x - d, this.x + d) && between(go.y, this.y - d, this.y + d)) ||
+          (between(go.x + go.size, this.x - d, this.x + d) && between(go.y + go.size, this.y + this.h - d, this.y + this.h + d));
+        if (collided) {
+          console.log(`collided with ${go.constructor.name} heading East!`);
+          if (go.collideWithWall) go.collideWithWall();
+        }
+      }
     });
   };
 }

@@ -1,7 +1,7 @@
-import { Wall } from './wall';
+import { Wall, Wallable } from './wall';
 
 // Values are copied from Figma's Level-x frames
-// These are 1:1 pixel-perfect level designgs from
+// These are 1:1 pixel-perfect level designs from
 // https://strategywiki.org/wiki/Tank_Battalion/Walkthrough
 const LEVEL_WALLS: { [key in number]: { x: number; y: number; w: number; h: number }[] } = {
   1: [
@@ -33,14 +33,21 @@ const LEVEL_WALLS: { [key in number]: { x: number; y: number; w: number; h: numb
 };
 
 export class LevelBuilder {
+  public walls: Wallable[] = [];
+
   constructor(private ctx: CanvasRenderingContext2D, private level: number) {}
 
   public build = (): void => {
     const currentLevel = LEVEL_WALLS[this.level];
     currentLevel.forEach((segment) => {
-      new Wall(this.ctx, {
-        ...segment
-      }).draw();
+      const wall = new Wall(this.ctx, {
+        ...segment,
+        checkCollisions: () => {
+          null;
+        }
+      });
+      wall.draw();
+      this.walls.push(wall);
     });
   };
 }

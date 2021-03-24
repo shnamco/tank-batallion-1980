@@ -37,10 +37,10 @@ export class TankBatallion {
 
   private initGameObjects = () => {
     this.player = new PlayerTank(this.ctx, {
-      x: 200,
-      y: 200,
+      x: 390,
+      y: 0,
       dir: Direction.East,
-      size: 28
+      size: 26
     });
   };
 
@@ -51,7 +51,7 @@ export class TankBatallion {
       y: this.player.y,
       dir: this.player.dir,
       size: 6,
-      speed: 150,
+      speed: 100,
       firedBy: this.player,
       fill: '#55BEBF'
     });
@@ -60,21 +60,22 @@ export class TankBatallion {
 
   private updatePlayer = () => {
     if (this.rightPressed) {
-      if (this.player.x < this.canvas.width - this.player.size) this.player.x++;
       this.player.dir = Direction.East;
+      if (this.player.x < this.canvas.width - this.player.size && !this.player.collidedWithWall) this.player.x++;
     }
     if (this.leftPressed) {
-      if (this.player.x > 0) this.player.x--;
       this.player.dir = Direction.West;
+      if (this.player.x > 0 && !this.player.collidedWithWall) this.player.x--;
     }
     if (this.upPressed) {
-      if (this.player.y > 0) this.player.y--;
       this.player.dir = Direction.North;
+      if (this.player.y > 0 && !this.player.collidedWithWall) this.player.y--;
     }
     if (this.downPressed) {
-      if (this.player.y < this.canvas.height - this.player.size) this.player.y++;
       this.player.dir = Direction.South;
+      if (this.player.y < this.canvas.height - this.player.size && !this.player.collidedWithWall) this.player.y++;
     }
+    this.player.collidedWithWall = false;
     this.player.draw();
   };
 
@@ -83,15 +84,21 @@ export class TankBatallion {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     // draw a level
-    new LevelBuilder(this.ctx, this.level).build();
+    const level = new LevelBuilder(this.ctx, this.level);
+    level.build();
 
-    // Draw, move player, shoot
-    this.updatePlayer();
+    // All walls check for collisions
+    level.walls.forEach((wall) => {
+      wall.checkCollisions([this.player, ...this.bullets]);
+    });
 
     // Track bullets
     this.bullets.forEach((bullet) => {
       bullet.update(dt);
     });
+
+    // Draw, move player, shoot
+    this.updatePlayer();
   };
 
   private main = () => {
