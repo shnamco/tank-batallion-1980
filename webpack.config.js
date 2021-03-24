@@ -27,7 +27,7 @@ module.exports = {
   },
   devtool: isDev ? 'source-map' : false,
   devServer: {
-		open: true,
+    open: true,
     port: 3000,
     hot: isDev,
     historyApiFallback: true

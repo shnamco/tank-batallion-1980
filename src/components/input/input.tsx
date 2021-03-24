@@ -43,13 +43,13 @@ export class Input extends Component<InputProps, InputState> {
     }
   };
 
-  public createClassName = (): string => {
+  public get createClassName(): string {
     if (!this.state.invalid) {
       return 'form-control';
     } else {
       return 'form-control invalid';
     }
-  };
+  }
 
   public inputHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value;
@@ -63,7 +63,7 @@ export class Input extends Component<InputProps, InputState> {
 
     return (
       <>
-        <div className={this.createClassName()}>
+        <div className={this.createClassName}>
           <input {...props} onChange={this.inputHandler} value={value} onBlur={this.validate} />
           <label htmlFor={this.props.className}></label>
           <div className="dash-line">

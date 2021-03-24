@@ -18,6 +18,37 @@ class Form extends Component<RouteComponentProps, FormState> {
     phoneError: ''
   };
 
+  public getErrorState = (reason: string): FormState | null => {
+    switch (reason) {
+      case 'Login already exists':
+        return {
+          loginError: reason,
+          phoneError: '',
+          emailError: ''
+        };
+      case 'Email already exists':
+        return {
+          loginError: '',
+          phoneError: '',
+          emailError: reason
+        };
+      case 'email is not valid':
+        return {
+          loginError: '',
+          phoneError: '',
+          emailError: reason
+        };
+      case 'phone is not valid':
+        return {
+          loginError: '',
+          phoneError: reason,
+          emailError: ''
+        };
+      default:
+        return null;
+    }
+  };
+
   public formSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
 
@@ -39,46 +70,10 @@ class Form extends Component<RouteComponentProps, FormState> {
     authApi.signUp(requestData as SignUpReq).then((res) => {
       if (res.status === 200) {
         this.props.history.push('profile');
-      }
-
-      if (res.status === 409) {
+      } else {
         const reason = (res.response as Reason).reason;
 
-        if (reason === 'Login already exists') {
-          this.setState({
-            loginError: reason,
-            phoneError: '',
-            emailError: ''
-          });
-        }
-
-        if (reason === 'Email already exists') {
-          this.setState({
-            emailError: reason,
-            loginError: '',
-            phoneError: ''
-          });
-        }
-      }
-
-      if (res.status === 400) {
-        const reason = (res.response as Reason).reason;
-
-        if (reason === 'email is not valid') {
-          this.setState({
-            emailError: reason,
-            loginError: '',
-            phoneError: ''
-          });
-        }
-
-        if (reason === 'phone is not valid') {
-          this.setState({
-            phoneError: reason,
-            emailError: '',
-            loginError: ''
-          });
-        }
+        this.setState(this.getErrorState(reason));
       }
     });
   };
