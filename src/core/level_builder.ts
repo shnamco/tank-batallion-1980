@@ -1,12 +1,34 @@
 import { Wall } from './wall';
 
-// Each entry is a sequence of stretches: E for empty canvas, W for a wall pattern
-const LEVEL_MAPS: { [key in number]: string[][] } = {
+// Values are copied from Figma's Level-x frames
+// These are 1:1 pixel-perfect level designgs from
+// https://strategywiki.org/wiki/Tank_Battalion/Walkthrough
+const LEVEL_WALLS: { [key in number]: { x: number; y: number; w: number; h: number }[] } = {
   1: [
-    ['E448', '', '', '', '', ''],
-    ['E36', 'W86', 'E32', 'W56', 'E32', 'W38', 'E34', 'W103', 'E34'],
-    ['E36', 'W36', 'E170', 'W38', 'E34', 'W38'],
-    ['E36', 'W36', 'E34', 'W102']
+    { x: 32, y: 32, w: 32, h: 110 },
+    { x: 32, y: 32, w: 80, h: 32 },
+    { x: 144, y: 32, w: 48, h: 32 },
+    { x: 224, y: 32, w: 32, h: 80 },
+    { x: 288, y: 32, w: 32, h: 110 },
+    { x: 288, y: 32, w: 96, h: 30 },
+    { x: 352, y: 96, w: 32, h: 46 },
+    { x: 96, y: 96, w: 96, h: 48 },
+    { x: 0, y: 176, w: 64, h: 30 },
+    { x: 96, y: 176, w: 128, h: 30 },
+    { x: 224, y: 144, w: 32, h: 126 },
+    { x: 288, y: 176, w: 128, h: 30 },
+    { x: 32, y: 240, w: 48, h: 30 },
+    { x: 32, y: 304, w: 48, h: 78 },
+    { x: 112, y: 240, w: 32, h: 142 },
+    { x: 112, y: 240, w: 80, h: 30 },
+    { x: 288, y: 240, w: 96, h: 30 },
+    { x: 352, y: 240, w: 32, h: 78 },
+    { x: 352, y: 352, w: 32, h: 30 },
+    { x: 176, y: 304, w: 64, h: 30 },
+    { x: 272, y: 304, w: 48, h: 78 },
+    { x: 176, y: 368, w: 16, h: 46 },
+    { x: 176, y: 368, w: 64, h: 14 },
+    { x: 224, y: 368, w: 16, h: 46 }
   ]
 };
 
@@ -14,22 +36,11 @@ export class LevelBuilder {
   constructor(private ctx: CanvasRenderingContext2D, private level: number) {}
 
   public build = (): void => {
-    const currentLevel = LEVEL_MAPS[this.level];
-    currentLevel.forEach((layer, layerNo) => {
-      let currentX = 0;
-      layer.forEach((entry) => {
-        if (entry.startsWith('E')) {
-          currentX += Number(entry.slice(1));
-        } else if (entry.startsWith('W')) {
-          new Wall(this.ctx, {
-            y: layerNo === 0 ? 0 : layerNo * Wall.SIDE,
-            x: currentX,
-            height: Wall.SIDE,
-            width: Number(entry.slice(1))
-          }).draw();
-          currentX += Number(entry.slice(1));
-        }
-      });
+    const currentLevel = LEVEL_WALLS[this.level];
+    currentLevel.forEach((segment) => {
+      new Wall(this.ctx, {
+        ...segment
+      }).draw();
     });
   };
 }

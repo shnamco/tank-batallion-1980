@@ -1,13 +1,10 @@
 import { Direction } from './game_types';
 import { PlayerTank } from './player_tank';
 import { Bullet } from './bullet';
-import { Wall } from './wall';
 import { LevelBuilder } from './level_builder';
 
-// TODO: Array of bullets
-
 export class TankBatallion {
-  // Physics
+  // "Physics"
   private lastTime!: number;
 
   // Keypress states
@@ -25,7 +22,7 @@ export class TankBatallion {
   private player!: PlayerTank;
   private bullets: Bullet[] = [];
 
-  // Number of the level, game has 22 levels
+  // Number of the level, game has 22 levels, but only 8 unique maps
   private level: number;
 
   constructor(canvas: HTMLCanvasElement, level: number) {

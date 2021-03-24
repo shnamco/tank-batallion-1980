@@ -27,7 +27,7 @@ export class Game extends React.Component<GameProps, GameState> {
       <React.Fragment>
         <div className="game__wrapper">
           <div className="game__centerpiece">
-            <canvas id="game-canvas" ref={this.canvas} width={448} height={448}></canvas>
+            <canvas id="game-canvas" ref={this.canvas} width={416} height={416}></canvas>
           </div>
         </div>
       </React.Fragment>
