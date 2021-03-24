@@ -18,7 +18,7 @@ class Form extends Component<RouteComponentProps, FormState> {
   componentDidMount(): void {
     authApi.getProfile().then((res) => {
       if (res.status === 200) {
-        this.props.history.push('game');
+        this.props.history.push('profile');
       }
     });
   }
@@ -39,7 +39,7 @@ class Form extends Component<RouteComponentProps, FormState> {
 
     authApi.login(requestData as LoginReq).then((res) => {
       if (res.status === 200) {
-        this.props.history.push('game');
+        this.props.history.push('profile');
       } else {
         this.setState({
           error: (res.response as Reason).reason

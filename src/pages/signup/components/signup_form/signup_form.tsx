@@ -38,7 +38,7 @@ class Form extends Component<RouteComponentProps, FormState> {
 
     authApi.signUp(requestData as SignUpReq).then((res) => {
       if (res.status === 200) {
-        this.props.history.push('game');
+        this.props.history.push('profile');
       }
 
       if (res.status === 409) {
