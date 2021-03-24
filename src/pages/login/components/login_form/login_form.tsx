@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import './login_form.pcss';
-import { Input } from '../../../../components/input/input';
+import '@styles/variables.pcss';
+import '@styles/login.pcss';
 import { authApi, loginReq, reason } from '../../../../service/auth_api';
+import { Input } from '@components/input/input';
 
-type formState = {
+type FormState = {
   error: string;
 };
 
-class Form extends Component<RouteComponentProps, formState> {
+class Form extends Component<RouteComponentProps, FormState> {
   public state = {
     error: ''
   };

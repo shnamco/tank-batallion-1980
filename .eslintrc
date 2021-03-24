@@ -5,12 +5,9 @@
     "project": "tsconfig.json"
   },
   "plugins": ["@typescript-eslint"],
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended"
-  ],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "plugin:prettier/recommended"],
   "settings": {
+    "import/resolver": "webpack",
     "react": {
       "pragma": "React",
       "version": "detect"

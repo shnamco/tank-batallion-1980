@@ -7,6 +7,7 @@ export interface InputProps {
   className?: string;
   name?: string;
   error?: string;
+  disabled?: boolean;
 }
 
 export interface InputState {
@@ -24,7 +25,8 @@ export class Input extends Component<InputProps, InputState> {
 
   public static defaultProps: InputProps = {
     type: 'text',
-    className: 'input'
+    className: 'input',
+    disabled: false
   };
 
   public validate = (): void => {

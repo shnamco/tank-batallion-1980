@@ -16,6 +16,12 @@ module.exports = {
     filename: filename('js')
   },
   resolve: {
+    alias: {
+      '@components': path.resolve(__dirname, './src/components/'),
+      '@pages': path.resolve(__dirname, './src/pages/'),
+      '@core': path.resolve(__dirname, './src/core/'),
+      '@styles': path.resolve(__dirname, './src/styles/'),
+    },
     extensions: ['.ts', '.tsx', '.js', '.json']
   },
   devtool: isDev ? 'source-map' : false,

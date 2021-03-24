@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import './signup_form.pcss';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
-import { Input } from '../../../../components/input/input';
+import './signup_form.pcss';
+import '@styles/login.pcss';
 import { authApi, signUpReq, reason } from '../../../../service/auth_api';
+import { Input } from '@components/input/input';
 
 type formState = {
   loginError: string;
