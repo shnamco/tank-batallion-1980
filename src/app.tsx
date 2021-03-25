@@ -4,6 +4,7 @@ import { Login } from '@pages/login/login';
 import { Signup } from '@pages/signup/signup';
 import { Game } from '@pages/game/game';
 import { Profile } from '@pages/profile/profile';
+import { Menu } from '@pages/menu/menu';
 import './app.pcss';
 
 export const App: React.FC = () => {
@@ -12,6 +13,7 @@ export const App: React.FC = () => {
       <Switch>
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
+        <Route path="/menu" component={Menu} />
         <Route path="/game" component={Game} />
         <Route path="/profile" component={Profile} />
         <Route
