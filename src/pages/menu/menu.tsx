@@ -39,7 +39,7 @@ class MenuItem {
 }
 
 const MENU_LIST = [
-  new MenuItem(1, 'GAME', ROUTE.GAME),
+  new MenuItem(1, 'PLAY', ROUTE.GAME),
   new MenuItem(2, 'PROFILE', ROUTE.PROFILE),
   new MenuItem(3, 'HIGH SCORES', ROUTE.SCORE),
   new MenuItem(4, 'FORUM', ROUTE.FORUM)
