@@ -1,13 +1,15 @@
 import { useEffect } from 'react';
 
 export const useKeypress = (key: string, action: () => void): void => {
-  useEffect(() => {
-    function onKeyup(e: KeyboardEvent) {
-      if (e.key === key) {
-        action();
-      }
+  useEffect(keyPressHandler(key, action), []);
+};
+
+export const keyPressHandler = (key: string, action: () => void): (() => void) => {
+  function onKeyup(e: KeyboardEvent) {
+    if (e.key === key) {
+      action();
     }
-    window.addEventListener('keyup', onKeyup);
-    return () => window.removeEventListener('keyup', onKeyup);
-  }, []);
+  }
+  window.addEventListener('keyup', onKeyup);
+  return () => window.removeEventListener('keyup', onKeyup);
 };
