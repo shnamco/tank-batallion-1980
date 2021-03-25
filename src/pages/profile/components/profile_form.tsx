@@ -4,8 +4,11 @@ import { Input } from '@components/input/input';
 import './profile_form.pcss';
 import '@styles/variables.pcss';
 import '@styles/profile.pcss';
+import { ROUTE } from '../../../models/route';
 
 export class ProfileForm extends Component {
+  public mainMenu = ROUTE.MENU;
+
   public render(): React.ReactElement {
     return (
       <main className="profile">
@@ -20,8 +23,8 @@ export class ProfileForm extends Component {
           </div>
           <div className="profile__form-actions">
             <button className="profile__button">UPDATE PROFILE</button>
-            <Link to="game" className="profile__link">
-              BACK TO THE GAME
+            <Link to={this.mainMenu} className="profile__link">
+              BACK TO THE MAIN MENU
             </Link>
           </div>
         </form>

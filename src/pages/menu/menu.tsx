@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { ROUTE } from '../../models/route';
 import './menu.pcss';
 
 export class Menu extends Component {
@@ -18,13 +19,6 @@ export class Menu extends Component {
       </div>
     );
   }
-}
-
-enum ROUTE {
-  PROFILE = 'profile',
-  GAME = 'game',
-  SCORE = 'score',
-  FORUM = 'forum'
 }
 
 class MenuItem {
