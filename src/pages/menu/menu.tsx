@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { ROUTE } from '../../models/route';
+import { ROUTE } from '@models/route';
 import bang from '../../assets/bang.svg';
 import './menu.pcss';
 

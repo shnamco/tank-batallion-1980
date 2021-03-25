@@ -1,3 +1,5 @@
+import { environment } from '../environment/environment';
+
 export type LoginReq = {
   login: string;
   password: string;
@@ -108,6 +110,6 @@ class Api {
   };
 }
 
-const authApi = new Api('https://ya-praktikum.tech/api/v2');
+const authApi = new Api(environment.praktikum);
 
 export { authApi };
