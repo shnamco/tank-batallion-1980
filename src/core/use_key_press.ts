@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 export const useKeypress = (key: string, action: () => void): void => {
-  useEffect(keyPressHandler(key, action), []);
+  useEffect(keyPressHandler.bind(this, key, action), []);
 };
 
 export const keyPressHandler = (key: string, action: () => void): (() => void) => {
