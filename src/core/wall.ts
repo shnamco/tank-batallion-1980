@@ -40,11 +40,11 @@ export class Wall implements Wallable {
     gameObjects.forEach((go) => {
       let collided = false;
       // margin of error delta
-      const d = 1;
+      const d = 0;
       if (go.dir === Direction.South) {
         collided =
-          (between(go.y + go.size, this.y - d, this.y + d) && between(go.x, this.x - d, this.x + this.w + d)) ||
-          (between(go.y + go.size, this.y - d, this.y + d) && between(go.x + go.size, this.x - d, this.x + this.w + d));
+          (between(go.y + go.size, this.y - d, this.y + d) && between(go.x / 2, this.x - d, this.x + this.w + d)) ||
+          (between(go.y + go.size, this.y - d, this.y + d) && between(go.x + go.size / 2, this.x - d, this.x + this.w + d));
         if (collided) {
           console.log(`collided with ${go.constructor.name} heading South!`);
           if (go.collideWithWall) go.collideWithWall();
@@ -52,8 +52,8 @@ export class Wall implements Wallable {
       }
       if (go.dir === Direction.North) {
         collided =
-          (between(go.y, this.y + this.h - d, this.y + this.h + d) && between(go.x, this.x - d, this.x + this.w + d)) ||
-          (between(go.y, this.y + this.h - d, this.y + this.h + d) && between(go.x + go.size, this.x - d, this.x + this.w + d));
+          (between(go.y, this.y + this.h - d, this.y + this.h + d) && between(go.x / 2, this.x - d, this.x + this.w + d)) ||
+          (between(go.y, this.y + this.h - d, this.y + this.h + d) && between(go.x + go.size / 2, this.x - d, this.x + this.w + d));
         if (collided) {
           console.log(`collided with ${go.constructor.name} heading North!`);
           if (go.collideWithWall) go.collideWithWall();
@@ -61,8 +61,9 @@ export class Wall implements Wallable {
       }
       if (go.dir === Direction.West) {
         collided =
-          (between(go.x, this.x + this.w - d, this.x + this.w + d) && between(go.y, this.y - d, this.y + this.h + d)) ||
-          (between(go.x, this.x + this.w - d, this.x + this.w + d) && between(go.y + go.size, this.y - d, this.y + this.h + d));
+          (between((go.x + go.size - go.x) / 2, this.x + this.w - d, this.x + this.w + d) &&
+            between(go.y / 2, this.y - d, this.y + this.h + d)) ||
+          (between(go.x, this.x + this.w - d, this.x + this.w + d) && between(go.y + go.size / 2, this.y - d, this.y + this.h + d));
         if (collided) {
           console.log(`collided with ${go.constructor.name} heading West!`);
           if (go.collideWithWall) go.collideWithWall();
@@ -70,8 +71,8 @@ export class Wall implements Wallable {
       }
       if (go.dir === Direction.East) {
         collided =
-          (between(go.x + go.size, this.x - d, this.x + d) && between(go.y, this.y - d, this.y + d)) ||
-          (between(go.x + go.size, this.x - d, this.x + d) && between(go.y + go.size, this.y + this.h - d, this.y + this.h + d));
+          (between(go.x + go.size / 2, this.x - d, this.x + d) && between(go.y / 2, this.y - d, this.y + d)) ||
+          (between(go.x + go.size / 2, this.x - d, this.x + d) && between(go.y + go.size / 2, this.y + this.h - d, this.y + this.h + d));
         if (collided) {
           console.log(`collided with ${go.constructor.name} heading East!`);
           if (go.collideWithWall) go.collideWithWall();

@@ -59,9 +59,7 @@ export class Bullet implements Bulletable {
         y = this.y + this.firedBy.size;
       }
 
-      if (!this.collidedWithWall) {
-        this.ctx.fillRect(x, y, this.size, this.size);
-      }
+      this.ctx.fillRect(x, y, this.size, this.size);
     });
   };
 
