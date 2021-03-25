@@ -1,21 +1,61 @@
-import React, { Component, createRef } from 'react';
-import { Link } from 'react-router-dom';
-import { Input } from '@components/input/input';
+import React, { Component } from 'react';
+import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import './login_form.pcss';
 import '@styles/variables.pcss';
 import '@styles/login.pcss';
+import { authApi, LoginReq, Reason } from '@service/auth_api';
+import { Input } from '@components/input/input';
 
-export class LoginForm extends Component {
-  public login = createRef<HTMLDivElement>();
+type FormState = {
+  error: string;
+};
+
+class Form extends Component<RouteComponentProps, FormState> {
+  public state = {
+    error: ''
+  };
+
+  componentDidMount(): void {
+    authApi.getProfile().then((res) => {
+      if (res.status === 200) {
+        this.props.history.push('profile');
+      }
+    });
+  }
+
+  public formSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const requestData: Record<string, string> = {
+      login: '',
+      password: ''
+    };
+
+    Object.keys(requestData).forEach((key) => {
+      requestData[key] = formData.get(key) as string;
+    });
+
+    authApi.login(requestData as LoginReq).then((res) => {
+      if (res.status === 200) {
+        this.props.history.push('profile');
+      } else {
+        this.setState({
+          error: (res.response as Reason).reason
+        });
+      }
+    });
+  };
 
   public render(): React.ReactElement {
     return (
       <main className="login">
         <h1 className="login__title">LOG IN TO PLAY</h1>
-        <form className="login__form">
+        <form className="login__form" onSubmit={this.formSubmit}>
           <div className="login__form-block">
-            <Input placeholder="Login" />
-            <Input type="password" placeholder="Password" />
+            <Input name="login" placeholder="Login" />
+            <Input name="password" type="password" placeholder="Password" error={this.state.error} />
           </div>
           <div className="login__form-block">
             <button className="login__button">LOG IN</button>
@@ -28,3 +68,5 @@ export class LoginForm extends Component {
     );
   }
 }
+
+export const LoginForm = withRouter(Form);

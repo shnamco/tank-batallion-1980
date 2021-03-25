@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
+		"target": "ESNext",
     "baseUrl": "./",
     "paths": {
       "@components/*": ["src/components/*"],
       "@pages/*": ["src/pages/*"],
       "@core/*": ["src/core/*"],
       "@styles/*": ["src/styles/*"],
+      "@service/*": ["src/service/*"],
     },
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
