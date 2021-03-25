@@ -1,33 +1,96 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Input } from '@components/input/input';
+import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import './signup_form.pcss';
 import '@styles/login.pcss';
+import { authApi, SignUpReq, Reason } from '@service/auth_api';
+import { Input } from '@components/input/input';
 
-export class SignupForm extends Component {
+type FormState = {
+  loginError: string;
+  emailError: string;
+  phoneError: string;
+};
+
+class Form extends Component<RouteComponentProps, FormState> {
   public state = {
-    activeInput: 'first-name'
+    loginError: '',
+    emailError: '',
+    phoneError: ''
   };
 
-  public activeInputHandler = (activeInput: string): void => {
-    this.setState({ activeInput });
+  public getErrorState = (reason: string): FormState | null => {
+    switch (reason) {
+      case 'Login already exists':
+        return {
+          loginError: reason,
+          phoneError: '',
+          emailError: ''
+        };
+      case 'Email already exists':
+        return {
+          loginError: '',
+          phoneError: '',
+          emailError: reason
+        };
+      case 'email is not valid':
+        return {
+          loginError: '',
+          phoneError: '',
+          emailError: reason
+        };
+      case 'phone is not valid':
+        return {
+          loginError: '',
+          phoneError: reason,
+          emailError: ''
+        };
+      default:
+        return null;
+    }
   };
 
-  public createClassName = (str: string): boolean => {
-    return str === this.state.activeInput;
+  public formSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const requestData: Record<string, string> = {
+      first_name: '',
+      second_name: '',
+      login: '',
+      email: '',
+      password: '',
+      phone: ''
+    };
+
+    Object.keys(requestData).forEach((key) => {
+      requestData[key] = formData.get(key) as string;
+    });
+
+    authApi.signUp(requestData as SignUpReq).then((res) => {
+      if (res.status === 200) {
+        this.props.history.push('profile');
+      } else {
+        const reason = (res.response as Reason).reason;
+
+        this.setState(this.getErrorState(reason));
+      }
+    });
   };
 
   public render(): React.ReactElement {
+    const { emailError, loginError, phoneError } = this.state;
+
     return (
       <main className="login">
-        <form className="login__form">
+        <form className="login__form" onSubmit={this.formSubmit}>
           <div className="login__form-block">
-            <Input placeholder="FIRST NAME" />
-            <Input placeholder="MUST BE PRESENT" />
-            <Input type="email" placeholder="EMAIL" />
-            <Input placeholder="LOGIN" />
-            <Input type="password" placeholder="Password" />
-            <Input type="phone" placeholder="PHONE" />
+            <Input name="first_name" placeholder="FIRST NAME" />
+            <Input name="second_name" placeholder="SECOND NAME" />
+            <Input name="email" type="email" placeholder="EMAIL" error={emailError} />
+            <Input name="login" placeholder="LOGIN" error={loginError} />
+            <Input name="password" type="password" placeholder="Password" />
+            <Input name="phone" type="phone" placeholder="PHONE" error={phoneError} />
           </div>
           <div className="login__form-block">
             <button className="login__button">SIGN UP</button>
@@ -40,3 +103,5 @@ export class SignupForm extends Component {
     );
   }
 }
+
+export const SignupForm = withRouter(Form);
