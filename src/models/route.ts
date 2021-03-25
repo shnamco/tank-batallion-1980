@@ -3,5 +3,6 @@ export enum ROUTE {
   GAME = 'game',
   SCORE = 'score',
   FORUM = 'forum',
-  MENU = 'menu'
+  MENU = 'menu',
+  LOGIN = 'login'
 }
