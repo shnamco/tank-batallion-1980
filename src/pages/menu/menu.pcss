@@ -16,24 +16,28 @@
       margin-bottom: 0;
     }
     &:focus {
+      color: aqua;
       outline: none;
-      &:after {
-        content: '';
-        position: absolute;
-        display: flex;
-        align-items: center;
-        background-image: url(../../assets/tank_1.svg);
-        background-size: contain;
-        background-repeat: no-repeat;
-        width: 40px;
-        height: 40px;
-        left: -60px;
-        top: 4px;
-      }
     }
   }
   &__item.logout {
     color: var(--red);
+  }
+}
+
+.active {
+  &:after {
+    content: '';
+    position: absolute;
+    display: flex;
+    align-items: center;
+    background-image: url(../../assets/tank_1.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 40px;
+    height: 40px;
+    left: -60px;
+    top: 4px;
   }
 }
 
