@@ -1,3 +1,5 @@
+import { praktikumApiUrl } from '../environment/praktikumApiUrl';
+
 export type LoginReq = {
   login: string;
   password: string;
@@ -108,6 +110,6 @@ class Api {
   };
 }
 
-const authApi = new Api('https://ya-praktikum.tech/api/v2');
+const authApi = new Api(praktikumApiUrl.praktikum);
 
 export { authApi };

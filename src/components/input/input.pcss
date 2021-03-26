@@ -4,16 +4,18 @@
   position: relative;
 
   &.invalid {
-
     &::after {
       content: '';
-      display: block;
       position: absolute;
-      width: 29px;
-      height: 30px;
-      background-image: url(../../assets/boom.png);
-      right: -40px;
-      top: 0;
+      display: flex;
+      align-items: center;
+      background-image: url(../../assets/bang.svg);
+      background-size: contain;
+      background-repeat: no-repeat;
+      width: 40px;
+      height: 40px;
+      right: -60px;
+      top: 4px;
     }
   }
 }
@@ -44,7 +46,7 @@
       width: 41px;
       height: 32px;
       left: -60px;
-      top: 0px;
+      top: 0;
     }
   }
 }
@@ -56,5 +58,5 @@
 
 .form-control__invalid {
   font-size: 10px;
-  color: #D84D40;
+  color: #d84d40;
 }
