@@ -30,6 +30,7 @@ export class PlayerTank implements GameObject {
   public size: number;
   public fill: string;
   public collidedWithWall = false;
+  public pixelUnderGun = 0;
 
   // Debugging flip-switch,
   // adds outlines and pixel data

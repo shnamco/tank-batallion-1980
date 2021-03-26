@@ -23,6 +23,7 @@ export class TankBatallion {
   private player!: PlayerTank;
   private bullets: Bullet[] = [];
   private walls: Wall[] = [];
+  private wallHits: Wall[] = [];
 
   // Number of the level, game has 22 levels, but only 8 unique maps
   private level: number;
@@ -63,7 +64,7 @@ export class TankBatallion {
       x = this.player.x + halfTank - halfBullet;
     } else if (this.player.dir === Direction.South) {
       x = this.player.x + halfTank - halfBullet;
-      y = this.player.y + this.player.size;
+      y = this.player.y + this.player.size - halfBullet;
     }
 
     const bullet = new Bullet(this.ctx, {
@@ -94,6 +95,7 @@ export class TankBatallion {
       this.player.dir = Direction.North;
     }
     if (this.downPressed) {
+      this.player.pixelUnderGun = this.ctx.getImageData(this.player.blx! + this.player.size / 2, this.player.bly! + 2, 1, 1).data[0];
       if (this.player.dir === Direction.South && this.player.y < this.canvas.height - this.player.size && !this.player.collidedWithWall)
         this.player.y += this.player.speed;
       this.player.dir = Direction.South;
@@ -114,22 +116,32 @@ export class TankBatallion {
     if (this.walls.length === 0) this.walls = level.walls as Wall[];
     // All walls check for collisions
     this.walls.forEach((wall) => {
-      // Draw hits
-      (wall as Wall).hits.forEach((hit) => {
-        hit.draw();
-      });
       wall.checkCollisions([this.player]);
     });
-    // Track bullets
-    this.bullets.forEach((bullet) => {
-      bullet.update(dt);
+    // Draw hits
+    this.wallHits.forEach((hit) => {
+      hit.draw();
     });
 
-    // TODO: Remove collided bullets
-    // this.bullets = this.bullets.filter((bullet) => !bullet.pixelColorUnder);
+    // Track bullets
+    this.bullets.forEach((bullet) => {
+      const [hitX, hitY] = bullet.update(dt);
+      const hit = new Wall(this.ctx, {
+        x: hitX,
+        y: hitY,
+        w: Wall.SIDE,
+        h: 22,
+        // TODO: Make sure we don't have to pass it just to make compiler happy
+        checkCollisions: () => null,
+        empty: true
+      });
+      this.wallHits.push(hit);
+    });
 
     // Draw, move player, shoot
     this.updatePlayer();
+    // TODO: Remove collided bullets
+    // this.bullets = this.bullets.filter((bullet) => !bullet.pixelColorUnder);
   };
 
   private main = () => {

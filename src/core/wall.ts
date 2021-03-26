@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Direction, GameObject } from './game_types';
 import { drawObject, between } from './helpers';
+import { PlayerTank } from './player_tank';
 import { WALL_BASE64_SVG } from './wall_base64';
 
 export interface Wallable {
@@ -135,8 +136,8 @@ export class Wall implements Wallable {
           go.bly! >= this.y && !(go.bly! >= this.bly) && (between(go.blx!, this.tlx, this.trx) || between(go.brx!, this.tlx, this.trx));
 
         if (collided) {
-          console.log(`${go.constructor.name} collided with ${this.empty ? 'EMPTY' : 'BRICK'} wall at ${this.x},${this.y} heading South!`);
-          if (go.collideWithWall) go.collideWithWall();
+          console.log(`${go.constructor.name} collided with wall at ${this.x},${this.y} heading South!`);
+          if (go.collideWithWall && (go as PlayerTank).pixelUnderGun > 0) go.collideWithWall();
         }
       }
 

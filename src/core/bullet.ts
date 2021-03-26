@@ -78,8 +78,6 @@ export class Bullet implements Bulletable {
   }
 
   public draw = (): void => {
-    if (!this.hot) return;
-
     drawObject(this.ctx, () => {
       this.ctx.fillStyle = this.fill;
       this.ctx.fillRect(this.x, this.y, this.size, this.size);
@@ -110,8 +108,11 @@ export class Bullet implements Bulletable {
   };
 
   // dt is a delta taken from the main game loop
-  public update(dt: number): void {
+  public update(dt: number): [number, number] {
+    if (!this.hot) return [-1, -1];
     this.calculateCorners();
+    let hitX = -1;
+    let hitY = -1;
 
     if (this.dir === Direction.East) {
       this.x += dt * this.speed;
@@ -120,9 +121,19 @@ export class Bullet implements Bulletable {
     } else if (this.dir === Direction.North) {
       this.y -= dt * this.speed;
     } else if (this.dir === Direction.South) {
+      const underLeftOfTank = this.ctx.getImageData(this.blx - 10, this.bly + 1, 1, 1).data[0];
+      const underRightOTank = this.ctx.getImageData(this.blx + 16, this.bly + 1, 1, 1).data[0];
       this.y += dt * this.speed;
+      // brick color
+      if (underLeftOfTank === 174 || underRightOTank == 174) {
+        console.log(`Bam!`);
+        this.hot = false;
+        hitX = this.blx - 13;
+        hitY = this.bly - 13;
+      }
     }
-    if (!this.pixelColorUnder) this.draw();
+    this.draw();
+    return [hitX, hitY];
   }
 
   public collideWithWall(): void {
