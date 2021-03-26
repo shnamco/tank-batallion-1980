@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './input.pcss';
+import { Underline } from '@components/underline/underline';
 
 export interface InputProps {
   type: string;
@@ -66,14 +67,7 @@ export class Input extends Component<InputProps, InputState> {
         <div className={this.createClassName}>
           <input {...props} onChange={this.inputHandler} value={value} onBlur={this.validate} />
           <label htmlFor={this.props.className}></label>
-          <div className="dash-line">
-            <div className="low-dash" />
-            <div className="low-dash" />
-            <div className="low-dash" />
-            <div className="low-dash" />
-            <div className="low-dash" />
-            <div className="low-dash" />
-          </div>
+          <Underline count={6} />
           <span className="form-control__invalid">{label}</span>
           <span className="form-control__error">{error}</span>
         </div>

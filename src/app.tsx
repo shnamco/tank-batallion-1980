@@ -1,10 +1,11 @@
 import React from 'react';
 import { Route, Switch, BrowserRouter, Redirect } from 'react-router-dom';
+import { ErrorBoundry } from '@components/error_boundary/error_boundary';
 import { Login } from '@pages/login/login';
 import { Signup } from '@pages/signup/signup';
 import { Game } from '@pages/game/game';
 import { Profile } from '@pages/profile/profile';
-import { ErrorBoundry } from '@components/error_boundary/error_boundary';
+import { Forums } from '@pages/forums/forums';
 import './app.pcss';
 
 export const App: React.FC = () => {
@@ -12,17 +13,12 @@ export const App: React.FC = () => {
     <ErrorBoundry>
       <BrowserRouter>
         <Switch>
-          <Route path="/login" component={Login} />
+          <Route path="/" exact component={Login} />
           <Route path="/signup" component={Signup} />
           <Route path="/game" component={Game} />
           <Route path="/profile" component={Profile} />
-          <Route
-            exact
-            path="/"
-            render={() => {
-              return <Redirect to="/login" />;
-            }}
-          />
+          <Route path="/forums" component={Forums} />
+          <Redirect to="/" />
         </Switch>
       </BrowserRouter>
     </ErrorBoundry>
