@@ -22,6 +22,7 @@ module.exports = {
       '@core': path.resolve(__dirname, './src/core/'),
       '@styles': path.resolve(__dirname, './src/styles/'),
       '@service': path.resolve(__dirname, './src/service/'),
+      '@models': path.resolve(__dirname, './src/models/'),
     },
     extensions: ['.ts', '.tsx', '.js', '.json']
   },
@@ -37,7 +38,7 @@ module.exports = {
     new ForkTsCheckerWebpackPlugin({
       async: false,
       eslint: {
-        files: path.resolve(__dirname, 'src/**/*')
+        files: path.resolve(__dirname, 'src/**/*.{ts,tsx,js,jsx}')
       }
     }),
     new HTMLWebpackPlugin({

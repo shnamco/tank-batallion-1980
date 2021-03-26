@@ -5,6 +5,7 @@ import { Signup } from '@pages/signup/signup';
 import { Game } from '@pages/game/game';
 import { Profile } from '@pages/profile/profile';
 import { ErrorBoundry } from '@components/error_boundary/error_boundary';
+import { Menu } from '@pages/menu/menu';
 import './app.pcss';
 
 export const App: React.FC = () => {
@@ -16,6 +17,7 @@ export const App: React.FC = () => {
           <Route path="/signup" component={Signup} />
           <Route path="/game" component={Game} />
           <Route path="/profile" component={Profile} />
+          <Route path="/menu" component={Menu} />
           <Route
             exact
             path="/"
