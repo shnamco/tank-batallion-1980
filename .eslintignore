@@ -3,9 +3,3 @@ dist
 tsconfig.json
 webpack.config.js
 postcss.config.js
-*.html
-*.pcss
-*.css
-*.png
-*.svg
-*.jpg
