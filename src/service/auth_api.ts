@@ -1,4 +1,4 @@
-import { environment } from '../environment/environment';
+import { praktikumApiUrl } from '../environment/praktikumApiUrl';
 
 export type LoginReq = {
   login: string;
@@ -110,6 +110,6 @@ class Api {
   };
 }
 
-const authApi = new Api(environment.praktikum);
+const authApi = new Api(praktikumApiUrl.praktikum);
 
 export { authApi };
