@@ -1,7 +1,7 @@
 import React from 'react';
 import { ProfileForm } from '@pages/profile/components/profile_form';
 import { useKeypress } from '../../utils/use_key_press';
-import { ROUTE } from '@models/route';
+import { ROUTE } from '../../utils/route';
 import { useHistory } from 'react-router-dom';
 import './profile.pcss';
 

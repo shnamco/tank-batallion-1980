@@ -5,7 +5,7 @@ import '@styles/variables.pcss';
 import '@styles/login.pcss';
 import { authApi, LoginReq, Reason } from '@service/auth_api';
 import { Input } from '@components/input/input';
-import { ROUTE } from '@models/route';
+import { ROUTE } from '../../../../utils/route';
 
 type FormState = {
   error: string;
