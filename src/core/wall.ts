@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { Bullet } from './bullet';
 import { Direction, GameObject } from './game_types';
 import { drawObject, between } from './helpers';
 import { WALL_BASE64_SVG } from './wall_base64';
@@ -33,10 +32,11 @@ export class Wall implements Wallable {
 
   // Debugging flip-switch,
   // adds outlines and pixel data
-  public debug = true;
+  public debug = false;
 
   // Regions that were hit by bullets
   public hits: Wall[] = [];
+  public createdAt: number;
 
   // If true, wall will appear as a black square (for hits)
   public empty;
@@ -48,6 +48,7 @@ export class Wall implements Wallable {
     this.h = opts.h;
     this.calculateCorners();
     this.empty = opts.empty ?? false;
+    this.createdAt = performance.now();
   }
 
   private calculateCorners = (): void => {
@@ -89,25 +90,26 @@ export class Wall implements Wallable {
         this.ctx.strokeRect(this.x, this.y, this.w, this.h);
 
         // Top left corner
-        this.ctx.fillText(`x${this.tlx}`, this.tlx - 9, this.tly - 6);
-        this.ctx.fillText(`y${this.tly}`, this.tlx - 9, this.tly);
+        this.ctx.fillText(`x${Math.round(this.tlx)}`, this.tlx - 9, this.tly - 6);
+        this.ctx.fillText(`y${Math.round(this.tly)}`, this.tlx - 9, this.tly);
 
         // Top right corner
-        this.ctx.fillText(`x${this.trx}`, this.trx - 9, this.try - 6);
-        this.ctx.fillText(`y${this.try}`, this.trx - 9, this.try);
+        this.ctx.fillText(`x${Math.round(this.trx)}`, this.trx - 9, this.try - 6);
+        this.ctx.fillText(`y${Math.round(this.try)}`, this.trx - 9, this.try);
 
         // Bottom left corner
-        this.ctx.fillText(`x${this.blx}`, this.blx - 9, this.bly - 6);
-        this.ctx.fillText(`y${this.bly}`, this.blx - 9, this.bly);
+        this.ctx.fillText(`x${Math.round(this.blx)}`, this.blx - 9, this.bly - 6);
+        this.ctx.fillText(`y${Math.round(this.bly)}`, this.blx - 9, this.bly);
 
         // Bottom right corner
-        this.ctx.fillText(`x${this.brx}`, this.brx - 9, this.bry - 6);
-        this.ctx.fillText(`y${this.bry}`, this.brx - 9, this.bry);
+        this.ctx.fillText(`x${Math.round(this.brx)}`, this.brx - 9, this.bry - 6);
+        this.ctx.fillText(`y${Math.round(this.bry)}`, this.brx - 9, this.bry);
       }
     });
   };
 
-  // Walls are responsible for checking collisions with bullets and tanks
+  // Walls are responsible for checking collisions with tanks
+  // TODO: only deal with tanks then and not general game objects?
   public checkCollisions = (gameObjects: GameObject[]): void => {
     gameObjects.forEach((go) => {
       let collided = false;
@@ -135,21 +137,6 @@ export class Wall implements Wallable {
         if (collided) {
           console.log(`${go.constructor.name} collided with ${this.empty ? 'EMPTY' : 'BRICK'} wall at ${this.x},${this.y} heading South!`);
           if (go.collideWithWall) go.collideWithWall();
-        }
-
-        // Destroy the segment of the wall on bullet collision
-        if (collided && go.constructor.name === 'Bullet') {
-          console.log(`Bam! (${go.constructor.name} x: ${go.blx!} y: ${go.bly!})`);
-          const bullet = go as Bullet;
-          const hitRegion: Wallable = {
-            x: bullet.firedBy.blx!,
-            y: bullet.bly!,
-            w: 36,
-            h: 20,
-            checkCollisions: () => null,
-            empty: true
-          };
-          this.hits.push(new Wall(this.ctx, { ...hitRegion }));
         }
       }
 

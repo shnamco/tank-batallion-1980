@@ -116,18 +116,17 @@ export class TankBatallion {
     this.walls.forEach((wall) => {
       // Draw hits
       (wall as Wall).hits.forEach((hit) => {
-        // TODO: Magic numbers, figure out
         hit.draw();
       });
-      wall.checkCollisions([this.player, ...this.bullets]);
+      wall.checkCollisions([this.player]);
     });
-
     // Track bullets
     this.bullets.forEach((bullet) => {
       bullet.update(dt);
-      // TODO: remove collided bullet from the array!
     });
-    this.bullets = this.bullets.filter((bullet) => !bullet.collidedWithWall);
+
+    // TODO: Remove collided bullets
+    // this.bullets = this.bullets.filter((bullet) => !bullet.pixelColorUnder);
 
     // Draw, move player, shoot
     this.updatePlayer();

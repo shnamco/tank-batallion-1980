@@ -32,6 +32,8 @@ export class Bullet implements Bulletable {
   public brx!: number;
   public bry!: number;
 
+  public pixelColorUnder?: number;
+
   // Debugging flip-switch,
   // adds outlines and pixel data
   public debug = false;
@@ -109,8 +111,8 @@ export class Bullet implements Bulletable {
 
   // dt is a delta taken from the main game loop
   public update(dt: number): void {
-    if (this.collidedWithWall) return;
     this.calculateCorners();
+
     if (this.dir === Direction.East) {
       this.x += dt * this.speed;
     } else if (this.dir === Direction.West) {
@@ -120,7 +122,7 @@ export class Bullet implements Bulletable {
     } else if (this.dir === Direction.South) {
       this.y += dt * this.speed;
     }
-    this.draw();
+    if (!this.pixelColorUnder) this.draw();
   }
 
   public collideWithWall(): void {
