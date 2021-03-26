@@ -15,5 +15,5 @@ export function boxCollides(x1: number, y1: number, size: number, x2: number, y2
 }
 
 export function between(a: number, b: number, c: number): boolean {
-  return a >= b && a <= c;
+  return a > b && a < c;
 }

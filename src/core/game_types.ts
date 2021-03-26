@@ -19,12 +19,24 @@ export interface GameObject {
   // Position before any of the updates.
   x: number;
   y: number;
+
+  tlx?: number;
+  tly?: number;
+  trx?: number;
+  try?: number;
+  blx?: number;
+  bly?: number;
+  brx?: number;
+  bry?: number;
+
   dir: Direction;
   // side of a bounding rect
   size: number;
   // override default fill if necessary
   fill?: string | undefined;
   collideWithWall?: () => void;
+
+  speed?: number;
 }
 
 // Compass - Grad

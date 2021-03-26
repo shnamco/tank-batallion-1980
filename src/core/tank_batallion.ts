@@ -37,7 +37,7 @@ export class TankBatallion {
 
   private initGameObjects = () => {
     this.player = new PlayerTank(this.ctx, {
-      x: 390,
+      x: 0,
       y: 0,
       dir: Direction.East,
       size: 26
@@ -51,7 +51,7 @@ export class TankBatallion {
       y: this.player.y,
       dir: this.player.dir,
       size: 6,
-      speed: 100,
+      speed: 10,
       firedBy: this.player,
       fill: '#55BEBF'
     });
@@ -60,20 +60,22 @@ export class TankBatallion {
 
   private updatePlayer = () => {
     if (this.rightPressed) {
+      if (this.player.dir === Direction.East && this.player.x < this.canvas.width - this.player.size && !this.player.collidedWithWall)
+        this.player.x += this.player.speed;
       this.player.dir = Direction.East;
-      if (this.player.x < this.canvas.width - this.player.size && !this.player.collidedWithWall) this.player.x++;
     }
     if (this.leftPressed) {
+      if (this.player.dir === Direction.West && this.player.x > 0 && !this.player.collidedWithWall) this.player.x -= this.player.speed;
       this.player.dir = Direction.West;
-      if (this.player.x > 0 && !this.player.collidedWithWall) this.player.x--;
     }
     if (this.upPressed) {
+      if (this.player.dir === Direction.North && this.player.y > 0 && !this.player.collidedWithWall) this.player.y -= this.player.speed;
       this.player.dir = Direction.North;
-      if (this.player.y > 0 && !this.player.collidedWithWall) this.player.y--;
     }
     if (this.downPressed) {
+      if (this.player.dir === Direction.South && this.player.y < this.canvas.height - this.player.size && !this.player.collidedWithWall)
+        this.player.y += this.player.speed;
       this.player.dir = Direction.South;
-      if (this.player.y < this.canvas.height - this.player.size && !this.player.collidedWithWall) this.player.y++;
     }
     this.player.collidedWithWall = false;
     this.player.draw();
@@ -106,7 +108,11 @@ export class TankBatallion {
     const dt = (now - this.lastTime) / 1000.0;
     this.updateWorld(dt);
     this.lastTime = now;
-    window.requestAnimationFrame(this.main);
+
+    // We need timeout to make the movement "choppy" and simulate original arcade feel
+    setTimeout(() => {
+      window.requestAnimationFrame(this.main);
+    }, 0);
   };
 
   public play: () => void = () => {

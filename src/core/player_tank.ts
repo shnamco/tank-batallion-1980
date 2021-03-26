@@ -11,22 +11,62 @@ const playerTankAsset: GameAsset = {
 
 export class PlayerTank implements GameObject {
   // Realtime positions
-  public x: number;
-  public y: number;
+  private _x: number;
+  private _y: number;
+
+  // Helper positions (Top/Bottom-Left/Right)
+  public tlx?: number;
+  public tly?: number;
+  public trx?: number;
+  public try?: number;
+  public blx?: number;
+  public bly?: number;
+  public brx?: number;
+  public bry?: number;
 
   // Controllable from outside
   public dir: Direction;
+  public speed: number;
   public size: number;
   public fill: string;
   public collidedWithWall = false;
 
+  // Debugging flip-switch,
+  // adds outlines and pixel data
+  public debug = false;
+
   constructor(private ctx: CanvasRenderingContext2D, private opts: GameObject) {
     // Initial positions
-    this.x = opts.x;
-    this.y = opts.y;
+    this._x = opts.x;
+    this._y = opts.y;
     this.dir = opts.dir ?? Direction.East;
     this.size = opts.size ?? playerTankAsset.size;
     this.fill = opts.fill ?? playerTankAsset.fill ?? 'magenta';
+    this.speed = 1;
+  }
+
+  get x(): number {
+    return this._x;
+  }
+
+  set x(value: number) {
+    this._x = value;
+    this.tlx = value;
+    this.trx = value + this.size;
+    this.blx = value;
+    this.brx = value + this.size;
+  }
+
+  get y(): number {
+    return this._y;
+  }
+
+  set y(value: number) {
+    this._y = value;
+    this.tly = value;
+    this.try = value;
+    this.bly = value + this.size;
+    this.bry = value + this.size;
   }
 
   public draw(): void {
@@ -39,8 +79,35 @@ export class PlayerTank implements GameObject {
       this.ctx.translate(-half, -half);
       this.ctx.fill(svgPath);
       this.ctx.resetTransform();
+
+      if (this.debug) {
+        this.ctx.font = '9px monospace';
+        this.ctx.fillStyle = 'magenta';
+        this.ctx.strokeStyle = 'magenta';
+        this.ctx.strokeRect(this.x, this.y, this.size, this.size);
+
+        // Top left corner
+        this.ctx.fillText(`x${this.tlx}`, this.x - 9, this.y - 6);
+        this.ctx.fillText(`y${this.tly}`, this.x - 9, this.y);
+
+        // Top right corner
+        this.ctx.fillText(`x${this.x + this.size}`, this.x + this.size, this.y - 6);
+        this.ctx.fillText(`y${this.y}`, this.x + this.size, this.y);
+
+        // Bottom left corner
+        this.ctx.fillText(`x${this.x}`, this.x - 9, this.y + this.size - 6);
+        this.ctx.fillText(`y${this.y + this.size}`, this.x - 9, this.y + this.size);
+
+        // Bottom right corner
+        this.ctx.fillText(`x${this.x + this.size}`, this.x + this.size - 9, this.y + this.size - 6);
+        this.ctx.fillText(`y${this.y + this.size}`, this.x + this.size - 9, this.y + this.size);
+      }
     });
   }
+
+  public erase = (): void => {
+    this.ctx.clearRect(this.x, this.y, this.size, this.size);
+  };
 
   public collideWithWall(): void {
     this.collidedWithWall = true;
