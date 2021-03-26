@@ -43,6 +43,7 @@ export class PlayerTank implements GameObject {
     this.size = opts.size ?? playerTankAsset.size;
     this.fill = opts.fill ?? playerTankAsset.fill ?? 'magenta';
     this.speed = 1;
+    this.calculateCorners();
   }
 
   get x(): number {
@@ -112,4 +113,19 @@ export class PlayerTank implements GameObject {
   public collideWithWall(): void {
     this.collidedWithWall = true;
   }
+
+  private calculateCorners = (): void => {
+    // Calculate helpers
+    // Walls are static so we don't need accessors.
+    // But we need to keep them updated, so
+    // we calculate on every draw.
+    this.tlx = this.x;
+    this.tly = this.y;
+    this.trx = this.x + this.size;
+    this.try = this.y;
+    this.blx = this.x;
+    this.bly = this.y + this.size;
+    this.brx = this.x + this.size;
+    this.bry = this.y + this.size;
+  };
 }

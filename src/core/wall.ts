@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { Bullet } from './bullet';
 import { Direction, GameObject } from './game_types';
 import { drawObject, between } from './helpers';
 import { WALL_BASE64_SVG } from './wall_base64';
@@ -9,6 +10,7 @@ export interface Wallable {
   w: number;
   h: number;
   checkCollisions: ((gameObjects: GameObject[]) => void) | (() => never);
+  empty?: boolean;
 }
 
 export class Wall implements Wallable {
@@ -33,12 +35,19 @@ export class Wall implements Wallable {
   // adds outlines and pixel data
   public debug = true;
 
+  // Regions that were hit by bullets
+  public hits: Wall[] = [];
+
+  // If true, wall will appear as a black square (for hits)
+  public empty;
+
   constructor(private ctx: CanvasRenderingContext2D, opts: Wallable) {
     this.x = opts.x;
     this.y = opts.y;
     this.w = opts.w;
     this.h = opts.h;
     this.calculateCorners();
+    this.empty = opts.empty ?? false;
   }
 
   private calculateCorners = (): void => {
@@ -60,10 +69,17 @@ export class Wall implements Wallable {
     this.calculateCorners();
 
     drawObject(this.ctx, () => {
-      const bricks = new Image();
-      bricks.src = WALL_BASE64_SVG;
-      const pattern = this.ctx.createPattern(bricks, 'repeat');
-      this.ctx.fillStyle = pattern as CanvasPattern;
+      if (!this.empty) {
+        const bricks = new Image();
+        bricks.src = WALL_BASE64_SVG;
+        const pattern = this.ctx.createPattern(bricks, 'repeat');
+        this.ctx.fillStyle = pattern as CanvasPattern;
+      }
+
+      if (this.empty) {
+        this.ctx.fillStyle = 'black';
+      }
+
       this.ctx.fillRect(this.x, this.y, this.w, this.h);
 
       if (this.debug) {
@@ -111,17 +127,35 @@ export class Wall implements Wallable {
           if (go.collideWithWall) go.collideWithWall();
         }
       }
+
       if (go.dir === Direction.South) {
         collided =
           go.bly! >= this.y && !(go.bly! >= this.bly) && (between(go.blx!, this.tlx, this.trx) || between(go.brx!, this.tlx, this.trx));
+
         if (collided) {
-          console.log(`${go.constructor.name} collided with wall at ${this.x},${this.y} heading South!`);
+          console.log(`${go.constructor.name} collided with ${this.empty ? 'EMPTY' : 'BRICK'} wall at ${this.x},${this.y} heading South!`);
           if (go.collideWithWall) go.collideWithWall();
         }
+
+        // Destroy the segment of the wall on bullet collision
+        if (collided && go.constructor.name === 'Bullet') {
+          console.log(`Bam! (${go.constructor.name} x: ${go.blx!} y: ${go.bly!})`);
+          const bullet = go as Bullet;
+          const hitRegion: Wallable = {
+            x: bullet.firedBy.blx!,
+            y: bullet.bly!,
+            w: 36,
+            h: 20,
+            checkCollisions: () => null,
+            empty: true
+          };
+          this.hits.push(new Wall(this.ctx, { ...hitRegion }));
+        }
       }
+
       if (go.dir === Direction.North) {
         collided =
-          go.tly! <= this.bly && !(go.bly! <= this.tly) && (between(go.trx!, this.blx, this.brx) || between(go.tlx!, this.blx, this.brx));
+          go.tly! <= this.bly && !(go.tly! <= this.tly) && (between(go.trx!, this.blx, this.brx) || between(go.tlx!, this.blx, this.brx));
         if (collided) {
           console.log(`${go.constructor.name} collided with wall at ${this.x},${this.y} heading North!`);
           if (go.collideWithWall) go.collideWithWall();

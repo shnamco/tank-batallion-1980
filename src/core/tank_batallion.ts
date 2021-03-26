@@ -2,6 +2,7 @@ import { Direction } from './game_types';
 import { PlayerTank } from './player_tank';
 import { Bullet } from './bullet';
 import { LevelBuilder } from './level_builder';
+import { Wall } from './wall';
 
 export class TankBatallion {
   // "Physics"
@@ -21,6 +22,7 @@ export class TankBatallion {
   // should be set in play() method
   private player!: PlayerTank;
   private bullets: Bullet[] = [];
+  private walls: Wall[] = [];
 
   // Number of the level, game has 22 levels, but only 8 unique maps
   private level: number;
@@ -45,13 +47,32 @@ export class TankBatallion {
   };
 
   private fireBullet = () => {
+    let x = this.player.x;
+    let y = this.player.y;
+
+    const halfTank = this.player.size / 2;
+    const halfBullet = 3; // TODO: Make a bullet size a constant somewhere
+
+    // Position the bullet at the tip of the tank's "gun"
+    if (this.player.dir === Direction.East) {
+      x = this.player.x + this.player.size;
+      y = this.player.y + halfTank - halfBullet;
+    } else if (this.player.dir === Direction.West) {
+      y = this.player.y + halfTank - halfBullet;
+    } else if (this.player.dir === Direction.North) {
+      x = this.player.x + halfTank - halfBullet;
+    } else if (this.player.dir === Direction.South) {
+      x = this.player.x + halfTank - halfBullet;
+      y = this.player.y + this.player.size;
+    }
+
     const bullet = new Bullet(this.ctx, {
       hot: true,
-      x: this.player.x,
-      y: this.player.y,
+      x,
+      y,
       dir: this.player.dir,
       size: 6,
-      speed: 10,
+      speed: 100,
       firedBy: this.player,
       fill: '#55BEBF'
     });
@@ -89,15 +110,24 @@ export class TankBatallion {
     const level = new LevelBuilder(this.ctx, this.level);
     level.build();
 
+    // Memoize
+    if (this.walls.length === 0) this.walls = level.walls as Wall[];
     // All walls check for collisions
-    level.walls.forEach((wall) => {
+    this.walls.forEach((wall) => {
+      // Draw hits
+      (wall as Wall).hits.forEach((hit) => {
+        // TODO: Magic numbers, figure out
+        hit.draw();
+      });
       wall.checkCollisions([this.player, ...this.bullets]);
     });
 
     // Track bullets
     this.bullets.forEach((bullet) => {
       bullet.update(dt);
+      // TODO: remove collided bullet from the array!
     });
+    this.bullets = this.bullets.filter((bullet) => !bullet.collidedWithWall);
 
     // Draw, move player, shoot
     this.updatePlayer();

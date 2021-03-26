@@ -32,6 +32,10 @@ export class Bullet implements Bulletable {
   public brx!: number;
   public bry!: number;
 
+  // Debugging flip-switch,
+  // adds outlines and pixel data
+  public debug = false;
+
   constructor(private ctx: CanvasRenderingContext2D, private opts: Bulletable) {
     // Initial positions
     this._x = opts.x;
@@ -72,38 +76,41 @@ export class Bullet implements Bulletable {
   }
 
   public draw = (): void => {
-    let [x, y] = [0, 0];
     if (!this.hot) return;
 
     drawObject(this.ctx, () => {
-      this.calculateCorners();
       this.ctx.fillStyle = this.fill;
-      const halfTank = this.firedBy.size / 2;
-      const halfBullet = this.size / 2;
+      this.ctx.fillRect(this.x, this.y, this.size, this.size);
 
-      if (this.dir === Direction.East) {
-        x = this.x + this.firedBy.size;
-        y = this.y + halfTank - halfBullet;
-      } else if (this.dir === Direction.West) {
-        x = this.x;
-        y = this.y + halfTank - halfBullet;
-      } else if (this.dir === Direction.North) {
-        x = this.x + halfTank - halfBullet;
-        y = this.y;
-      } else if (this.dir === Direction.South) {
-        x = this.x + halfTank - halfBullet;
-        y = this.y + this.firedBy.size;
+      if (this.debug) {
+        this.ctx.font = '9px monospace';
+        this.ctx.fillStyle = 'white';
+        this.ctx.strokeStyle = 'white';
+        this.ctx.strokeRect(this.x, this.y, this.size, this.size);
+
+        // Top left corner
+        this.ctx.fillText(`x${this.tlx}`, this.tlx - 9, this.tly - 6);
+        this.ctx.fillText(`y${this.tly}`, this.tlx - 9, this.tly);
+
+        // Top right corner
+        this.ctx.fillText(`x${this.trx}`, this.trx - 9, this.try - 6);
+        this.ctx.fillText(`y${this.try}`, this.trx - 9, this.try);
+
+        // Bottom left corner
+        this.ctx.fillText(`x${this.blx}`, this.blx - 9, this.bly - 6);
+        this.ctx.fillText(`y${this.bly}`, this.blx - 9, this.bly);
+
+        // Bottom right corner
+        this.ctx.fillText(`x${this.brx}`, this.brx - 9, this.bry - 6);
+        this.ctx.fillText(`y${this.bry}`, this.brx - 9, this.bry);
       }
-
-      this.ctx.fillRect(x, y, this.size, this.size);
     });
   };
 
   // dt is a delta taken from the main game loop
   public update(dt: number): void {
-    if (!this.collidedWithWall) {
-      this.draw();
-    }
+    if (this.collidedWithWall) return;
+    this.calculateCorners();
     if (this.dir === Direction.East) {
       this.x += dt * this.speed;
     } else if (this.dir === Direction.West) {
@@ -113,6 +120,7 @@ export class Bullet implements Bulletable {
     } else if (this.dir === Direction.South) {
       this.y += dt * this.speed;
     }
+    this.draw();
   }
 
   public collideWithWall(): void {
