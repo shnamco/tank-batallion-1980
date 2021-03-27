@@ -18,7 +18,9 @@ export const App: React.FC = () => {
         <Switch>
           <Route path="/" exact component={Login} />
           <Route path="/signup" component={Signup} />
-          <Route path="/game" component={Game} />
+          <Route path="/game">
+            <Game level={1} />
+          </Route>
           <Route path="/profile" component={Profile} />
           <Route path="/forums" component={Forums} />
           <Route path="/forum/:id" component={Forum} />

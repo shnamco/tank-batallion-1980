@@ -6,7 +6,7 @@ import { keyPressHandler } from '@utils/use_key_press';
 import './game.pcss';
 
 interface GameProps extends RouteComponentProps {
-  name: string;
+  level: number;
 }
 type GameState = Record<string, unknown>;
 
@@ -27,7 +27,7 @@ class GameComponent extends React.Component<GameProps, GameState> {
 
   public componentDidMount(): void {
     if (this.canvas.current) {
-      const tb = new TankBatallion(this.canvas.current);
+      const tb = new TankBatallion(this.canvas.current, 1);
       tb.play();
     }
     this.escapeHandler();
@@ -44,7 +44,7 @@ class GameComponent extends React.Component<GameProps, GameState> {
       <React.Fragment>
         <div className="arcade__background arcade__background-game">
           <div className="game__centerpiece">
-            <canvas id="game-canvas" ref={this.canvas} width={420} height={420} />
+            <canvas id="game-canvas" ref={this.canvas} width={416} height={416}></canvas>
           </div>
         </div>
       </React.Fragment>
