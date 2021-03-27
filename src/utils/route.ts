@@ -2,7 +2,7 @@ export enum ROUTE {
   PROFILE = 'profile',
   GAME = 'game',
   SCORE = 'score',
-  FORUM = 'forum',
+  FORUMS = 'forums',
   MENU = 'menu',
   LOGIN = 'login'
 }
