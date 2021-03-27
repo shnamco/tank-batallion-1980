@@ -1,7 +1,7 @@
 import React from 'react';
 import './forums.pcss';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import { ROUTE } from '../../utils/route';
+import { ROUTE } from '@utils/route';
 
 type ForumsType = {
   title: string;
@@ -104,9 +104,9 @@ export class Forums extends React.Component<RouteComponentProps, ForumsState> {
       }
     };
 
-    window.addEventListener('keyup', keyHandler);
+    window.addEventListener('keydown', keyHandler);
 
-    return () => window.removeEventListener('keyup', keyHandler);
+    return () => window.removeEventListener('keydown', keyHandler);
   };
 
   public get renderForums(): React.ReactNode {

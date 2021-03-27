@@ -22,7 +22,7 @@ module.exports = {
       '@core': path.resolve(__dirname, './src/core/'),
       '@styles': path.resolve(__dirname, './src/styles/'),
       '@service': path.resolve(__dirname, './src/service/'),
-      '@models': path.resolve(__dirname, './src/models/'),
+      '@utils': path.resolve(__dirname, './src/utils/'),
     },
     extensions: ['.ts', '.tsx', '.js', '.json']
   },

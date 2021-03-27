@@ -5,7 +5,7 @@ import '@styles/variables.pcss';
 import '@styles/login.pcss';
 import { authApi, LoginReq, Reason } from '@service/auth_api';
 import { Input } from '@components/input/input';
-import { ROUTE } from '../../../../utils/route';
+import { ROUTE } from '@utils/route';
 
 type FormState = {
   error: string;
@@ -31,7 +31,7 @@ class Form extends Component<RouteComponentProps, FormState> {
     });
 
     authApi.login(requestData as LoginReq).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 || (res.response as Reason).reason === 'user already in system') {
         this.props.history.push(ROUTE.MENU);
       } else {
         this.setState({

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
-import { ROUTE } from '../../utils/route';
+import { ROUTE } from '@utils/route';
 import bang from '../../assets/bang.svg';
 import './menu.pcss';
 
@@ -18,7 +18,7 @@ class MenuComponent extends Component<RouteComponentProps, MenuState> {
   };
   private handler: (() => void) | undefined;
 
-  private onKeyUp(e: KeyboardEvent): void {
+  private onKeyDown(e: KeyboardEvent): void {
     const { cursor, menuList } = this.state;
 
     if (e.key === 'ArrowUp' && cursor > 0) {
@@ -38,10 +38,10 @@ class MenuComponent extends Component<RouteComponentProps, MenuState> {
   }
 
   private keyPressHandler(): () => void {
-    const handler = this.onKeyUp.bind(this);
+    const handler = this.onKeyDown.bind(this);
 
-    window.addEventListener('keyup', handler);
-    return () => window.removeEventListener('keyup', handler);
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
   }
 
   public componentDidMount(): void {
@@ -85,6 +85,6 @@ const MENU_LIST = [
   new MenuItem(1, 'PLAY', ROUTE.GAME),
   new MenuItem(2, 'PROFILE', ROUTE.PROFILE),
   new MenuItem(3, 'HIGH SCORES', ROUTE.SCORE),
-  new MenuItem(4, 'FORUM', ROUTE.FORUM),
+  new MenuItem(4, 'FORUM', ROUTE.FORUMS),
   new MenuItem(5, 'LOG OUT', ROUTE.LOGIN, 'logout')
 ];

@@ -8,7 +8,7 @@
       "@core/*": ["src/core/*"],
       "@styles/*": ["src/styles/*"],
       "@service/*": ["src/service/*"],
-      "@models/*": ["src/models/*"]
+      "@utils/*": ["src/utils/*"]
     },
     "allowJs": true,
     "allowSyntheticDefaultImports": true,

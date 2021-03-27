@@ -1,7 +1,7 @@
 import React from 'react';
 import './score.pcss';
 import { RouteComponentProps } from 'react-router-dom';
-import { ROUTE } from '../../utils/route';
+import { ROUTE } from '@utils/route';
 
 type ScoreType = {
   name: string;
@@ -94,9 +94,9 @@ export class Score extends React.Component<RouteComponentProps, ScoreState> {
       }
     };
 
-    window.addEventListener('keyup', keyHandler);
+    window.addEventListener('keydown', keyHandler);
 
-    return () => window.removeEventListener('keyup', keyHandler);
+    return () => window.removeEventListener('keydown', keyHandler);
   };
 
   public get renderForums(): React.ReactNode {

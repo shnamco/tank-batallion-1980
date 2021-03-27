@@ -1,7 +1,7 @@
 import React from 'react';
 import './forum.pcss';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import { ROUTE } from '../../utils/route';
+import { ROUTE } from '@utils/route';
 
 type ForumType = {
   title: string;
@@ -97,13 +97,13 @@ export class Forum extends React.Component<RouteComponentProps<RouteParams>, For
       }
 
       if (e.key === 'Escape') {
-        this.props.history.push(ROUTE.FORUMS);
+        this.props.history.push(`/${ROUTE.FORUMS}`);
       }
     };
 
-    window.addEventListener('keyup', keyHandler);
+    window.addEventListener('keydown', keyHandler);
 
-    return () => window.removeEventListener('keyup', keyHandler);
+    return () => window.removeEventListener('keydown', keyHandler);
   };
 
   public get renderTopics(): React.ReactNode {
