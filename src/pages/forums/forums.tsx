@@ -1,6 +1,7 @@
 import React from 'react';
 import './forums.pcss';
 import { Link, RouteComponentProps } from 'react-router-dom';
+import { ROUTE } from '../../utils/route';
 
 type ForumsType = {
   title: string;
@@ -99,7 +100,7 @@ export class Forums extends React.Component<RouteComponentProps, ForumsState> {
       }
 
       if (e.key === 'Escape') {
-        this.props.history.push('menu');
+        this.props.history.push(ROUTE.MENU);
       }
     };
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import './forum.pcss';
 import { Link, RouteComponentProps } from 'react-router-dom';
+import { ROUTE } from '../../utils/route';
 
 type ForumType = {
   title: string;
@@ -96,7 +97,7 @@ export class Forum extends React.Component<RouteComponentProps<RouteParams>, For
       }
 
       if (e.key === 'Escape') {
-        this.props.history.push('forums');
+        this.props.history.push(ROUTE.FORUMS);
       }
     };
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import './score.pcss';
 import { RouteComponentProps } from 'react-router-dom';
+import { ROUTE } from '../../utils/route';
 
 type ScoreType = {
   name: string;
@@ -89,7 +90,7 @@ export class Score extends React.Component<RouteComponentProps, ScoreState> {
       }
 
       if (e.key === 'Escape') {
-        this.props.history.push('menu');
+        this.props.history.push(ROUTE.MENU);
       }
     };
 
