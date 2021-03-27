@@ -16,10 +16,19 @@ module.exports = {
     filename: filename('js')
   },
   resolve: {
+    alias: {
+      '@components': path.resolve(__dirname, './src/components/'),
+      '@pages': path.resolve(__dirname, './src/pages/'),
+      '@core': path.resolve(__dirname, './src/core/'),
+      '@styles': path.resolve(__dirname, './src/styles/'),
+      '@service': path.resolve(__dirname, './src/service/'),
+      '@utils': path.resolve(__dirname, './src/utils/'),
+    },
     extensions: ['.ts', '.tsx', '.js', '.json']
   },
   devtool: isDev ? 'source-map' : false,
   devServer: {
+    open: true,
     port: 3000,
     hot: isDev,
     historyApiFallback: true
@@ -29,7 +38,7 @@ module.exports = {
     new ForkTsCheckerWebpackPlugin({
       async: false,
       eslint: {
-        files: path.resolve(__dirname, 'src/**/*')
+        files: path.resolve(__dirname, 'src/**/*.{ts,tsx,js,jsx}')
       }
     }),
     new HTMLWebpackPlugin({

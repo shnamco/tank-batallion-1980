@@ -1,0 +1,46 @@
+.menu {
+  padding-bottom: 4%;
+  align-items: center;
+}
+
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--title-font);
+  &__item {
+    position: relative;
+    color: white;
+    text-decoration: none;
+    margin-bottom: 30px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+    &:focus {
+      color: aqua;
+      outline: none;
+    }
+  }
+  &__item.logout {
+    color: var(--red);
+  }
+}
+
+.menu-list .active {
+  &:after {
+    content: '';
+    position: absolute;
+    display: flex;
+    align-items: center;
+    background-image: url(../../assets/tank_1.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 40px;
+    height: 40px;
+    left: -60px;
+    top: 4px;
+  }
+}
+
+.logout__icon {
+  margin-left: 10px;
+}

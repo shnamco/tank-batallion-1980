@@ -1,10 +1,19 @@
 {
   "compilerOptions": {
+		"target": "ESNext",
+    "baseUrl": "./",
+    "paths": {
+      "@components/*": ["src/components/*"],
+      "@pages/*": ["src/pages/*"],
+      "@core/*": ["src/core/*"],
+      "@styles/*": ["src/styles/*"],
+      "@service/*": ["src/service/*"],
+      "@utils/*": ["src/utils/*"]
+    },
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "target": "ES2015",
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",

@@ -15,9 +15,48 @@ body {
   background-color: #000;
 }
 
+.arcade__background {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  min-width: 1200px;
+  margin: 0 auto;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: black;
+}
+
+.arcade__background-all {
+  flex-direction: column-reverse;
+  background-image: url('assets/arcade_bg_all.png');
+}
+
+.arcade__background-game {
+  align-items: center;
+  justify-content: center;
+  background-image: url('assets/arcade_bg_game.png');
+}
+
 .container {
-  max-width: 1440px;
-  margin: auto;
+  padding-top: 41vh;
+	padding-right: 4%;
+  padding-left: 4%;
+}
+
+.error-boundary {
   height: 100%;
-  overflow-y: auto;
+  background-image: url(assets/error.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.page-background {
+  background-image: url('assets/arcade_bg_all.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100%;
+  width: 178vh;
+  margin: auto;
 }

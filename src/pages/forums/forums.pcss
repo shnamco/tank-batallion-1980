@@ -1,0 +1,60 @@
+.forums {
+  font-size: 24px;
+  padding: 20px;
+  padding-left: 60px;
+  color: #fff;
+}
+
+.forums__title-col {
+  width: 50%;
+}
+
+.forums__header-name {
+  width: fit-content;
+  border-bottom: 3px dashed #fff;
+}
+
+.forums__row {
+  height: 50px;
+  vertical-align: bottom;
+}
+
+.forums__topic {
+  display: flex;
+  justify-content: space-between;
+  max-width: 180px;
+}
+
+.forums__topic-new {
+  color: #F04D22;
+}
+
+.forums__title a{
+  text-decoration: none;
+  color: #fff;
+}
+
+.forums__title.active {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    display: block;
+    background-image: url(../../assets/tank_1.svg);
+    width: 41px;
+    height: 32px;
+    left: -60px;
+    bottom: 0;
+  }
+}
+
+.forums__table {
+  width: 100%;
+  text-align-last: left;
+}
+
+.forums__table-header {
+  height: 50px;
+  vertical-align: top;
+}
