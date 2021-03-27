@@ -23,7 +23,7 @@ export class TankBatallion {
   private player!: PlayerTank;
   private bullets: Bullet[] = [];
   private walls: Wall[] = [];
-  private wallHits: Wall[] = [];
+  private wallHits: Set<Wall> = new Set();
 
   // Number of the level, game has 22 levels, but only 8 unique maps
   private level: number;
@@ -94,11 +94,18 @@ export class TankBatallion {
       if (this.player.dir === Direction.North && this.player.y > 0 && !this.player.collidedWithWall) this.player.y -= this.player.speed;
       this.player.dir = Direction.North;
     }
+
+    // Move tank southward
     if (this.downPressed) {
-      this.player.pixelUnderGun = this.ctx.getImageData(this.player.blx! + this.player.size / 2, this.player.bly! + 2, 1, 1).data[0];
+      // this.player.pixelUnderGun = this.ctx.getImageData(this.player.blx! + this.player.size / 2 - 1, this.player.bly! + 2, 1, 1).data[0];
+      const pixelUnderLeft = this.ctx.getImageData(this.player.blx!, this.player.bly! + 2, 1, 1).data[0];
+      const pixelUnderRight = this.ctx.getImageData(this.player.brx!, this.player.bry! + 2, 1, 1).data[0];
+      console.log(pixelUnderLeft, pixelUnderRight);
+      this.player.seesColor = pixelUnderLeft > 0 || pixelUnderRight > 0;
+
+      this.player.dir = Direction.South;
       if (this.player.dir === Direction.South && this.player.y < this.canvas.height - this.player.size && !this.player.collidedWithWall)
         this.player.y += this.player.speed;
-      this.player.dir = Direction.South;
     }
     this.player.collidedWithWall = false;
     this.player.draw();
@@ -118,6 +125,7 @@ export class TankBatallion {
     this.walls.forEach((wall) => {
       wall.checkCollisions([this.player]);
     });
+
     // Draw hits
     this.wallHits.forEach((hit) => {
       hit.draw();
@@ -126,22 +134,25 @@ export class TankBatallion {
     // Track bullets
     this.bullets.forEach((bullet) => {
       const [hitX, hitY] = bullet.update(dt);
-      const hit = new Wall(this.ctx, {
-        x: hitX,
-        y: hitY,
-        w: Wall.SIDE,
-        h: 22,
-        // TODO: Make sure we don't have to pass it just to make compiler happy
-        checkCollisions: () => null,
-        empty: true
-      });
-      this.wallHits.push(hit);
+      if (hitX > -1 && hitY > -1) {
+        const hit = new Wall(this.ctx, {
+          x: hitX,
+          y: hitY,
+          w: Wall.SIDE,
+          h: 22,
+          // TODO: Make sure we don't have to pass it just to make compiler happy
+          checkCollisions: () => null,
+          empty: true
+        });
+        console.log(hitX, hitY);
+        this.wallHits.add(hit);
+      }
     });
+    // TODO: Remove collided bullets
+    // this.bullets = this.bullets.filter((bullet) => !bullet.pixelColorUnder);
 
     // Draw, move player, shoot
     this.updatePlayer();
-    // TODO: Remove collided bullets
-    // this.bullets = this.bullets.filter((bullet) => !bullet.pixelColorUnder);
   };
 
   private main = () => {

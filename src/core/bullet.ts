@@ -125,10 +125,10 @@ export class Bullet implements Bulletable {
       const underRightOTank = this.ctx.getImageData(this.blx + 16, this.bly + 1, 1, 1).data[0];
       this.y += dt * this.speed;
       // brick color
-      if (underLeftOfTank === 174 || underRightOTank == 174) {
+      if (underLeftOfTank === 174 || underRightOTank === 174) {
         console.log(`Bam!`);
         this.hot = false;
-        hitX = this.blx - 13;
+        hitX = this.blx - 10;
         hitY = this.bly - 13;
       }
     }

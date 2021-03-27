@@ -131,13 +131,15 @@ export class Wall implements Wallable {
         }
       }
 
+      // Catch tahk moving southward
       if (go.dir === Direction.South) {
         collided =
           go.bly! >= this.y && !(go.bly! >= this.bly) && (between(go.blx!, this.tlx, this.trx) || between(go.brx!, this.tlx, this.trx));
 
         if (collided) {
           console.log(`${go.constructor.name} collided with wall at ${this.x},${this.y} heading South!`);
-          if (go.collideWithWall && (go as PlayerTank).pixelUnderGun > 0) go.collideWithWall();
+          console.log(`${go.constructor.name} seesColor = ${(go as PlayerTank).seesColor}`);
+          if (go.collideWithWall && (go as PlayerTank).seesColor) go.collideWithWall();
         }
       }
 
