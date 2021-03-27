@@ -6,6 +6,8 @@ import { Signup } from '@pages/signup/signup';
 import { Game } from '@pages/game/game';
 import { Profile } from '@pages/profile/profile';
 import { Forums } from '@pages/forums/forums';
+import { Forum } from '@pages/forum/forum';
+import { Score } from '@pages/score/score';
 import { Menu } from '@pages/menu/menu';
 import './app.pcss';
 
@@ -19,6 +21,8 @@ export const App: React.FC = () => {
           <Route path="/game" component={Game} />
           <Route path="/profile" component={Profile} />
           <Route path="/forums" component={Forums} />
+          <Route path="/forum/:id" component={Forum} />
+          <Route path="/score" component={Score} />
           <Route path="/menu" component={Menu} />
           <Redirect to="/" />
         </Switch>

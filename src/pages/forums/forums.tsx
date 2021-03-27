@@ -2,7 +2,7 @@ import React from 'react';
 import './forums.pcss';
 import { Link, RouteComponentProps } from 'react-router-dom';
 
-type ForumType = {
+type ForumsType = {
   title: string;
   topics: number;
   replies: number;
@@ -13,7 +13,7 @@ type ForumType = {
 type ListenerType = () => void;
 
 interface ForumsState {
-  forums: ForumType[];
+  forums: ForumsType[];
 }
 
 export class Forums extends React.Component<RouteComponentProps, ForumsState> {
@@ -96,6 +96,10 @@ export class Forums extends React.Component<RouteComponentProps, ForumsState> {
         const activeIndx = this.state.forums.findIndex((forum) => forum.active);
 
         this.props.history.push(this.state.forums[activeIndx].link);
+      }
+
+      if (e.key === 'Escape') {
+        this.props.history.push('menu');
       }
     };
 
