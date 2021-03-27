@@ -81,39 +81,19 @@ export class TankBatallion {
   };
 
   private updatePlayer = () => {
-    if (this.rightPressed) {
-      if (this.player.dir === Direction.East && this.player.x < this.canvas.width - this.player.size && !this.player.collidedWithWall)
-        this.player.x += this.player.speed;
-      this.player.dir = Direction.East;
-    }
-    if (this.leftPressed) {
-      if (this.player.dir === Direction.West && this.player.x > 0 && !this.player.collidedWithWall) this.player.x -= this.player.speed;
-      this.player.dir = Direction.West;
-    }
-    if (this.upPressed) {
-      if (this.player.dir === Direction.North && this.player.y > 0 && !this.player.collidedWithWall) this.player.y -= this.player.speed;
-      this.player.dir = Direction.North;
-    }
+    if (this.leftPressed) this.player.moveLeft();
+    if (this.rightPressed) this.player.moveRight();
+    if (this.upPressed) this.player.moveUp();
+    if (this.downPressed) this.player.moveDown();
 
-    // Move tank southward
-    if (this.downPressed) {
-      // this.player.pixelUnderGun = this.ctx.getImageData(this.player.blx! + this.player.size / 2 - 1, this.player.bly! + 2, 1, 1).data[0];
-      const pixelUnderLeft = this.ctx.getImageData(this.player.blx!, this.player.bly! + 2, 1, 1).data[0];
-      const pixelUnderRight = this.ctx.getImageData(this.player.brx!, this.player.bry! + 2, 1, 1).data[0];
-      console.log(pixelUnderLeft, pixelUnderRight);
-      this.player.seesColor = pixelUnderLeft > 0 || pixelUnderRight > 0;
-
-      this.player.dir = Direction.South;
-      if (this.player.dir === Direction.South && this.player.y < this.canvas.height - this.player.size && !this.player.collidedWithWall)
-        this.player.y += this.player.speed;
-    }
     this.player.collidedWithWall = false;
     this.player.draw();
   };
 
   private updateWorld = (dt: number) => {
     // clear the animation frame
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.fillStyle = '#111111';
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     // draw a level
     const level = new LevelBuilder(this.ctx, this.level);
@@ -138,8 +118,8 @@ export class TankBatallion {
         const hit = new Wall(this.ctx, {
           x: hitX,
           y: hitY,
-          w: Wall.SIDE,
-          h: 22,
+          w: this.player.size + 20,
+          h: this.player.size + 20,
           // TODO: Make sure we don't have to pass it just to make compiler happy
           checkCollisions: () => null,
           empty: true
@@ -148,8 +128,9 @@ export class TankBatallion {
         this.wallHits.add(hit);
       }
     });
+
     // TODO: Remove collided bullets
-    // this.bullets = this.bullets.filter((bullet) => !bullet.pixelColorUnder);
+    this.bullets = this.bullets.filter((bullet) => bullet.hot);
 
     // Draw, move player, shoot
     this.updatePlayer();
@@ -161,10 +142,7 @@ export class TankBatallion {
     this.updateWorld(dt);
     this.lastTime = now;
 
-    // We need timeout to make the movement "choppy" and simulate original arcade feel
-    setTimeout(() => {
-      window.requestAnimationFrame(this.main);
-    }, 0);
+    window.requestAnimationFrame(this.main);
   };
 
   public play: () => void = () => {

@@ -1,5 +1,5 @@
-import { Direction, GameAsset, GameObject } from './game_types';
-import { drawObject } from './helpers';
+import { CANVAS_SIZE, Direction, GameAsset, GameObject } from './game_types';
+import { drawObject, Colors } from './helpers';
 
 const playerTankAsset: GameAsset = {
   // SVG  path:
@@ -15,14 +15,14 @@ export class PlayerTank implements GameObject {
   private _y: number;
 
   // Helper positions (Top/Bottom-Left/Right)
-  public tlx?: number;
-  public tly?: number;
-  public trx?: number;
-  public try?: number;
-  public blx?: number;
-  public bly?: number;
-  public brx?: number;
-  public bry?: number;
+  public tlx!: number;
+  public tly!: number;
+  public trx!: number;
+  public try!: number;
+  public blx!: number;
+  public bly!: number;
+  public brx!: number;
+  public bry!: number;
 
   // Controllable from outside
   public dir: Direction;
@@ -108,8 +108,62 @@ export class PlayerTank implements GameObject {
     });
   }
 
-  public erase = (): void => {
-    this.ctx.clearRect(this.x, this.y, this.size, this.size);
+  private containsKnownColor = (arr: number[]): boolean => {
+    return arr.some((pix) => {
+      return Object.values(Colors).some((num) => {
+        return pix === num;
+      });
+    });
+  };
+
+  private RValuesForPixelsInFront = (dir: Direction): number[] => {
+    let res: number[] = [];
+
+    if (dir === Direction.East) {
+      res = Array.from(this.ctx.getImageData(this.trx + 1, this.try, 1, this.size).data);
+    }
+
+    if (dir === Direction.West) {
+      res = Array.from(this.ctx.getImageData(this.tlx - 1, this.try, 1, this.size).data);
+    }
+
+    if (dir === Direction.South) {
+      res = Array.from(this.ctx.getImageData(this.blx, this.bly + 1, this.size, 1).data);
+    }
+
+    if (dir === Direction.North) {
+      res = Array.from(this.ctx.getImageData(this.tlx, this.tly - 1, this.size, 1).data);
+    }
+
+    return res.filter((_, idx) => idx % 4 === 0);
+  };
+
+  private containsKnownColorForPixelsInFront = (dir: Direction): boolean => {
+    return this.containsKnownColor(this.RValuesForPixelsInFront(dir));
+  };
+
+  public moveRight = (): void => {
+    this.dir = Direction.East;
+    this.seesColor = this.containsKnownColorForPixelsInFront(this.dir);
+    if (this.x < CANVAS_SIZE - this.size && !this.seesColor) this.x += this.speed;
+  };
+
+  public moveLeft = (): void => {
+    this.dir = Direction.West;
+    this.seesColor = this.containsKnownColorForPixelsInFront(this.dir);
+    if (this.x > 0 && !this.seesColor) this.x -= this.speed;
+  };
+
+  public moveDown = (): void => {
+    this.dir = Direction.South;
+    this.seesColor = this.containsKnownColorForPixelsInFront(this.dir);
+    if (this.y < CANVAS_SIZE - this.size && !this.seesColor) this.y += this.speed;
+  };
+
+  public moveUp = (): void => {
+    this.dir = Direction.North;
+    this.seesColor = this.containsKnownColorForPixelsInFront(this.dir);
+    if (this.y > 0 && !this.seesColor) this.y -= this.speed;
   };
 
   public collideWithWall(): void {

@@ -1,3 +1,9 @@
+// COMMON CONSTANTS
+export const CANVAS_SIZE = 416;
+export const PLAYER_SIZE = 26;
+export const BULLET_SIZE = 6;
+export const WALL_SIZE = 36;
+
 // ==== COMMON TYPES FOR GAME ENTITIES =======
 
 // Describes the media source of the game asset,

@@ -1,5 +1,5 @@
 import { Direction, GameObject } from './game_types';
-import { drawObject } from './helpers';
+import { Colors, drawObject } from './helpers';
 
 interface Bulletable extends GameObject {
   speed: number;
@@ -77,6 +77,96 @@ export class Bullet implements Bulletable {
     this.bry = value + this.size;
   }
 
+  private containsKnownColor = (arr: number[]): boolean => {
+    return arr.some((pix) => {
+      return Object.values(Colors).some((num) => {
+        return pix === num;
+      });
+    });
+  };
+
+  // TODO: hit detection stripes and hit squares are off, figure out magic numbers and unify
+
+  private RValuesForPixelsInFront = (dir: Direction): number[] => {
+    let res: number[] = [];
+
+    if (dir === Direction.East) {
+      res = Array.from(this.ctx.getImageData(this.trx + 1, this.try - 10, 1, this.size + 10).data);
+    }
+
+    if (dir === Direction.West) {
+      res = Array.from(this.ctx.getImageData(this.tlx - 1, this.try - 10, 1, this.size + 10).data);
+    }
+
+    if (dir === Direction.South) {
+      res = Array.from(this.ctx.getImageData(this.blx, this.bly + 1, this.size, 1).data);
+    }
+
+    if (dir === Direction.North) {
+      res = Array.from(this.ctx.getImageData(this.tlx, this.tly - 1, this.size, 1).data);
+    }
+
+    return res.filter((_, idx) => idx % 4 === 0);
+  };
+
+  private containsKnownColorForPixelsInFront = (dir: Direction): boolean => {
+    return this.containsKnownColor(this.RValuesForPixelsInFront(dir));
+  };
+
+  // dt is a delta taken from the main game loop
+  public update(dt: number): [number, number] {
+    if (!this.hot) return [-1, -1];
+    this.calculateCorners();
+    let hitX = -1;
+    let hitY = -1;
+
+    // Bullet flies to the right
+    if (this.dir === Direction.East) {
+      this.x += dt * this.speed;
+      if (this.containsKnownColorForPixelsInFront(this.dir)) {
+        console.log(`Bam! at ${this.trx}, ${this.try}`);
+        this.hot = false;
+        hitX = this.trx - dt * this.speed - this.size; // TODO: const for magic number
+        hitY = this.try - 20; // TODO: const for magic number
+      }
+    }
+
+    // Bullet flies to the left
+    if (this.dir === Direction.West) {
+      this.x -= dt * this.speed;
+      if (this.containsKnownColorForPixelsInFront(this.dir)) {
+        console.log(`Bam! at ${this.tlx}, ${this.tly}`);
+        this.hot = false;
+        hitX = this.tlx - dt * this.speed - this.size * 2;
+        hitY = this.tly - 20;
+      }
+    }
+
+    // Bullet flies up
+    if (this.dir === Direction.North) {
+      this.y -= dt * this.speed;
+      if (this.containsKnownColorForPixelsInFront(this.dir)) {
+        console.log(`Bam!`);
+        this.hot = false;
+        hitX = this.tlx - 10;
+        hitY = this.tly - dt * this.speed - this.size * 2;
+      }
+    }
+
+    // Bullet flies down
+    if (this.dir === Direction.South) {
+      this.y += dt * this.speed;
+      if (this.containsKnownColorForPixelsInFront(this.dir)) {
+        console.log(`Bam!`);
+        this.hot = false;
+        hitX = this.tlx - 10;
+        hitY = this.tly + dt * this.speed - this.size;
+      }
+    }
+    this.draw();
+    return [hitX, hitY];
+  }
+
   public draw = (): void => {
     drawObject(this.ctx, () => {
       this.ctx.fillStyle = this.fill;
@@ -106,39 +196,6 @@ export class Bullet implements Bulletable {
       }
     });
   };
-
-  // dt is a delta taken from the main game loop
-  public update(dt: number): [number, number] {
-    if (!this.hot) return [-1, -1];
-    this.calculateCorners();
-    let hitX = -1;
-    let hitY = -1;
-
-    if (this.dir === Direction.East) {
-      this.x += dt * this.speed;
-    } else if (this.dir === Direction.West) {
-      this.x -= dt * this.speed;
-    } else if (this.dir === Direction.North) {
-      this.y -= dt * this.speed;
-    } else if (this.dir === Direction.South) {
-      const underLeftOfTank = this.ctx.getImageData(this.blx - 10, this.bly + 1, 1, 1).data[0];
-      const underRightOTank = this.ctx.getImageData(this.blx + 16, this.bly + 1, 1, 1).data[0];
-      this.y += dt * this.speed;
-      // brick color
-      if (underLeftOfTank === 174 || underRightOTank === 174) {
-        console.log(`Bam!`);
-        this.hot = false;
-        hitX = this.blx - 10;
-        hitY = this.bly - 13;
-      }
-    }
-    this.draw();
-    return [hitX, hitY];
-  }
-
-  public collideWithWall(): void {
-    this.collidedWithWall = true;
-  }
 
   private calculateCorners = (): void => {
     // Calculate helpers

@@ -79,7 +79,7 @@ export class Wall implements Wallable {
       }
 
       if (this.empty) {
-        this.ctx.fillStyle = 'black';
+        this.ctx.fillStyle = '#111111';
       }
 
       this.ctx.fillRect(this.x, this.y, this.w, this.h);
@@ -111,27 +111,32 @@ export class Wall implements Wallable {
 
   // Walls are responsible for checking collisions with tanks
   // TODO: only deal with tanks then and not general game objects?
+  // TODO: Get rid of casts!
   public checkCollisions = (gameObjects: GameObject[]): void => {
     gameObjects.forEach((go) => {
       let collided = false;
+
+      // Catch tank moving right
       if (go.dir === Direction.East) {
         collided =
           go.trx! >= this.x && !(go.trx! >= this.brx) && (between(go.try!, this.tly, this.bly) || between(go.bry!, this.tly, this.bly));
         if (collided) {
           console.log(`${go.constructor.name} collided with wall at ${this.x},${this.y} heading East!`);
-          if (go.collideWithWall) go.collideWithWall();
+          if (go.collideWithWall && (go as PlayerTank).seesColor) go.collideWithWall();
         }
       }
+
+      // Catch tank moving to the left
       if (go.dir === Direction.West) {
         collided =
           go.tlx! <= this.trx && !(go.tlx! <= this.tlx) && (between(go.tly!, this.try, this.bry) || between(go.bly!, this.try, this.bry));
         if (collided) {
           console.log(`${go.constructor.name} collided with wall at ${this.x},${this.y} heading West!`);
-          if (go.collideWithWall) go.collideWithWall();
+          if (go.collideWithWall && (go as PlayerTank).seesColor) go.collideWithWall();
         }
       }
 
-      // Catch tahk moving southward
+      // Catch tank moving down
       if (go.dir === Direction.South) {
         collided =
           go.bly! >= this.y && !(go.bly! >= this.bly) && (between(go.blx!, this.tlx, this.trx) || between(go.brx!, this.tlx, this.trx));
