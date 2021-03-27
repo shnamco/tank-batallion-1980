@@ -1,8 +1,8 @@
 import React from 'react';
 import { TankBatallion } from '@core/tank_batallion';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { ROUTE } from '../../utils/route';
-import { keyPressHandler } from '../../utils/use_key_press';
+import { ROUTE } from '@utils/route';
+import { keyPressHandler } from '@utils/use_key_press';
 import './game.pcss';
 
 interface GameProps extends RouteComponentProps {
