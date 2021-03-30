@@ -12,7 +12,7 @@ export type Reason = {
 export type Resp = {
   status: number;
   response: string | Reason;
-} | void;
+};
 
 export type SignUpReq = {
   first_name: string;
