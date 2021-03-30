@@ -4,6 +4,11 @@ The task is to reproduce the original arcade game ["Tank Batallion"](https://en.
 
 ![Game screen](./docs/game.png)
 
+## Running the project locally
+
+- `webpack serve`
+- OR `make docker-serve`, then visit `localhost:8000`
+
 ## Gameplay references
 
 - [Original gameplay video](https://www.youtube.com/watch?v=Qv67z84ypS0)
