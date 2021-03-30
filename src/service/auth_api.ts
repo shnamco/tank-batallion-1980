@@ -12,7 +12,7 @@ export type Reason = {
 export type Resp = {
   status: number;
   response: string | Reason;
-};
+} | void;
 
 export type SignUpReq = {
   first_name: string;
@@ -48,20 +48,25 @@ class Api {
     };
 
     const res = await fetch(`${this.baseUrl}/auth/signin`, options);
-    if (res.status === 200) {
-      const response = await res.text();
 
-      return {
-        status: res.status,
-        response
-      };
-    } else {
-      const response = await res.json();
+    try {
+      if (res.status === 200) {
+        const response = await res.text();
 
-      return {
-        status: res.status,
-        response
-      };
+        return {
+          status: res.status,
+          response
+        };
+      } else {
+        const response = await res.json();
+
+        return {
+          status: res.status,
+          response
+        };
+      }
+    } catch (err) {
+      throw new Error(err);
     }
   };
 
@@ -77,12 +82,16 @@ class Api {
 
     const res = await fetch(`${this.baseUrl}/auth/signup`, options);
 
-    const response = await res.json();
+    try {
+      const response = await res.json();
 
-    return {
-      status: res.status,
-      response
-    };
+      return {
+        status: res.status,
+        response
+      };
+    } catch (err) {
+      throw new Error(err);
+    }
   };
 
   getProfile = async (): Promise<Resp> => {
@@ -92,21 +101,28 @@ class Api {
     };
 
     const res = await fetch(`${this.baseUrl}/auth/user`, options);
-    const response = await res.json();
 
-    return {
-      status: res.status,
-      response
-    };
+    try {
+      const response = await res.json();
+
+      return {
+        status: res.status,
+        response
+      };
+    } catch (err) {
+      throw new Error(err);
+    }
   };
 
-  logout = (): Promise<Response> => {
+  logout = (): Promise<Response | void> => {
     const options = {
       method: 'POST',
       credentials: 'include' as RequestCredentials
     };
 
-    return fetch(`${this.baseUrl}/auth/logout`, options);
+    return fetch(`${this.baseUrl}/auth/logout`, options).catch((err) => {
+      throw new Error(err);
+    });
   };
 }
 
