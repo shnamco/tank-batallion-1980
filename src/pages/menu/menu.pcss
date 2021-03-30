@@ -4,10 +4,14 @@
 }
 
 .menu-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
   font-size: var(--title-font);
   &__item {
+    cursor: pointer;
     position: relative;
     color: white;
     text-decoration: none;
@@ -16,7 +20,6 @@
       margin-bottom: 0;
     }
     &:focus {
-      color: aqua;
       outline: none;
     }
   }

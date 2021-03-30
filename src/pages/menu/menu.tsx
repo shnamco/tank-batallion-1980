@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { ROUTE } from '@utils/route';
 import bang from '../../assets/bang.svg';
+import { AuthService } from '@service/auth_service';
+import { authApi } from '@service/auth_api';
 import './menu.pcss';
 
 interface MenuState {
@@ -11,12 +13,20 @@ interface MenuState {
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 class MenuComponent extends Component<RouteComponentProps, MenuState> {
-  public route = ROUTE;
   public state = {
     cursor: 0,
-    menuList: MENU_LIST
+    menuList: this.menuActions
   };
   private handler: (() => void) | undefined;
+  private authService = new AuthService();
+
+  public get menuListIterable(): MenuAction[] {
+    return this.state.menuList.filter((item) => item.route !== ROUTE.LOGIN);
+  }
+
+  public get logout(): MenuAction | undefined {
+    return this.state.menuList.find((item) => item.route === ROUTE.LOGIN);
+  }
 
   private onKeyDown(e: KeyboardEvent): void {
     const { cursor, menuList } = this.state;
@@ -33,8 +43,33 @@ class MenuComponent extends Component<RouteComponentProps, MenuState> {
     }
     if (e.key === 'Enter') {
       const menuItem = menuList[cursor];
-      this.props.history.push(menuItem.route);
+
+      menuItem.action();
     }
+  }
+
+  private get menuActions(): MenuAction[] {
+    return MENU_LIST.map((item) => {
+      switch (item.route) {
+        case ROUTE.LOGIN:
+          return new MenuAction(item.id, item.name, item.route, this.logoutClicked.bind(this));
+        default:
+          return new MenuAction(item.id, item.name, item.route, this.itemClicked.bind(this, item.route));
+      }
+    });
+  }
+
+  private itemClicked(route: ROUTE): void {
+    this.props.history.push(route);
+  }
+
+  private logoutClicked(): void {
+    authApi.logout().then((res) => {
+      if (res && res.status === 200) {
+        this.authService.auth = false;
+        this.props.history.push(ROUTE.LOGIN);
+      }
+    });
   }
 
   private keyPressHandler(): () => void {
@@ -57,19 +92,26 @@ class MenuComponent extends Component<RouteComponentProps, MenuState> {
   public render(): React.ReactElement {
     return (
       <div className="arcade__background arcade__background-all menu">
-        <div className="menu-list">
-          {this.state.menuList.map((item, i) => (
-            <Link
+        <ul className="menu-list">
+          {this.menuListIterable.map((item) => (
+            <li
+              onClick={item.action}
               tabIndex={-1}
-              className={`menu-list__item ${this.state.cursor === i ? 'active' : null} ${item.className}`}
-              to={item.route}
+              className={`menu-list__item ${this.state.cursor === item.id ? 'active' : null}`}
               key={item.id}
             >
               {item.name}
-              {item.route === this.route.LOGIN ? <img src={bang} alt="bang" className="logout__icon" /> : null}
-            </Link>
+            </li>
           ))}
-        </div>
+          <li
+            onClick={this.logout?.action}
+            tabIndex={-1}
+            className={`menu-list__item ${this.state.cursor === this.logout?.id ? 'active' : null} logout`}
+          >
+            <span>{this.logout?.name}</span>
+            <img src={bang} alt="bang" className="logout__icon" />
+          </li>
+        </ul>
       </div>
     );
   }
@@ -78,13 +120,19 @@ class MenuComponent extends Component<RouteComponentProps, MenuState> {
 export const Menu = withRouter(MenuComponent);
 
 class MenuItem {
-  constructor(public id: number, public name: string, public route: ROUTE, public className?: string) {}
+  constructor(public id: number, public name: string, public route: ROUTE) {}
+}
+
+class MenuAction extends MenuItem {
+  constructor(public id: number, public name: string, public route: ROUTE, public action: () => void) {
+    super(id, name, route);
+  }
 }
 
 const MENU_LIST = [
-  new MenuItem(1, 'PLAY', ROUTE.GAME),
-  new MenuItem(2, 'PROFILE', ROUTE.PROFILE),
-  new MenuItem(3, 'HIGH SCORES', ROUTE.SCORE),
-  new MenuItem(4, 'FORUM', ROUTE.FORUMS),
-  new MenuItem(5, 'LOG OUT', ROUTE.LOGIN, 'logout')
+  new MenuItem(0, 'PLAY', ROUTE.GAME),
+  new MenuItem(1, 'PROFILE', ROUTE.PROFILE),
+  new MenuItem(2, 'HIGH SCORES', ROUTE.SCORE),
+  new MenuItem(3, 'FORUM', ROUTE.FORUMS),
+  new MenuItem(4, 'LOG OUT', ROUTE.LOGIN)
 ];
