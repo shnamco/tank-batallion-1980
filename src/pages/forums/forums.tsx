@@ -112,7 +112,7 @@ export class Forums extends React.Component<RouteComponentProps, ForumsState> {
   public get renderForums(): React.ReactNode {
     return this.state.forums.map((forum) => {
       return (
-        <tr className="forums__row" key={forum.title}>
+        <tr className="forums__row" key={forum.link}>
           <td className={forum.active ? 'forums__title active' : 'forums__title'}>
             <Link to={forum.link}>{forum.title}</Link>
           </td>

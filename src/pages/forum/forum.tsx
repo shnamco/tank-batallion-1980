@@ -109,7 +109,7 @@ export class Forum extends React.Component<RouteComponentProps<RouteParams>, For
   public get renderTopics(): React.ReactNode {
     return this.state.topics.map((topic) => {
       return (
-        <tr className="forums__row" key={topic.title}>
+        <tr className="forums__row" key={topic.link}>
           <td className={topic.active ? 'forums__title active' : 'forums__title'}>
             <Link to={topic.link}>{topic.title}</Link>
           </td>
