@@ -4,6 +4,11 @@ The task is to reproduce the original arcade game ["Tank Batallion"](https://en.
 
 ![Game screen](./docs/game.png)
 
+## Running the project locally
+
+- `webpack serve`
+- OR `make docker-serve`, then visit `localhost:8000`
+
 ## Gameplay references
 
 - [Original gameplay video](https://www.youtube.com/watch?v=Qv67z84ypS0)
@@ -40,4 +45,4 @@ Forms should be "assymetric", with the CTA and secondary buttons _on a side_ to 
 
 Example:
 
-![Tank in SVG](./assets/enemy_tank.svg)
+![Tank in SVG](docs/enemy_tank.svg)
