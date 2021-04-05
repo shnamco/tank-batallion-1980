@@ -10,11 +10,11 @@ export const App: React.FC = () => {
       console.log('SW ready');
       navigator.serviceWorker
         .register('/sw.js')
-        .then(() => {
-          console.log('SW registered');
+        .then((registration) => {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
         })
-        .catch((err) => {
-          console.log('SW fail', err);
+        .catch((error: string) => {
+          console.log('ServiceWorker registration failed: ', error);
         });
     }
   }, []);

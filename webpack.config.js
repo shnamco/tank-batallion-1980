@@ -87,6 +87,7 @@ module.exports = {
     open: true,
     port: 3000,
     hot: isDev,
-    historyApiFallback: true
+    historyApiFallback: true,
+    contentBase: path.join(__dirname, 'src')
   }
 };
