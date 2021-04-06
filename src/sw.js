@@ -1,71 +1,63 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-undef */
 
-const CACHE_NAME = 'cache-v1';
+const CACHE_NAME = 'cache-v2';
+const DYNAMIC_CACHE_NAME = 'dynamic-cache-v2';
 
-const URLS = ['/index.html', '/index.tsx'];
+const URLS = ['/index.html', '/main.css', '/offline.html', '/boundle.js'];
+// const URLS = ['/', '/index.html', '/index.tsx', '/offline.html'];
 
-this.addEventListener('install', (event) => {
-  console.log('install');
-  event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Opened cache');
-        return cache.addAll(URLS);
-      })
-      .catch((err) => {
-        console.log(err);
-        throw err;
-      })
+self.addEventListener('install', async (event) => {
+  const cache = await caches.open(CACHE_NAME);
+
+  await cache.addAll(URLS);
+});
+
+self.addEventListener('activate', async (event) => {
+  const cacheNames = await caches.keys();
+
+  await Promise.all(
+    cacheNames
+      .filter((name) => name !== CACHE_NAME)
+      .filter((name) => name !== DYNAMIC_CACHE_NAME)
+      .map((name) => caches.delete(name))
   );
 });
 
-this.addEventListener('activate', (event) => {
-  console.log('activate');
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames
-          .filter((name) => {
-            /* Нужно вернуть true, если хотите удалить этот файл из кеша совсем */
-          })
-          .map((name) => caches.delete(name))
-      );
-    })
-  );
+self.addEventListener('fetch', (event) => {
+  const { request } = event;
+
+  const url = new URL(request.url);
+
+  if (url.origin === location.origin) {
+    event.respondWith(cacheFirst(request));
+  } else {
+    event.respondWith(networkFirst(request));
+  }
 });
 
-this.addEventListener('fetch', (event) => {
-  event.respondWith(
-    // Пытаемся найти ответ на такой запрос в кеше
-    caches.match(event.request).then((response) => {
-      // Если ответ найден, выдаём его
-      if (response) {
-        return response;
-      }
+async function cacheFirst(request) {
+  const cached = await caches.match(request);
 
-      const fetchRequest = event.request.clone();
-      // В противном случае делаем запрос на сервер
-      return (
-        fetch(fetchRequest)
-          // Можно задавать дополнительные параметры запроса, если ответ вернулся некорректный.
-          .then((response) => {
-            // Если что-то пошло не так, выдаём в основной поток результат, но не кладём его в кеш
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
+  return cached ?? (await fetch(request));
+}
 
-            const responseToCache = response.clone();
-            // Получаем доступ к кешу по CACHE_NAME
-            caches.open(CACHE_NAME).then((cache) => {
-              // Записываем в кеш ответ, используя в качестве ключа запрос
-              cache.put(event.request, responseToCache);
-            });
-            // Отдаём в основной поток ответ
-            return response;
-          })
-      );
-    })
-  );
-});
+async function networkFirst(request) {
+  const cache = await caches.open(DYNAMIC_CACHE_NAME);
+
+  try {
+    const response = await fetch(request);
+
+    if (!response || response.status !== 200 || response.type !== 'basic') {
+      return response;
+    }
+
+    await cache.put(request, response.clone());
+
+    return response;
+  } catch (e) {
+    const cached = await cache.match(request);
+
+    return cached ?? (await caches.match('/offline.html'));
+  }
+}
