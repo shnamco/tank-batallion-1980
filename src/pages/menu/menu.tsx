@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { ROUTE } from '@utils/route';
 import bang from '../../assets/bang.svg';
-import { AuthService } from '@service/auth_service';
 import { authApi } from '@service/auth_api';
 import './menu.pcss';
 
@@ -18,7 +17,6 @@ class MenuComponent extends Component<RouteComponentProps, MenuState> {
     menuList: this.menuActions
   };
   private handler: (() => void) | undefined;
-  private authService = new AuthService();
 
   public get menuListIterable(): MenuAction[] {
     return this.state.menuList.filter((item) => item.route !== ROUTE.LOGIN);
@@ -66,7 +64,6 @@ class MenuComponent extends Component<RouteComponentProps, MenuState> {
   private logoutClicked(): void {
     authApi.logout().then((res) => {
       if (res && res.status === 200) {
-        this.authService.auth = false;
         this.props.history.push(ROUTE.LOGIN);
       }
     });

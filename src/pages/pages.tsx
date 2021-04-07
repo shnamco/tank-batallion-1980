@@ -9,20 +9,14 @@ import { Forum } from '@pages/forum/forum';
 import { Score } from '@pages/score/score';
 import { Menu } from '@pages/menu/menu';
 import { Private } from '@components/private_route/private_route';
-import { AuthService } from '@service/auth_service';
 import { authApi } from '@service/auth_api';
 import { ROUTE } from '@utils/route';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 class PagesComponent extends Component<RouteComponentProps, {}> {
-  private authService = new AuthService();
-
   public componentDidMount(): void {
     authApi.getProfile().then((res) => {
-      if (res.status === 200) {
-        this.authService.auth = true;
-      } else {
-        this.authService.auth = false;
+      if (res.status !== 200) {
         this.props.history.push(`${ROUTE.LOGIN}`);
       }
     });

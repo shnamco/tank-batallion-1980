@@ -5,7 +5,6 @@ import '@styles/variables.pcss';
 import '@styles/login.pcss';
 import { LoginReq } from '@service/auth_api';
 import { Input } from '@components/input/input';
-import { AuthService } from '@service/auth_service';
 import { logIn } from '@store/auth/auth.thunks';
 import { store } from '@store/store';
 
@@ -17,7 +16,6 @@ class Form extends Component<RouteComponentProps, FormState> {
   public state = {
     error: ''
   };
-  private authService = new AuthService();
 
   public formSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -33,7 +31,7 @@ class Form extends Component<RouteComponentProps, FormState> {
       requestData[key] = formData.get(key) as string;
     });
 
-    store.dispatch(logIn(requestData as LoginReq));
+    store.dispatch(logIn(requestData as LoginReq, this.props.history));
     // authApi.login(requestData as LoginReq).then((res) => {
     //   if (res.status === 200 || (res.response as Reason).reason === 'User already in system') {
     //     this.authService.auth = true;
