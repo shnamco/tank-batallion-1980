@@ -10,12 +10,20 @@ export enum AUTH_ACTIONS {
   LOG_OUT_SUCCESS = '[AUTH] LOG OUT SUCCESS'
 }
 
-export const logInSuccess = (): Action<AUTH_ACTIONS> => {
+interface LogInAction extends Action<AUTH_ACTIONS.LOG_IN> {
+  payload: { password: string; username: string };
+}
+
+export const logInAction = (): Action<AUTH_ACTIONS> => {
+  return { type: AUTH_ACTIONS.LOG_IN };
+};
+
+export const logInSuccessAction = (): Action<AUTH_ACTIONS> => {
   return { type: AUTH_ACTIONS.LOG_IN_SUCCESS };
 };
 
-export const logInFailure = (): Action<AUTH_ACTIONS> => {
+export const logInFailureAction = (): Action<AUTH_ACTIONS> => {
   return { type: AUTH_ACTIONS.LOG_IN_FAILURE };
 };
 
-export type AuthActions = Action<AUTH_ACTIONS>;
+export type AuthActions = LogInAction | Action<AUTH_ACTIONS>;
