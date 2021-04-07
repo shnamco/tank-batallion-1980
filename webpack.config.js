@@ -51,7 +51,8 @@ module.exports = {
       '@core': path.resolve(__dirname, './src/core/'),
       '@styles': path.resolve(__dirname, './src/styles/'),
       '@service': path.resolve(__dirname, './src/service/'),
-      '@utils': path.resolve(__dirname, './src/utils/')
+      '@utils': path.resolve(__dirname, './src/utils/'),
+      '@store': path.resolve(__dirname, './src/store/')
     },
     extensions: ['.ts', '.tsx', '.js', '.json'],
     fallback: {
