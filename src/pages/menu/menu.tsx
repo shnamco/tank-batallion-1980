@@ -4,6 +4,8 @@ import { ROUTE } from '@utils/route';
 import bang from '../../assets/bang.svg';
 import { authApi } from '@service/auth_api';
 import './menu.pcss';
+import { store } from '@store/store';
+import { logOutAction } from '@store/auth/auth.actions';
 
 interface MenuState {
   cursor: number;
@@ -65,6 +67,7 @@ class MenuComponent extends Component<RouteComponentProps, MenuState> {
     authApi.logout().then((res) => {
       if (res && res.status === 200) {
         this.props.history.push(ROUTE.LOGIN);
+        store.dispatch(logOutAction());
       }
     });
   }
