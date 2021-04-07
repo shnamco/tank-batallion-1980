@@ -5,7 +5,6 @@ import '@styles/login.pcss';
 import { authApi, SignUpReq, Reason } from '@service/auth_api';
 import { Input } from '@components/input/input';
 import { ROUTE } from '@utils/route';
-import { AuthService } from '@service/auth_service';
 
 type FormState = {
   loginError: string;
@@ -19,7 +18,6 @@ class Form extends Component<RouteComponentProps, FormState> {
     emailError: '',
     phoneError: ''
   };
-  private authService = new AuthService();
 
   public getErrorState = (reason: string): FormState | null => {
     switch (reason) {
@@ -72,7 +70,6 @@ class Form extends Component<RouteComponentProps, FormState> {
 
     authApi.signUp(requestData as SignUpReq).then((res) => {
       if (res.status === 200 || (res.response as Reason).reason === 'User already in system') {
-        this.authService.auth = true;
         this.props.history.push(ROUTE.MENU);
       } else {
         const reason = (res.response as Reason).reason;

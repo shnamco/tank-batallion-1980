@@ -3,11 +3,11 @@ import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import './login_form.pcss';
 import '@styles/variables.pcss';
 import '@styles/login.pcss';
-import { LoginReq } from '@service/auth_api';
+import { authApi, LoginReq, Reason } from '@service/auth_api';
 import { Input } from '@components/input/input';
-import { AuthService } from '@service/auth_service';
-import { logIn } from '@store/auth/auth.thunks';
 import { store } from '@store/store';
+import { ROUTE } from '@utils/route';
+import { logInFailureAction, logInSuccessAction } from '@store/auth/auth.actions';
 
 type FormState = {
   error: string;
@@ -17,7 +17,6 @@ class Form extends Component<RouteComponentProps, FormState> {
   public state = {
     error: ''
   };
-  private authService = new AuthService();
 
   public formSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -33,17 +32,17 @@ class Form extends Component<RouteComponentProps, FormState> {
       requestData[key] = formData.get(key) as string;
     });
 
-    store.dispatch(logIn(requestData as LoginReq));
-    // authApi.login(requestData as LoginReq).then((res) => {
-    //   if (res.status === 200 || (res.response as Reason).reason === 'User already in system') {
-    //     this.authService.auth = true;
-    //     this.props.history.push(ROUTE.MENU);
-    //   } else {
-    //     this.setState({
-    //       error: (res.response as Reason).reason
-    //     });
-    //   }
-    // });
+    authApi.login(requestData as LoginReq).then((res) => {
+      if (res.status === 200 || (res.response as Reason).reason === 'User already in system') {
+        this.props.history.push(ROUTE.MENU);
+        store.dispatch(logInSuccessAction());
+      } else {
+        store.dispatch(logInFailureAction());
+        this.setState({
+          error: (res.response as Reason).reason
+        });
+      }
+    });
   };
 
   public render(): React.ReactElement {

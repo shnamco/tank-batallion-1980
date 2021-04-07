@@ -1,15 +1,28 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { Redirect } from 'react-router-dom';
-import { AuthService } from '@service/auth_service';
+import { connect } from 'react-redux';
+import { isLoggedIn } from '@store/auth/auth.selectors';
+import { RootState } from '@store/store';
 
-export class Private extends PureComponent {
+interface PrivateProps {
+  isLoggedIn: boolean;
+}
+
+// eslint-disable-next-line
+class PrivateComponent extends React.PureComponent<any> {
   public render(): React.ReactElement {
-    const authService = new AuthService();
-
-    if (authService.auth) {
+    console.log(this.props.isLoggedIn);
+    if (this.props.isLoggedIn) {
       return <>{this.props.children}</>;
     }
 
     return <Redirect to="/login" />;
   }
 }
+
+const mapStateToProps = (state: RootState): PrivateProps => {
+  return {
+    isLoggedIn: isLoggedIn(state)
+  };
+};
+export const Private = connect(mapStateToProps)(PrivateComponent);
