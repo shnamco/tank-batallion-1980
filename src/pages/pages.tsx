@@ -9,17 +9,13 @@ import { Forum } from '@pages/forum/forum';
 import { Score } from '@pages/score/score';
 import { Menu } from '@pages/menu/menu';
 import { Private } from '@components/private_route/private_route';
-import { authApi } from '@service/auth_api';
-import { ROUTE } from '@utils/route';
+import { store } from '@store/store';
+import { getProfile } from '@store/auth/auth.thunks';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 class PagesComponent extends Component<RouteComponentProps, {}> {
   public componentDidMount(): void {
-    authApi.getProfile().then((res) => {
-      if (res.status !== 200) {
-        this.props.history.push(`${ROUTE.LOGIN}`);
-      }
-    });
+    store.dispatch(getProfile(this.props.history));
   }
 
   public render(): React.ReactElement {

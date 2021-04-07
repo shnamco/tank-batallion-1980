@@ -1,4 +1,4 @@
-import { AuthActions, logInAction, logInFailureAction, logInSuccessAction } from '@store/auth/auth.actions';
+import { AuthActions, getProfileAction, logInAction, logInFailureAction, logInSuccessAction } from '@store/auth/auth.actions';
 import { authApi, LoginReq, Reason } from '@service/auth_api';
 import { Dispatch } from 'react';
 import { ROUTE } from '@utils/route';
@@ -17,5 +17,24 @@ export const logIn = (data: LoginReq, history: any): any => {
     } catch (err) {
       dispatch(logInFailureAction());
     }
+  };
+};
+
+// eslint-disable-next-line
+export const getProfile = (history: any): any => {
+  return (dispatch: Dispatch<AuthActions>) => {
+    dispatch(getProfileAction());
+
+    authApi
+      .getProfile()
+      .then((res) => {
+        if (res.status !== 200) {
+          throw new Error(`${res.response}`);
+        }
+      })
+      .catch(() => {
+        history.push(`/${ROUTE.LOGIN}`);
+        dispatch(logInFailureAction());
+      });
   };
 };
