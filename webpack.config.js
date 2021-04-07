@@ -24,10 +24,6 @@ const plugins = [
       collapseWhitespace: isProd
     }
   }),
-  new HTMLWebpackPlugin({
-    filename: 'offline.html',
-    template: path.resolve(__dirname, 'src/offline.html')
-  }),
   new CleanWebpackPlugin(),
   new ForkTsCheckerWebpackPlugin({
     async: false,

@@ -4,7 +4,7 @@
 const CACHE_NAME = 'cache-v1';
 const DYNAMIC_CACHE_NAME = 'dynamic-cache-v1';
 
-const URLS = ['/', './index.html', './main.css', './offline.html', './bundle.js'];
+const URLS = ['/', './index.html', './main.css', './bundle.js'];
 
 self.addEventListener('install', async (event) => {
   const cache = await caches.open(CACHE_NAME);
@@ -41,9 +41,12 @@ async function checkOnline(req) {
   const cache = await caches.open(DYNAMIC_CACHE_NAME);
   try {
     const res = await fetch(req);
+    if (!res || res.status !== 200 || res.type !== 'basic') {
+      return res;
+    }
     await cache.put(req, res.clone());
     return res;
   } catch (error) {
-    return caches.match('./offline.html');
+    console.error('Отсутствует интернет соединение', error);
   }
 }
