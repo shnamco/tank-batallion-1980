@@ -9,13 +9,21 @@ import { Forum } from '@pages/forum/forum';
 import { Score } from '@pages/score/score';
 import { Menu } from '@pages/menu/menu';
 import { Private } from '@components/private_route/private_route';
-import { store } from '@store/store';
 import { getProfile } from '@store/auth/auth.thunks';
+import { connect, ConnectedProps } from 'react-redux';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-class PagesComponent extends Component<RouteComponentProps, {}> {
+interface PagesProps extends RouteComponentProps {
+  // eslint-disable-next-line
+  getProfile: (history: any) => unknown;
+}
+
+const connector = connect(null, { getProfile });
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+class PagesComponent extends Component<PagesProps & PropsFromRedux> {
   public componentDidMount(): void {
-    store.dispatch(getProfile(this.props.history));
+    this.props.getProfile(this.props.history);
   }
 
   public render(): React.ReactElement {
@@ -44,4 +52,4 @@ class PagesComponent extends Component<RouteComponentProps, {}> {
   }
 }
 
-export const Pages = withRouter(PagesComponent);
+export const Pages = withRouter(connector(PagesComponent));

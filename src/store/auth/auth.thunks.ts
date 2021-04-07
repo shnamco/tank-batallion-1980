@@ -1,22 +1,32 @@
-import { AuthActions, getProfileAction, logInAction, logInFailureAction, logInSuccessAction } from '@store/auth/auth.actions';
+import {
+  AuthActions,
+  getProfileAction,
+  logInAction,
+  logInFailureAction,
+  logInRedirectAction,
+  logInSuccessAction,
+  logOutAction
+} from '@store/auth/auth.actions';
 import { authApi, LoginReq, Reason } from '@service/auth_api';
 import { Dispatch } from 'react';
 import { ROUTE } from '@utils/route';
 
 // eslint-disable-next-line
 export const logIn = (data: LoginReq, history: any): any => {
-  return async (dispatch: Dispatch<AuthActions>) => {
+  return (dispatch: Dispatch<AuthActions>) => {
     dispatch(logInAction());
 
-    try {
-      const res = await authApi.login(data);
-      if (res.status === 200 || (res.response as Reason).reason === 'User already in system') {
-        history.push(`/${ROUTE.MENU}`);
-        dispatch(logInSuccessAction());
-      }
-    } catch (err) {
-      dispatch(logInFailureAction());
-    }
+    authApi
+      .login(data)
+      .then((res) => {
+        if (res.status === 200 || (res.response as Reason).reason === 'User already in system') {
+          dispatch(logInSuccessAction());
+          history.push(`/${ROUTE.MENU}`);
+        }
+      })
+      .catch(() => {
+        dispatch(logInFailureAction());
+      });
   };
 };
 
@@ -33,8 +43,22 @@ export const getProfile = (history: any): any => {
         }
       })
       .catch(() => {
+        dispatch(logInRedirectAction());
         history.push(`/${ROUTE.LOGIN}`);
-        dispatch(logInFailureAction());
       });
+  };
+};
+
+// eslint-disable-next-line
+export const logOut = (history: any): any => {
+  return (dispatch: Dispatch<AuthActions>) => {
+    dispatch(logOutAction());
+
+    authApi.logout().then((res) => {
+      if (res && res.status === 200) {
+        dispatch(logInRedirectAction());
+        history.push(`/${ROUTE.LOGIN}`);
+      }
+    });
   };
 };

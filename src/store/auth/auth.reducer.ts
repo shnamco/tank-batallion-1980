@@ -13,7 +13,8 @@ export const authReducer = (state = initialState, action: AuthActions): AuthStat
     case AUTH_ACTIONS.LOG_IN_SUCCESS: {
       return { ...state, isLoggedIn: true };
     }
-    case AUTH_ACTIONS.LOG_OUT_SUCCESS: {
+    case AUTH_ACTIONS.LOG_IN_FAILURE:
+    case AUTH_ACTIONS.LOG_IN_REDIRECT: {
       return { ...state, isLoggedIn: false };
     }
     default:

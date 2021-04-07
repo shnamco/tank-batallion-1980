@@ -2,18 +2,25 @@ import React, { Component } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { ROUTE } from '@utils/route';
 import bang from '../../assets/bang.svg';
-import { authApi } from '@service/auth_api';
+import { logOut } from '@store/auth/auth.thunks';
+import { connect, ConnectedProps } from 'react-redux';
 import './menu.pcss';
-import { store } from '@store/store';
-import { logOutAction } from '@store/auth/auth.actions';
 
 interface MenuState {
   cursor: number;
   menuList: MenuItem[];
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-class MenuComponent extends Component<RouteComponentProps, MenuState> {
+interface MenuProps extends RouteComponentProps {
+  // eslint-disable-next-line
+  logOut: (history: any) => unknown;
+}
+
+const connector = connect(null, { logOut });
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+class MenuComponent extends Component<PropsFromRedux & MenuProps, MenuState> {
   public state = {
     cursor: 0,
     menuList: this.menuActions
@@ -64,12 +71,7 @@ class MenuComponent extends Component<RouteComponentProps, MenuState> {
   }
 
   private logoutClicked(): void {
-    authApi.logout().then((res) => {
-      if (res && res.status === 200) {
-        this.props.history.push(ROUTE.LOGIN);
-        store.dispatch(logOutAction());
-      }
-    });
+    this.props.logOut(this.props.history);
   }
 
   private keyPressHandler(): () => void {
@@ -117,7 +119,7 @@ class MenuComponent extends Component<RouteComponentProps, MenuState> {
   }
 }
 
-export const Menu = withRouter(MenuComponent);
+export const Menu = withRouter(connector(MenuComponent));
 
 class MenuItem {
   constructor(public id: number, public name: string, public route: ROUTE) {}

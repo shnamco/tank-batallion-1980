@@ -6,13 +6,22 @@ import '@styles/login.pcss';
 import { LoginReq } from '@service/auth_api';
 import { Input } from '@components/input/input';
 import { logIn } from '@store/auth/auth.thunks';
-import { store } from '@store/store';
+import { connect, ConnectedProps } from 'react-redux';
 
 type FormState = {
   error: string;
 };
 
-class Form extends Component<RouteComponentProps, FormState> {
+interface FormProps extends RouteComponentProps {
+  // eslint-disable-next-line
+  logIn: (data: LoginReq, history: any) => unknown;
+}
+
+const connector = connect(null, { logIn });
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+class Form extends Component<FormProps & PropsFromRedux, FormState> {
   public state = {
     error: ''
   };
@@ -31,7 +40,7 @@ class Form extends Component<RouteComponentProps, FormState> {
       requestData[key] = formData.get(key) as string;
     });
 
-    store.dispatch(logIn(requestData as LoginReq, this.props.history));
+    this.props.logIn(requestData as LoginReq, this.props.history);
     // authApi.login(requestData as LoginReq).then((res) => {
     //   if (res.status === 200 || (res.response as Reason).reason === 'User already in system') {
     //     this.authService.auth = true;
@@ -65,4 +74,4 @@ class Form extends Component<RouteComponentProps, FormState> {
   }
 }
 
-export const LoginForm = withRouter(Form);
+export const LoginForm = withRouter(connector(Form));

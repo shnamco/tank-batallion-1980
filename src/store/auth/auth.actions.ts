@@ -4,10 +4,10 @@ export enum AUTH_ACTIONS {
   LOG_IN = '[AUTH] LOG IN',
   LOG_IN_SUCCESS = '[AUTH] LOG IN SUCCESS',
   LOG_IN_FAILURE = '[AUTH] LOG IN FAILURE',
+  LOG_IN_REDIRECT = '[AUTH] LOG IN REDIRECT',
   SIGN_UP = '[AUTH] SIGN UP',
   SIGN_UP_SUCCESS = '[AUTH] SIGN UP SUCCESS',
   LOG_OUT = '[AUTH] LOG OUT',
-  LOG_OUT_SUCCESS = '[AUTH] LOG OUT SUCCESS',
   GET_PROFILE = '[AUTH] GET PROFILE'
 }
 
@@ -27,8 +27,16 @@ export const logInFailureAction = (): Action<AUTH_ACTIONS> => {
   return { type: AUTH_ACTIONS.LOG_IN_FAILURE };
 };
 
+export const logInRedirectAction = (): Action<AUTH_ACTIONS> => {
+  return { type: AUTH_ACTIONS.LOG_IN_REDIRECT };
+};
+
 export const getProfileAction = (): Action<AUTH_ACTIONS> => {
   return { type: AUTH_ACTIONS.GET_PROFILE };
+};
+
+export const logOutAction = (): Action<AUTH_ACTIONS> => {
+  return { type: AUTH_ACTIONS.LOG_OUT };
 };
 
 export type AuthActions = LogInAction | Action<AUTH_ACTIONS>;
