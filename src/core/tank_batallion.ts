@@ -1,8 +1,7 @@
-import { Direction } from './game_types';
+import { BULLET_SIZE, Direction } from './game_types';
 import { PlayerTank } from './player_tank';
 import { Bullet } from './bullet';
 import { LevelBuilder } from './level_builder';
-import { Wall } from './wall';
 
 export class TankBatallion {
   // "Physics"
@@ -22,11 +21,10 @@ export class TankBatallion {
   // should be set in play() method
   private player!: PlayerTank;
   private bullets: Bullet[] = [];
-  private walls: Wall[] = [];
-  private wallHits: Set<Wall> = new Set();
 
   // Number of the level, game has 22 levels, but only 8 unique maps
   private level: number;
+  private levelBuilder!: LevelBuilder;
 
   constructor(canvas: HTMLCanvasElement, level: number) {
     if (!canvas) {
@@ -52,19 +50,21 @@ export class TankBatallion {
     let y = this.player.y;
 
     const halfTank = this.player.size / 2;
-    const halfBullet = 3; // TODO: Make a bullet size a constant somewhere
+    const halfBullet = BULLET_SIZE / 2;
 
-    // Position the bullet at the tip of the tank's "gun"
+    // Position the bullet just behind the tip of the tank's "gun"
     if (this.player.dir === Direction.East) {
-      x = this.player.x + this.player.size;
+      x = this.player.x + this.player.size - 8;
       y = this.player.y + halfTank - halfBullet;
     } else if (this.player.dir === Direction.West) {
+      x = this.player.tlx + halfBullet;
       y = this.player.y + halfTank - halfBullet;
     } else if (this.player.dir === Direction.North) {
       x = this.player.x + halfTank - halfBullet;
+      y = this.player.tly + 6;
     } else if (this.player.dir === Direction.South) {
       x = this.player.x + halfTank - halfBullet;
-      y = this.player.y + this.player.size - halfBullet;
+      y = this.player.tly + 6;
     }
 
     const bullet = new Bullet(this.ctx, {
@@ -86,53 +86,31 @@ export class TankBatallion {
     if (this.upPressed) this.player.moveUp();
     if (this.downPressed) this.player.moveDown();
 
-    this.player.collidedWithWall = false;
     this.player.draw();
   };
 
+  // Happens on every "tick"
   private updateWorld = (dt: number) => {
     // clear the animation frame
-    this.ctx.fillStyle = '#111111';
+    this.ctx.fillStyle = 'black';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     // draw a level
-    const level = new LevelBuilder(this.ctx, this.level);
-    level.build();
-
-    // Memoize
-    if (this.walls.length === 0) this.walls = level.walls as Wall[];
-    // All walls check for collisions
-    this.walls.forEach((wall) => {
-      wall.checkCollisions([this.player]);
-    });
-
-    // Draw hits
-    this.wallHits.forEach((hit) => {
-      hit.draw();
-    });
-
-    // Track bullets
-    this.bullets.forEach((bullet) => {
-      const [hitX, hitY] = bullet.update(dt);
-      if (hitX > -1 && hitY > -1) {
-        const hit = new Wall(this.ctx, {
-          x: hitX,
-          y: hitY,
-          w: this.player.size + 20,
-          h: this.player.size + 20,
-          // TODO: Make sure we don't have to pass it just to make compiler happy
-          checkCollisions: () => null,
-          empty: true
-        });
-        console.log(hitX, hitY);
-        this.wallHits.add(hit);
-      }
-    });
+    // memoize levelBuilder
+    if (!this.levelBuilder) {
+      this.levelBuilder = new LevelBuilder(this.ctx, this.level);
+    }
+    this.levelBuilder.build();
 
     // TODO: Remove collided bullets
     this.bullets = this.bullets.filter((bullet) => bullet.hot);
 
-    // Draw, move player, shoot
+    // Track bullets
+    this.bullets.forEach((bullet) => {
+      bullet.update(dt, this.levelBuilder);
+    });
+
+    // Draw, move player, shoot. MUST come last!
     this.updatePlayer();
   };
 
@@ -186,7 +164,9 @@ export class TankBatallion {
     }
 
     if (e.key === ' ') {
-      this.fireBullet();
+      // Disallow firing >1 bullet at a time. TODO: CHEATCODE to turn this restriction off.
+      const playerBullet = this.bullets.find((bullet) => bullet.firedBy.constructor.name === 'PlayerTank');
+      if (!playerBullet) this.fireBullet();
     }
   };
 }

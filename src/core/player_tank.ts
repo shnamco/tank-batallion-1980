@@ -1,5 +1,5 @@
 import { CANVAS_SIZE, Direction, GameAsset, GameObject } from './game_types';
-import { drawObject, Colors } from './helpers';
+import { drawObject, containsKnownColor } from './helpers';
 
 const playerTankAsset: GameAsset = {
   // SVG  path:
@@ -29,8 +29,6 @@ export class PlayerTank implements GameObject {
   public speed: number;
   public size: number;
   public fill: string;
-  public collidedWithWall = false;
-  public pixelUnderGun = 0;
   public seesColor = false;
 
   // Debugging flip-switch,
@@ -83,38 +81,9 @@ export class PlayerTank implements GameObject {
       this.ctx.fill(svgPath);
       this.ctx.resetTransform();
 
-      if (this.debug) {
-        this.ctx.font = '9px monospace';
-        this.ctx.fillStyle = 'magenta';
-        this.ctx.strokeStyle = 'magenta';
-        this.ctx.strokeRect(this.x, this.y, this.size, this.size);
-
-        // Top left corner
-        this.ctx.fillText(`x${this.tlx}`, this.x - 9, this.y - 6);
-        this.ctx.fillText(`y${this.tly}`, this.x - 9, this.y);
-
-        // Top right corner
-        this.ctx.fillText(`x${this.x + this.size}`, this.x + this.size, this.y - 6);
-        this.ctx.fillText(`y${this.y}`, this.x + this.size, this.y);
-
-        // Bottom left corner
-        this.ctx.fillText(`x${this.x}`, this.x - 9, this.y + this.size - 6);
-        this.ctx.fillText(`y${this.y + this.size}`, this.x - 9, this.y + this.size);
-
-        // Bottom right corner
-        this.ctx.fillText(`x${this.x + this.size}`, this.x + this.size - 9, this.y + this.size - 6);
-        this.ctx.fillText(`y${this.y + this.size}`, this.x + this.size - 9, this.y + this.size);
-      }
+      this.handleDebugMode();
     });
   }
-
-  private containsKnownColor = (arr: number[]): boolean => {
-    return arr.some((pix) => {
-      return Object.values(Colors).some((num) => {
-        return pix === num;
-      });
-    });
-  };
 
   private RValuesForPixelsInFront = (dir: Direction): number[] => {
     let res: number[] = [];
@@ -138,8 +107,8 @@ export class PlayerTank implements GameObject {
     return res.filter((_, idx) => idx % 4 === 0);
   };
 
-  private containsKnownColorForPixelsInFront = (dir: Direction): boolean => {
-    return this.containsKnownColor(this.RValuesForPixelsInFront(dir));
+  containsKnownColorForPixelsInFront = (dir: Direction): boolean => {
+    return containsKnownColor(this.RValuesForPixelsInFront(dir));
   };
 
   public moveRight = (): void => {
@@ -166,10 +135,6 @@ export class PlayerTank implements GameObject {
     if (this.y > 0 && !this.seesColor) this.y -= this.speed;
   };
 
-  public collideWithWall(): void {
-    this.collidedWithWall = true;
-  }
-
   private calculateCorners = (): void => {
     // Calculate helpers
     // Walls are static so we don't need accessors.
@@ -184,4 +149,29 @@ export class PlayerTank implements GameObject {
     this.brx = this.x + this.size;
     this.bry = this.y + this.size;
   };
+
+  private handleDebugMode() {
+    if (this.debug) {
+      this.ctx.font = '9px monospace';
+      this.ctx.fillStyle = 'magenta';
+      this.ctx.strokeStyle = 'magenta';
+      this.ctx.strokeRect(this.x, this.y, this.size, this.size);
+
+      // Top left corner
+      this.ctx.fillText(`x${this.tlx}`, this.x - 9, this.y - 6);
+      this.ctx.fillText(`y${this.tly}`, this.x - 9, this.y);
+
+      // Top right corner
+      this.ctx.fillText(`x${this.x + this.size}`, this.x + this.size, this.y - 6);
+      this.ctx.fillText(`y${this.y}`, this.x + this.size, this.y);
+
+      // Bottom left corner
+      this.ctx.fillText(`x${this.x}`, this.x - 9, this.y + this.size - 6);
+      this.ctx.fillText(`y${this.y + this.size}`, this.x - 9, this.y + this.size);
+
+      // Bottom right corner
+      this.ctx.fillText(`x${this.x + this.size}`, this.x + this.size - 9, this.y + this.size - 6);
+      this.ctx.fillText(`y${this.y + this.size}`, this.x + this.size - 9, this.y + this.size);
+    }
+  }
 }

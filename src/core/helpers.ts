@@ -1,7 +1,28 @@
+// Values for Red pixels for core game objects
 export enum Colors {
-  WallRed = 174,
-  WallBlack = 0
+  Wall = 174
 }
+
+export const containsKnownColor = (arr: number[]): boolean => {
+  return arr.some((pix) => {
+    return Object.values(Colors).some((num) => {
+      return pix === num;
+    });
+  });
+};
+
+export const detectObjectByDominatingColor = (arr: number[]): string => {
+  const dominatingRValue = (arr || []).reduce(
+    (acc, el) => {
+      acc.k[el] = acc.k[el] ? acc.k[el] + 1 : 1;
+      acc.max = acc.max ? (acc.max < acc.k[el] ? el : acc.max) : el;
+      return acc;
+    },
+    { k: {} as { [key in number]: number }, max: 0 }
+  ).max;
+
+  return Colors[dominatingRValue];
+};
 
 export function drawObject(ctx: CanvasRenderingContext2D, instructions: (...args: unknown[]) => void, ...args: unknown[]): void {
   ctx.save();
@@ -11,14 +32,10 @@ export function drawObject(ctx: CanvasRenderingContext2D, instructions: (...args
   ctx.restore();
 }
 
-export function collides(x: number, y: number, r: number, b: number, x2: number, y2: number, r2: number, b2: number): boolean {
-  return !(r <= x2 || x > r2 || b <= y2 || y > b2);
-}
-
-export function boxCollides(x1: number, y1: number, size: number, x2: number, y2: number, size2: number): boolean {
-  return collides(x1, y1, x1 + size, x1 + size, x2, y2, x2 + size2, y2 + size2);
-}
-
 export function between(a: number, b: number, c: number): boolean {
   return a > b && a < c;
+}
+
+export function inclusiveBetween(a: number, b: number, c: number): boolean {
+  return a >= b && a <= c;
 }

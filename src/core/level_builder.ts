@@ -1,4 +1,5 @@
-import { Wall, Wallable } from './wall';
+import { inclusiveBetween } from './helpers';
+import { Wall } from './wall';
 
 // Values are copied from Figma's Level-x frames
 // These are 1:1 pixel-perfect level designs from
@@ -33,21 +34,29 @@ const LEVEL_WALLS: { [key in number]: { x: number; y: number; w: number; h: numb
 };
 
 export class LevelBuilder {
-  public walls: Wallable[] = [];
+  public walls: Wall[] = [];
 
   constructor(private ctx: CanvasRenderingContext2D, private level: number) {}
 
   public build = (): void => {
     const currentLevel = LEVEL_WALLS[this.level];
     currentLevel.forEach((segment) => {
-      const wall = new Wall(this.ctx, {
-        ...segment,
-        checkCollisions: () => {
-          null;
-        }
+      let wall = this.walls.find((wall) => {
+        return segment.x === wall.x && segment.y === wall.y && segment.w === wall.w && segment.h === wall.h;
       });
+      if (!wall) {
+        wall = new Wall(this.ctx, {
+          ...segment
+        });
+        this.walls.push(wall);
+      }
       wall.draw();
-      this.walls.push(wall);
+    });
+  };
+
+  public findWalls = (x: number, y: number): Wall[] => {
+    return this.walls.filter((wall) => {
+      return inclusiveBetween(x, wall.x - 1, wall.x + wall.w + 1) && inclusiveBetween(y, wall.y, wall.y + wall.h);
     });
   };
 }

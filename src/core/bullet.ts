@@ -1,5 +1,6 @@
-import { Direction, GameObject } from './game_types';
-import { Colors, drawObject } from './helpers';
+import { CANVAS_SIZE, Direction, GameObject, PLAYER_SIZE } from './game_types';
+import { containsKnownColor, detectObjectByDominatingColor, drawObject } from './helpers';
+import { LevelBuilder } from './level_builder';
 
 interface Bulletable extends GameObject {
   speed: number;
@@ -20,7 +21,6 @@ export class Bullet implements Bulletable {
   public speed: number;
   public hot: boolean;
   public firedBy: GameObject;
-  public collidedWithWall = false;
 
   // Helper positions (Top/Bottom-Left/Right)
   public tlx!: number;
@@ -77,29 +77,19 @@ export class Bullet implements Bulletable {
     this.bry = value + this.size;
   }
 
-  private containsKnownColor = (arr: number[]): boolean => {
-    return arr.some((pix) => {
-      return Object.values(Colors).some((num) => {
-        return pix === num;
-      });
-    });
-  };
-
-  // TODO: hit detection stripes and hit squares are off, figure out magic numbers and unify
-
   private RValuesForPixelsInFront = (dir: Direction): number[] => {
     let res: number[] = [];
 
     if (dir === Direction.East) {
-      res = Array.from(this.ctx.getImageData(this.trx + 1, this.try - 10, 1, this.size + 10).data);
+      res = Array.from(this.ctx.getImageData(this.trx, this.try, 1, this.size).data);
     }
 
     if (dir === Direction.West) {
-      res = Array.from(this.ctx.getImageData(this.tlx - 1, this.try - 10, 1, this.size + 10).data);
+      res = Array.from(this.ctx.getImageData(this.tlx - 1, this.try, 1, this.size).data);
     }
 
     if (dir === Direction.South) {
-      res = Array.from(this.ctx.getImageData(this.blx, this.bly + 1, this.size, 1).data);
+      res = Array.from(this.ctx.getImageData(this.blx, this.bly, this.size, 1).data);
     }
 
     if (dir === Direction.North) {
@@ -110,61 +100,94 @@ export class Bullet implements Bulletable {
   };
 
   private containsKnownColorForPixelsInFront = (dir: Direction): boolean => {
-    return this.containsKnownColor(this.RValuesForPixelsInFront(dir));
+    return containsKnownColor(this.RValuesForPixelsInFront(dir));
+  };
+
+  private detectHitObject = (): string => {
+    return detectObjectByDominatingColor(this.RValuesForPixelsInFront(this.dir));
   };
 
   // dt is a delta taken from the main game loop
-  public update(dt: number): [number, number] {
-    if (!this.hot) return [-1, -1];
+  public update(dt: number, lb: LevelBuilder): void {
     this.calculateCorners();
-    let hitX = -1;
-    let hitY = -1;
 
     // Bullet flies to the right
     if (this.dir === Direction.East) {
       this.x += dt * this.speed;
       if (this.containsKnownColorForPixelsInFront(this.dir)) {
-        console.log(`Bam! at ${this.trx}, ${this.try}`);
+        console.log(this.RValuesForPixelsInFront(this.dir));
+        if (this.detectHitObject() === 'Wall') {
+          const hitX = Math.floor(this.trx);
+          const hitY = Math.floor(this.try);
+          console.log(`Bam! Hit a ${this.detectHitObject()} at ${hitX}, ${hitY}`);
+          // A "wall" may actually be an overlap of two Wall objects, so we use an array
+          const hitWalls = lb.findWalls(hitX, hitY);
+          hitWalls.forEach((hitWall) => hitWall.hit(hitX, this.firedBy.try!, this.dir));
+          hitWalls.forEach((hitWall) => console.log('Wall hit at: ', hitWall.x, hitWall.y));
+        }
         this.hot = false;
-        hitX = this.trx - dt * this.speed - this.size; // TODO: const for magic number
-        hitY = this.try - 20; // TODO: const for magic number
       }
+      if (this.x > CANVAS_SIZE) this.hot = false;
     }
 
     // Bullet flies to the left
     if (this.dir === Direction.West) {
       this.x -= dt * this.speed;
       if (this.containsKnownColorForPixelsInFront(this.dir)) {
-        console.log(`Bam! at ${this.tlx}, ${this.tly}`);
+        console.log(this.RValuesForPixelsInFront(this.dir));
+        if (this.detectHitObject() === 'Wall') {
+          const hitX = Math.floor(this.tlx);
+          const hitY = Math.floor(this.bly);
+          console.log(`Bam! Hit a ${this.detectHitObject()} at ${hitX}, ${hitY}`);
+          // A "wall" may actually be an overlap of two Wall objects, so we use an array
+          const hitWalls = lb.findWalls(hitX, hitY);
+          hitWalls.forEach((hitWall) => hitWall.hit(hitX, this.firedBy.tly!, this.dir));
+          hitWalls.forEach((hitWall) => console.log('Wall hit at: ', hitWall.x, hitWall.y));
+        }
         this.hot = false;
-        hitX = this.tlx - dt * this.speed - this.size * 2;
-        hitY = this.tly - 20;
       }
+      if (this.x < 0) this.hot = false;
     }
 
     // Bullet flies up
     if (this.dir === Direction.North) {
       this.y -= dt * this.speed;
       if (this.containsKnownColorForPixelsInFront(this.dir)) {
-        console.log(`Bam!`);
+        console.log(this.RValuesForPixelsInFront(this.dir));
+        if (this.detectHitObject() === 'Wall') {
+          const hitX = Math.floor(this.blx + PLAYER_SIZE / 2);
+          const hitY = Math.ceil(this.tly);
+          console.log(`Bam! Hit a ${this.detectHitObject()} at ${hitX}, ${hitY}`);
+          // A "wall" may actually be an overlap of two Wall objects, so we use an array
+          const hitWalls = lb.findWalls(hitX, hitY);
+          hitWalls.forEach((hitWall) => hitWall.hit(this.firedBy.tlx!, hitY, this.dir));
+          hitWalls.forEach((hitWall) => console.log('Wall hit at: ', hitWall.x, hitWall.y));
+        }
         this.hot = false;
-        hitX = this.tlx - 10;
-        hitY = this.tly - dt * this.speed - this.size * 2;
       }
+      if (this.y < 0) this.hot = false;
     }
 
     // Bullet flies down
     if (this.dir === Direction.South) {
       this.y += dt * this.speed;
       if (this.containsKnownColorForPixelsInFront(this.dir)) {
-        console.log(`Bam!`);
+        console.log(this.RValuesForPixelsInFront(this.dir));
+        if (this.detectHitObject() === 'Wall') {
+          const hitX = Math.floor(this.blx + PLAYER_SIZE / 2);
+          const hitY = Math.floor(this.bly);
+          console.log(`Bam! Hit a ${this.detectHitObject()} at ${hitX}, ${hitY}`);
+          // A "wall" may actually be an overlap of two Wall objects, so we use an array
+          const hitWalls = lb.findWalls(hitX, hitY);
+          hitWalls.forEach((hitWall) => hitWall.hit(this.firedBy.blx!, hitY, this.dir));
+          hitWalls.forEach((hitWall) => console.log('Wall hit at: ', hitWall.x, hitWall.y));
+        }
         this.hot = false;
-        hitX = this.tlx - 10;
-        hitY = this.tly + dt * this.speed - this.size;
       }
+      if (this.y > CANVAS_SIZE) this.hot = false;
     }
+
     this.draw();
-    return [hitX, hitY];
   }
 
   public draw = (): void => {
@@ -198,10 +221,6 @@ export class Bullet implements Bulletable {
   };
 
   private calculateCorners = (): void => {
-    // Calculate helpers
-    // Walls are static so we don't need accessors.
-    // But we need to keep them updated, so
-    // we calculate on every draw.
     this.tlx = this.x;
     this.tly = this.y;
     this.trx = this.x + this.size;
