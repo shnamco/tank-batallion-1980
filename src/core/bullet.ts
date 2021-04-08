@@ -93,7 +93,7 @@ export class Bullet implements Bulletable {
     }
 
     if (dir === Direction.North) {
-      res = Array.from(this.ctx.getImageData(this.tlx, this.tly, this.size, 1).data);
+      res = Array.from(this.ctx.getImageData(this.tlx, this.tly - 1, this.size, 1).data);
     }
 
     return res.filter((_, idx) => idx % 4 === 0);
@@ -126,7 +126,8 @@ export class Bullet implements Bulletable {
         if (this.didHitWall()) {
           const hitX = Math.floor(this.trx);
           const hitY = Math.floor(this.try);
-          console.log(`Bam! Hit a ${this.detectHitObject()} at ${hitX}, ${hitY}`);
+
+          console.log(`Bam! Hit a ${objectsByColor(this.RValuesForPixelsInFront(this.dir))} at ${hitX}, ${hitY}`);
           // A "wall" may actually be an overlap of two Wall objects, so we use an array
           const hitWalls = lb.findWalls(hitX, hitY);
           hitWalls.forEach((hitWall) => hitWall.hit(hitX, this.firedBy.try!, this.dir));
@@ -145,7 +146,7 @@ export class Bullet implements Bulletable {
         if (this.didHitWall()) {
           const hitX = Math.floor(this.tlx);
           const hitY = Math.floor(this.bly);
-          console.log(`Bam! Hit a ${this.detectHitObject()} at ${hitX}, ${hitY}`);
+          console.log(`Bam! Hit a ${objectsByColor(this.RValuesForPixelsInFront(this.dir))} at ${hitX}, ${hitY}`);
           // A "wall" may actually be an overlap of two Wall objects, so we use an array
           const hitWalls = lb.findWalls(hitX, hitY);
           hitWalls.forEach((hitWall) => hitWall.hit(hitX, this.firedBy.tly!, this.dir));
@@ -165,7 +166,7 @@ export class Bullet implements Bulletable {
         if (this.didHitWall()) {
           const hitX = Math.floor(this.blx + PLAYER_SIZE / 2);
           const hitY = Math.floor(this.tly);
-          console.log(`Bam! Hit a ${this.detectHitObject()} at ${hitX}, ${hitY}`);
+          console.log(`Bam! Hit a ${objectsByColor(this.RValuesForPixelsInFront(this.dir))} at ${hitX}, ${hitY}`);
           // A "wall" may actually be an overlap of two Wall objects, so we use an array
           const hitWalls = lb.findWalls(hitX, hitY);
           hitWalls.forEach((hitWall) => hitWall.hit(this.firedBy.tlx!, hitY, this.dir));
@@ -184,7 +185,7 @@ export class Bullet implements Bulletable {
         if (this.didHitWall()) {
           const hitX = Math.floor(this.blx + PLAYER_SIZE / 2);
           const hitY = Math.floor(this.bly);
-          console.log(`Bam! Hit a ${this.detectHitObject()} at ${hitX}, ${hitY}`);
+          console.log(`Bam! Hit a ${objectsByColor(this.RValuesForPixelsInFront(this.dir))} at ${hitX}, ${hitY}`);
           // A "wall" may actually be an overlap of two Wall objects, so we use an array
           const hitWalls = lb.findWalls(hitX, hitY);
           hitWalls.forEach((hitWall) => hitWall.hit(this.firedBy.blx!, hitY, this.dir));
