@@ -11,7 +11,7 @@ export type Reason = {
 
 export type Resp = {
   status: number;
-  response: string | Reason;
+  response: string | Reason | Profile;
 };
 
 export type SignUpReq = {
@@ -24,14 +24,14 @@ export type SignUpReq = {
 };
 
 export type Profile = {
-  id: number;
-  first_name: string;
-  second_name: string;
+  id: number | null;
+  first_name: string | null;
+  second_name: string | null;
   display_name: string | null;
-  login: string;
+  login: string | null;
   avatar: string | null;
-  email: string;
-  phone: string;
+  email: string | null;
+  phone: string | null;
 };
 
 class Api {
