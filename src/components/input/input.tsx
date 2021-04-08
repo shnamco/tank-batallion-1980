@@ -9,6 +9,9 @@ export interface InputProps {
   name?: string;
   error?: string;
   disabled?: boolean;
+  value?: string;
+  autoComplete?: string;
+  autofill?: string;
 }
 
 export interface InputState {
@@ -18,17 +21,31 @@ export interface InputState {
 }
 
 export class Input extends Component<InputProps, InputState> {
-  state = {
-    value: '',
-    invalid: false,
-    label: ''
-  };
-
   public static defaultProps: InputProps = {
     type: 'text',
     className: 'input',
-    disabled: false
+    disabled: false,
+    autoComplete: 'new-password',
+    autofill: 'false'
   };
+
+  constructor(props: InputProps) {
+    super(props);
+
+    this.state = {
+      value: this.props.value ?? '',
+      invalid: false,
+      label: ''
+    };
+  }
+
+  componentDidUpdate(prevProps: InputProps): void {
+    if (prevProps.value !== this.props.value) {
+      this.setState({
+        value: this.props.value as string
+      });
+    }
+  }
 
   public validate = (): void => {
     if (!this.state.value) {
