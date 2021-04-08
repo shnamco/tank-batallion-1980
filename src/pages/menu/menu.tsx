@@ -12,8 +12,7 @@ interface MenuState {
 }
 
 interface MenuProps extends RouteComponentProps {
-  // eslint-disable-next-line
-  logOut: (history: any) => unknown;
+  logOut: () => unknown;
 }
 
 const connector = connect(null, { logOut });
@@ -71,7 +70,7 @@ class MenuComponent extends Component<PropsFromRedux & MenuProps, MenuState> {
   }
 
   private logoutClicked(): void {
-    this.props.logOut(this.props.history);
+    this.props.logOut();
   }
 
   private keyPressHandler(): () => void {

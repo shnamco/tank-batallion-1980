@@ -31,7 +31,7 @@ export const logIn = (data: LoginReq, history: any): any => {
 };
 
 // eslint-disable-next-line
-export const getProfile = (history: any): any => {
+export const getProfile = (): any => {
   return (dispatch: Dispatch<AuthActions>) => {
     dispatch(getProfileAction());
 
@@ -44,20 +44,18 @@ export const getProfile = (history: any): any => {
       })
       .catch(() => {
         dispatch(logInRedirectAction());
-        history.push(`/${ROUTE.LOGIN}`);
       });
   };
 };
 
 // eslint-disable-next-line
-export const logOut = (history: any): any => {
+export const logOut = (): any => {
   return (dispatch: Dispatch<AuthActions>) => {
     dispatch(logOutAction());
 
     authApi.logout().then((res) => {
       if (res && res.status === 200) {
         dispatch(logInRedirectAction());
-        history.push(`/${ROUTE.LOGIN}`);
       }
     });
   };
