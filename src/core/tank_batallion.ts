@@ -61,10 +61,10 @@ export class TankBatallion {
       y = this.player.y + halfTank - halfBullet;
     } else if (this.player.dir === Direction.North) {
       x = this.player.x + halfTank - halfBullet;
-      y = this.player.tly + 6;
+      y = this.player.tly + BULLET_SIZE;
     } else if (this.player.dir === Direction.South) {
       x = this.player.x + halfTank - halfBullet;
-      y = this.player.tly + 6;
+      y = this.player.bly - BULLET_SIZE;
     }
 
     const bullet = new Bullet(this.ctx, {
@@ -92,7 +92,8 @@ export class TankBatallion {
   // Happens on every "tick"
   private updateWorld = (dt: number) => {
     // clear the animation frame
-    this.ctx.fillStyle = 'black';
+    // TODO: Define as constant!
+    this.ctx.fillStyle = '#080402';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     // draw a level

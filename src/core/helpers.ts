@@ -1,6 +1,7 @@
 // Values for Red pixels for core game objects
 export enum Colors {
-  Wall = 174
+  Wall = 174,
+  WallBlack = 0
 }
 
 export const containsKnownColor = (arr: number[]): boolean => {
@@ -9,6 +10,19 @@ export const containsKnownColor = (arr: number[]): boolean => {
       return pix === num;
     });
   });
+};
+
+export const objectsByColor = (arr: number[]): string[] => {
+  const res: string[] = [];
+  arr.forEach((pix) => {
+    Object.values(Colors).forEach((num) => {
+      if (pix === num) {
+        res.push(Colors[num]);
+      }
+    });
+  });
+  // unique
+  return res.filter((item, i, ar) => ar.indexOf(item) === i);
 };
 
 export const detectObjectByDominatingColor = (arr: number[]): string => {
@@ -20,6 +34,7 @@ export const detectObjectByDominatingColor = (arr: number[]): string => {
     },
     { k: {} as { [key in number]: number }, max: 0 }
   ).max;
+  console.log('Dominating R Value:', dominatingRValue, 'color of', Colors[dominatingRValue]);
 
   return Colors[dominatingRValue];
 };

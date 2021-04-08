@@ -1,5 +1,5 @@
 import { CANVAS_SIZE, Direction, GameObject, PLAYER_SIZE } from './game_types';
-import { containsKnownColor, detectObjectByDominatingColor, drawObject } from './helpers';
+import { containsKnownColor, detectObjectByDominatingColor, drawObject, objectsByColor } from './helpers';
 import { LevelBuilder } from './level_builder';
 
 interface Bulletable extends GameObject {
@@ -93,7 +93,7 @@ export class Bullet implements Bulletable {
     }
 
     if (dir === Direction.North) {
-      res = Array.from(this.ctx.getImageData(this.tlx, this.tly - 1, this.size, 1).data);
+      res = Array.from(this.ctx.getImageData(this.tlx, this.tly, this.size, 1).data);
     }
 
     return res.filter((_, idx) => idx % 4 === 0);
@@ -107,16 +107,23 @@ export class Bullet implements Bulletable {
     return detectObjectByDominatingColor(this.RValuesForPixelsInFront(this.dir));
   };
 
+  private didHitWall = (): boolean => {
+    const rVals = this.RValuesForPixelsInFront(this.dir);
+    return objectsByColor(rVals).includes('Wall') || objectsByColor(rVals).includes('WallBlack');
+  };
+
   // dt is a delta taken from the main game loop
   public update(dt: number, lb: LevelBuilder): void {
     this.calculateCorners();
+
+    // TODO: Detect hits by presense of SOME pixels, not by dominance
 
     // Bullet flies to the right
     if (this.dir === Direction.East) {
       this.x += dt * this.speed;
       if (this.containsKnownColorForPixelsInFront(this.dir)) {
         console.log(this.RValuesForPixelsInFront(this.dir));
-        if (this.detectHitObject() === 'Wall') {
+        if (this.didHitWall()) {
           const hitX = Math.floor(this.trx);
           const hitY = Math.floor(this.try);
           console.log(`Bam! Hit a ${this.detectHitObject()} at ${hitX}, ${hitY}`);
@@ -135,7 +142,7 @@ export class Bullet implements Bulletable {
       this.x -= dt * this.speed;
       if (this.containsKnownColorForPixelsInFront(this.dir)) {
         console.log(this.RValuesForPixelsInFront(this.dir));
-        if (this.detectHitObject() === 'Wall') {
+        if (this.didHitWall()) {
           const hitX = Math.floor(this.tlx);
           const hitY = Math.floor(this.bly);
           console.log(`Bam! Hit a ${this.detectHitObject()} at ${hitX}, ${hitY}`);
@@ -154,9 +161,10 @@ export class Bullet implements Bulletable {
       this.y -= dt * this.speed;
       if (this.containsKnownColorForPixelsInFront(this.dir)) {
         console.log(this.RValuesForPixelsInFront(this.dir));
-        if (this.detectHitObject() === 'Wall') {
+
+        if (this.didHitWall()) {
           const hitX = Math.floor(this.blx + PLAYER_SIZE / 2);
-          const hitY = Math.ceil(this.tly);
+          const hitY = Math.floor(this.tly);
           console.log(`Bam! Hit a ${this.detectHitObject()} at ${hitX}, ${hitY}`);
           // A "wall" may actually be an overlap of two Wall objects, so we use an array
           const hitWalls = lb.findWalls(hitX, hitY);
@@ -173,7 +181,7 @@ export class Bullet implements Bulletable {
       this.y += dt * this.speed;
       if (this.containsKnownColorForPixelsInFront(this.dir)) {
         console.log(this.RValuesForPixelsInFront(this.dir));
-        if (this.detectHitObject() === 'Wall') {
+        if (this.didHitWall()) {
           const hitX = Math.floor(this.blx + PLAYER_SIZE / 2);
           const hitY = Math.floor(this.bly);
           console.log(`Bam! Hit a ${this.detectHitObject()} at ${hitX}, ${hitY}`);

@@ -73,7 +73,7 @@ export class Wall implements Wallable {
       this.ctx.fillStyle = pattern as CanvasPattern;
       this.ctx.fillRect(this.x, this.y, this.w, this.h);
 
-      this.ctx.fillStyle = 'black';
+      this.ctx.fillStyle = '#080402';
       for (const hit of this.hits) {
         this.ctx.fillRect(hit.x, hit.y, hit.w, hit.h);
       }
@@ -108,7 +108,7 @@ export class Wall implements Wallable {
         hit = new Wall(this.ctx, {
           x: x % 2 === 0 ? x : x + 1,
           y: y % 2 === 0 ? y : y - 1,
-          w: 32,
+          w: 36,
           h: 16
         });
         console.log(`Creating hit, x: ${hit.x}, y: ${hit.y}, w: ${hit.w}, h: ${hit.h}`);
@@ -117,7 +117,7 @@ export class Wall implements Wallable {
         hit = new Wall(this.ctx, {
           x: x % 2 === 0 ? x : x + 1,
           y: y % 2 === 0 ? y - 16 : y + 1 - 16,
-          w: 32,
+          w: 36,
           h: 16
         });
         console.log(`Creating hit, x: ${hit.x}, y: ${hit.y}, w: ${hit.w}, h: ${hit.h}`);

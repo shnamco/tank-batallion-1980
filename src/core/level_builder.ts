@@ -56,7 +56,7 @@ export class LevelBuilder {
 
   public findWalls = (x: number, y: number): Wall[] => {
     return this.walls.filter((wall) => {
-      return inclusiveBetween(x, wall.x - 1, wall.x + wall.w + 1) && inclusiveBetween(y, wall.y, wall.y + wall.h);
+      return inclusiveBetween(x, wall.x - 1, wall.x + wall.w + 1) && inclusiveBetween(y, wall.y - 1, wall.y + wall.h + 1);
     });
   };
 }
