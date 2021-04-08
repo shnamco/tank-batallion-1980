@@ -6,7 +6,6 @@ export enum AUTH_ACTIONS {
   LOG_IN_FAILURE = '[AUTH] LOG IN FAILURE',
   LOG_IN_REDIRECT = '[AUTH] LOG IN REDIRECT',
   SIGN_UP = '[AUTH] SIGN UP',
-  SIGN_UP_SUCCESS = '[AUTH] SIGN UP SUCCESS',
   LOG_OUT = '[AUTH] LOG OUT',
   GET_PROFILE = '[AUTH] GET PROFILE'
 }
@@ -33,6 +32,10 @@ export const logInRedirectAction = (): Action<AUTH_ACTIONS> => {
 
 export const getProfileAction = (): Action<AUTH_ACTIONS> => {
   return { type: AUTH_ACTIONS.GET_PROFILE };
+};
+
+export const signUpAction = (): Action<AUTH_ACTIONS> => {
+  return { type: AUTH_ACTIONS.SIGN_UP };
 };
 
 export const logOutAction = (): Action<AUTH_ACTIONS> => {

@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import './signup_form.pcss';
 import '@styles/login.pcss';
-import { authApi, SignUpReq, Reason } from '@service/auth_api';
 import { Input } from '@components/input/input';
-import { ROUTE } from '@utils/route';
+import { Reason, SignUpReq } from '@service/auth_api';
+import { connect, ConnectedProps } from 'react-redux';
+import { signUp } from '@store/auth/auth.thunks';
+import { HistoryProxy } from '@utils/history';
 
 type FormState = {
   loginError: string;
@@ -12,7 +14,15 @@ type FormState = {
   phoneError: string;
 };
 
-class Form extends Component<RouteComponentProps, FormState> {
+interface FormProps extends RouteComponentProps {
+  signUp: (data: SignUpReq, onError: (response: string | Reason) => void, history: HistoryProxy) => unknown;
+}
+
+const connector = connect(null, { signUp });
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+class Form extends Component<FormProps & PropsFromRedux, FormState> {
   public state = {
     loginError: '',
     emailError: '',
@@ -68,16 +78,14 @@ class Form extends Component<RouteComponentProps, FormState> {
       requestData[key] = formData.get(key) as string;
     });
 
-    authApi.signUp(requestData as SignUpReq).then((res) => {
-      if (res.status === 200 || (res.response as Reason).reason === 'User already in system') {
-        this.props.history.push(ROUTE.MENU);
-      } else {
-        const reason = (res.response as Reason).reason;
-
-        this.setState(this.getErrorState(reason));
-      }
-    });
+    this.props.signUp(requestData as SignUpReq, this.onError.bind(this), this.props.history);
   };
+
+  private onError(res: string | Reason): void {
+    const reason = (res as Reason).reason;
+
+    this.setState(this.getErrorState(reason));
+  }
 
   public render(): React.ReactElement {
     const { emailError, loginError, phoneError } = this.state;
@@ -105,4 +113,4 @@ class Form extends Component<RouteComponentProps, FormState> {
   }
 }
 
-export const SignupForm = withRouter(Form);
+export const SignupForm = withRouter(connector(Form));

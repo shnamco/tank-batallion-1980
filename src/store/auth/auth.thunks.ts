@@ -1,39 +1,39 @@
-import {
-  AuthActions,
-  getProfileAction,
-  logInAction,
-  logInFailureAction,
-  logInRedirectAction,
-  logInSuccessAction,
-  logOutAction
-} from '@store/auth/auth.actions';
-import { authApi, LoginReq, Reason } from '@service/auth_api';
+import * as AuthActions from '@store/auth/auth.actions';
+import { authApi, LoginReq, Reason, SignUpReq } from '@service/auth_api';
 import { Dispatch } from 'react';
 import { ROUTE } from '@utils/route';
+import { ThunkAction } from 'redux-thunk';
+import { RootState } from '@store/core/store';
+import { AnyAction } from 'redux';
+import { HistoryProxy } from '@utils/history';
 
-// eslint-disable-next-line
-export const logIn = (data: LoginReq, history: any): any => {
-  return (dispatch: Dispatch<AuthActions>) => {
-    dispatch(logInAction());
+export const logIn = (
+  data: LoginReq,
+  onError: (response: string | Reason) => void,
+  history: HistoryProxy
+): ThunkAction<void, RootState, unknown, AnyAction> => {
+  return (dispatch: Dispatch<AuthActions.AuthActions>) => {
+    dispatch(AuthActions.logInAction());
 
     authApi
       .login(data)
       .then((res) => {
         if (res.status === 200 || (res.response as Reason).reason === 'User already in system') {
-          dispatch(logInSuccessAction());
+          dispatch(AuthActions.logInSuccessAction());
           history.push(`/${ROUTE.MENU}`);
+        } else {
+          onError(res.response);
         }
       })
       .catch(() => {
-        dispatch(logInFailureAction());
+        dispatch(AuthActions.logInFailureAction());
       });
   };
 };
 
-// eslint-disable-next-line
-export const getProfile = (): any => {
-  return (dispatch: Dispatch<AuthActions>) => {
-    dispatch(getProfileAction());
+export const getProfile = (): ThunkAction<void, RootState, unknown, AnyAction> => {
+  return (dispatch: Dispatch<AuthActions.AuthActions>) => {
+    dispatch(AuthActions.getProfileAction());
 
     authApi
       .getProfile()
@@ -43,20 +43,43 @@ export const getProfile = (): any => {
         }
       })
       .catch(() => {
-        dispatch(logInRedirectAction());
+        dispatch(AuthActions.logInRedirectAction());
       });
   };
 };
 
-// eslint-disable-next-line
-export const logOut = (): any => {
-  return (dispatch: Dispatch<AuthActions>) => {
-    dispatch(logOutAction());
+export const logOut = (): ThunkAction<void, RootState, unknown, AnyAction> => {
+  return (dispatch: Dispatch<AuthActions.AuthActions>) => {
+    dispatch(AuthActions.logOutAction());
 
     authApi.logout().then((res) => {
       if (res && res.status === 200) {
-        dispatch(logInRedirectAction());
+        dispatch(AuthActions.logInRedirectAction());
       }
     });
+  };
+};
+
+export const signUp = (
+  data: SignUpReq,
+  onError: (response: string | Reason) => void,
+  history: HistoryProxy
+): ThunkAction<void, RootState, unknown, AnyAction> => {
+  return (dispatch: Dispatch<AuthActions.AuthActions>) => {
+    dispatch(AuthActions.signUpAction());
+
+    authApi
+      .signUp(data)
+      .then((res) => {
+        if (res.status === 200) {
+          dispatch(AuthActions.logInSuccessAction());
+          history.push(`/${ROUTE.MENU}`);
+        } else {
+          onError(res.response);
+        }
+      })
+      .catch(() => {
+        dispatch(AuthActions.logInFailureAction());
+      });
   };
 };

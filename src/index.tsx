@@ -4,7 +4,7 @@ import './styles/normalize.pcss';
 import './index.pcss';
 import { App } from './app';
 import { Provider } from 'react-redux';
-import { store } from '@store/store';
+import { store } from '@store/core/store';
 
 ReactDOM.render(
   <Provider store={store}>
