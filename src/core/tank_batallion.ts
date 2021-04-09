@@ -3,6 +3,7 @@ import { PlayerTank } from './player_tank';
 import { Bullet } from './bullet';
 import { LevelBuilder } from './level_builder';
 import { Exploder } from './exploder';
+import { EnemyBrain } from './enemy_brain';
 
 export class TankBatallion {
   // "Physics"
@@ -23,6 +24,7 @@ export class TankBatallion {
   private player!: PlayerTank;
   private bullets: Bullet[] = [];
   private exploder!: Exploder;
+  private enemies!: EnemyBrain;
 
   // Number of the level, game has 22 levels, but only 8 unique maps
   private level: number;
@@ -47,6 +49,9 @@ export class TankBatallion {
     });
 
     this.exploder = Exploder.getInstance(this.ctx);
+    this.enemies = EnemyBrain.getInstance(this.ctx);
+    this.enemies.addEnemy();
+    this.enemies.addEnemy();
   };
 
   private fireBullet = () => {
@@ -116,6 +121,8 @@ export class TankBatallion {
     });
 
     this.exploder.update();
+
+    this.enemies.update();
 
     // Draw, move player, shoot. MUST come last!
     this.updatePlayer();
