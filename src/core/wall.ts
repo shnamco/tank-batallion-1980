@@ -1,4 +1,6 @@
+/* eslint-disable no-case-declarations */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { Exploder } from './exploder';
 import { Direction } from './game_types';
 import { drawObject } from './helpers';
 import { WALL_BASE64_SVG } from './wall_base64';
@@ -123,6 +125,7 @@ export class Wall implements Wallable {
         console.log(`Creating hit, x: ${hit.x}, y: ${hit.y}, w: ${hit.w}, h: ${hit.h}`);
         break;
     }
+    Exploder.getInstance(this.ctx).explodeWall(hit.x, hit.y);
     this.hits.add(hit as Wall);
   };
 

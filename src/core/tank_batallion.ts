@@ -2,6 +2,7 @@ import { BULLET_SIZE, Direction } from './game_types';
 import { PlayerTank } from './player_tank';
 import { Bullet } from './bullet';
 import { LevelBuilder } from './level_builder';
+import { Exploder } from './exploder';
 
 export class TankBatallion {
   // "Physics"
@@ -21,6 +22,7 @@ export class TankBatallion {
   // should be set in play() method
   private player!: PlayerTank;
   private bullets: Bullet[] = [];
+  private exploder!: Exploder;
 
   // Number of the level, game has 22 levels, but only 8 unique maps
   private level: number;
@@ -43,6 +45,8 @@ export class TankBatallion {
       dir: Direction.East,
       size: 26
     });
+
+    this.exploder = Exploder.getInstance(this.ctx);
   };
 
   private fireBullet = () => {
@@ -110,6 +114,8 @@ export class TankBatallion {
     this.bullets.forEach((bullet) => {
       bullet.update(dt, this.levelBuilder);
     });
+
+    this.exploder.update();
 
     // Draw, move player, shoot. MUST come last!
     this.updatePlayer();
