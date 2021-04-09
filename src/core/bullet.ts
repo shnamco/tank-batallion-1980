@@ -1,5 +1,5 @@
 import { CANVAS_SIZE, Direction, GameObject, PLAYER_SIZE } from './game_types';
-import { containsKnownColor, detectObjectByDominatingColor, drawObject, objectsByColor } from './helpers';
+import { containsKnownColor, drawObject, objectsByColor } from './helpers';
 import { LevelBuilder } from './level_builder';
 
 interface Bulletable extends GameObject {
@@ -101,10 +101,6 @@ export class Bullet implements Bulletable {
 
   private containsKnownColorForPixelsInFront = (dir: Direction): boolean => {
     return containsKnownColor(this.RValuesForPixelsInFront(dir));
-  };
-
-  private detectHitObject = (): string => {
-    return detectObjectByDominatingColor(this.RValuesForPixelsInFront(this.dir));
   };
 
   private didHitWall = (): boolean => {
