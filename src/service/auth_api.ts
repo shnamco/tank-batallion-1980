@@ -1,4 +1,7 @@
 import { praktikumApiUrl } from '../environment/praktikumApiUrl';
+import { Profile } from './profile_api';
+
+export type SignUpReq = Omit<Profile, 'id' | 'display_name' | 'avatar'>;
 
 export type LoginReq = {
   login: string;
@@ -11,27 +14,7 @@ export type Reason = {
 
 export type Resp = {
   status: number;
-  response: string | Reason;
-};
-
-export type SignUpReq = {
-  first_name: string;
-  second_name: string;
-  login: string;
-  email: string;
-  password: string;
-  phone: string;
-};
-
-export type Profile = {
-  id: number;
-  first_name: string;
-  second_name: string;
-  display_name: string | null;
-  login: string;
-  avatar: string | null;
-  email: string;
-  phone: string;
+  response: string | Reason | Profile;
 };
 
 class Api {
