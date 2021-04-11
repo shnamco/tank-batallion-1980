@@ -1,5 +1,5 @@
 import { CANVAS_SIZE, Direction, GameAsset, GameObject } from './game_types';
-import { drawObject, containsKnownColor } from './helpers';
+import { drawObject, containsKnownColor, objectsByColor } from './helpers';
 
 const playerTankAsset: GameAsset = {
   // SVG  path:
@@ -56,6 +56,8 @@ export class PlayerTank implements GameObject {
     this.trx = value + this.size;
     this.blx = value;
     this.brx = value + this.size;
+    // debug
+    // console.log(this.RValuesForPixelsInFront(this.dir));
   }
 
   get y(): number {
@@ -68,16 +70,22 @@ export class PlayerTank implements GameObject {
     this.try = value;
     this.bly = value + this.size;
     this.bry = value + this.size;
+    // debug
+    // console.log(this.RValuesForPixelsInFront(this.dir));
   }
 
   public draw(): void {
     const svgPath = new Path2D(playerTankAsset.path);
     drawObject(this.ctx, () => {
       const half = this.size / 2;
-      this.ctx.fillStyle = this.fill;
       this.ctx.translate(this.x + half, this.y + half);
       this.ctx.rotate((this.dir * Math.PI) / 180);
       this.ctx.translate(-half, -half);
+      // TODO: Refactor into constants;
+      this.ctx.fillStyle = '#040000';
+      this.ctx.fillRect(0, 0, this.size, this.size);
+      this.ctx.globalCompositeOperation = 'source-atop';
+      this.ctx.fillStyle = this.fill;
       this.ctx.fill(svgPath);
       this.ctx.resetTransform();
 
@@ -89,25 +97,25 @@ export class PlayerTank implements GameObject {
     let res: number[] = [];
 
     if (dir === Direction.East) {
-      res = Array.from(this.ctx.getImageData(this.trx + 1, this.try, 1, this.size).data);
+      res = Array.from(this.ctx.getImageData(this.trx + 2, this.try, 1, this.size).data);
     }
 
     if (dir === Direction.West) {
-      res = Array.from(this.ctx.getImageData(this.tlx - 1, this.try, 1, this.size).data);
+      res = Array.from(this.ctx.getImageData(this.tlx - 2, this.try, 1, this.size).data);
     }
 
     if (dir === Direction.South) {
-      res = Array.from(this.ctx.getImageData(this.blx, this.bly + 1, this.size, 1).data);
+      res = Array.from(this.ctx.getImageData(this.blx, this.bly + 2, this.size, 1).data);
     }
 
     if (dir === Direction.North) {
-      res = Array.from(this.ctx.getImageData(this.tlx, this.tly - 1, this.size, 1).data);
+      res = Array.from(this.ctx.getImageData(this.tlx, this.tly - 2, this.size, 1).data);
     }
 
     return res.filter((_, idx) => idx % 4 === 0);
   };
 
-  containsKnownColorForPixelsInFront = (dir: Direction): boolean => {
+  private containsKnownColorForPixelsInFront = (dir: Direction): boolean => {
     return containsKnownColor(this.RValuesForPixelsInFront(dir));
   };
 

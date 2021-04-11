@@ -2,7 +2,6 @@ import { CANVAS_SIZE, Direction, GameAsset, GameObject } from './game_types';
 import {
   drawObject,
   containsKnownColor,
-  randomFromArray,
   rotateClockwise,
   DIRECTIONS,
   getRandomInt,
@@ -38,14 +37,11 @@ export class EnemyTank implements GameObject {
   public speed: number;
   public size: number;
   public fill: string;
-  public seesColor = false;
+  public stopColorInFront = false;
 
   // Debugging flip-switch,
   // adds outlines and pixel data
   public debug = false;
-
-  // "AI"
-  private currentDirection!: Direction;
 
   constructor(private ctx: CanvasRenderingContext2D, private opts: GameObject) {
     // Initial positions
@@ -54,9 +50,8 @@ export class EnemyTank implements GameObject {
     this.dir = opts.dir ?? Direction.East;
     this.size = opts.size ?? enemyTankAsset.size;
     this.fill = opts.fill ?? enemyTankAsset.fill ?? 'magenta';
-    this.speed = 0.6;
+    this.speed = 0.5;
     this.calculateCorners();
-    this.currentDirection = randomFromArray(DIRECTIONS) as Direction;
   }
 
   get x(): number {
@@ -84,11 +79,20 @@ export class EnemyTank implements GameObject {
   }
 
   public act(): void {
+    this.stopColorInFront = this.containsKnownColorForPixelsInFront(this.dir);
     this.moveInRandomDirection();
   }
 
   private moveInRandomDirection(): void {
-    switch (this.currentDirection) {
+    const possibleDir = this.canMakeTurn(this.dir);
+    if (possibleDir) {
+      const rand = getRandomInt(5);
+      if (rand === 4) {
+        this.dir = possibleDir;
+      }
+    }
+
+    switch (this.dir) {
       case Direction.East:
         this.moveRight();
         break;
@@ -103,17 +107,15 @@ export class EnemyTank implements GameObject {
         break;
     }
 
-    if (this.seesColor) {
-      const randomInt = getRandomInt(4);
+    if (this.stopColorInFront) {
+      // The more the range here, the likelier tank is going to "stop and think" instead of jitter around
+      const randomInt = getRandomInt(50);
       switch (randomInt) {
+        case 0:
+          this.dir = rotateClockwise(this.dir);
+          break;
         case 1:
-          this.currentDirection = rotateClockwise(this.currentDirection);
-          break;
-        case 2:
-          this.currentDirection = rotateCounterClockwise(this.currentDirection);
-          break;
-        case 3:
-          this.currentDirection = rotateOpposite(this.currentDirection);
+          this.dir = rotateCounterClockwise(this.dir);
           break;
       }
     }
@@ -123,10 +125,14 @@ export class EnemyTank implements GameObject {
     const svgPath = new Path2D(enemyTankAsset.path);
     drawObject(this.ctx, () => {
       const half = this.size / 2;
-      this.ctx.fillStyle = this.fill;
       this.ctx.translate(this.x + half, this.y + half);
       this.ctx.rotate((this.dir * Math.PI) / 180);
       this.ctx.translate(-half, -half);
+      // TODO: Refactor into constants;
+      this.ctx.fillStyle = '#030000';
+      this.ctx.fillRect(0, 0, this.size, this.size);
+      this.ctx.globalCompositeOperation = 'source-atop';
+      this.ctx.fillStyle = this.fill;
       this.ctx.fill(svgPath);
       this.ctx.resetTransform();
 
@@ -134,54 +140,76 @@ export class EnemyTank implements GameObject {
     });
   }
 
-  private RValuesForPixelsInFront = (dir: Direction): number[] => {
+  private RValuesForPixelsInFront = (dir: Direction, howFar = 2): number[] => {
     let res: number[] = [];
 
     if (dir === Direction.East) {
-      res = Array.from(this.ctx.getImageData(this.trx + 1, this.try, 1, this.size).data);
+      res = Array.from(this.ctx.getImageData(this.trx + howFar, this.try, 1, this.size).data);
     }
 
     if (dir === Direction.West) {
-      res = Array.from(this.ctx.getImageData(this.tlx - 1, this.try, 1, this.size).data);
+      res = Array.from(this.ctx.getImageData(this.tlx - howFar, this.try, 1, this.size).data);
     }
 
     if (dir === Direction.South) {
-      res = Array.from(this.ctx.getImageData(this.blx, this.bly + 1, this.size, 1).data);
+      res = Array.from(this.ctx.getImageData(this.blx, this.bly + howFar, this.size, 1).data);
     }
 
     if (dir === Direction.North) {
-      res = Array.from(this.ctx.getImageData(this.tlx, this.tly - 1, this.size, 1).data);
+      res = Array.from(this.ctx.getImageData(this.tlx, this.tly - howFar, this.size, 1).data);
     }
 
     return res.filter((_, idx) => idx % 4 === 0);
   };
 
-  containsKnownColorForPixelsInFront = (dir: Direction): boolean => {
-    return containsKnownColor(this.RValuesForPixelsInFront(dir));
+  private containsKnownColorForPixelsInFront = (dir: Direction, howFar = 2): boolean => {
+    return containsKnownColor(this.RValuesForPixelsInFront(dir, howFar));
+  };
+
+  // Make a turn to where available with some probability
+  private canMakeTurn = (dir: Direction): Direction | null => {
+    let availableDirs: Direction[] = [];
+
+    switch (dir) {
+      case Direction.North:
+        availableDirs = [Direction.West, Direction.East];
+        break;
+      case Direction.East:
+        availableDirs = [Direction.South];
+        break;
+      case Direction.South:
+        availableDirs = [Direction.West, Direction.East];
+        break;
+      case Direction.West:
+        availableDirs = [Direction.South];
+        break;
+    }
+
+    let dirToGo = null;
+    availableDirs.forEach((ad) => {
+      if (!this.containsKnownColorForPixelsInFront(ad, 10)) {
+        if (getRandomInt(5) === 4) {
+          dirToGo = ad;
+        }
+      }
+    });
+    return dirToGo;
   };
 
   public moveRight = (): void => {
-    this.dir = Direction.East;
-    this.seesColor = this.containsKnownColorForPixelsInFront(this.dir);
-    if (this.x < CANVAS_SIZE - this.size && !this.seesColor) this.x += this.speed;
+    if (this.x < CANVAS_SIZE - this.size && !this.stopColorInFront) this.x += this.speed;
   };
 
   public moveLeft = (): void => {
-    this.dir = Direction.West;
-    this.seesColor = this.containsKnownColorForPixelsInFront(this.dir);
-    if (this.x > 0 && !this.seesColor) this.x -= this.speed;
+    if (this.x > 0 && !this.stopColorInFront) this.x -= this.speed;
   };
 
   public moveDown = (): void => {
-    this.dir = Direction.South;
-    this.seesColor = this.containsKnownColorForPixelsInFront(this.dir);
-    if (this.y < CANVAS_SIZE - this.size && !this.seesColor) this.y += this.speed;
+    if (this.y < CANVAS_SIZE - this.size && !this.stopColorInFront) this.y += this.speed;
   };
 
   public moveUp = (): void => {
-    this.dir = Direction.North;
-    this.seesColor = this.containsKnownColorForPixelsInFront(this.dir);
-    if (this.y > 0 && !this.seesColor) this.y -= this.speed;
+    if (this.y > 0 && !this.stopColorInFront) this.y -= this.speed;
   };
 
   private calculateCorners = (): void => {

@@ -19,15 +19,20 @@ export class EnemyBrain {
 
   public update(): void {
     this.enemyTanks.forEach((t) => {
-      t.draw();
       t.act();
+    });
+  }
+
+  public draw(): void {
+    this.enemyTanks.forEach((t) => {
+      t.draw();
     });
   }
 
   public addEnemy(): void {
     this.enemyTanks.push(
       new EnemyTank(this.ctx, {
-        x: 0,
+        x: 30,
         y: 0,
         dir: randomFromArray([Direction.South, Direction.East]) as Direction,
         size: 26

@@ -9,6 +9,9 @@ export class TankBatallion {
   // "Physics"
   private lastTime!: number;
 
+  // Game time
+  private gameTimeInSeconds!: number;
+
   // Keypress states
   private leftPressed!: boolean;
   private rightPressed!: boolean;
@@ -50,7 +53,6 @@ export class TankBatallion {
 
     this.exploder = Exploder.getInstance(this.ctx);
     this.enemies = EnemyBrain.getInstance(this.ctx);
-    this.enemies.addEnemy();
     this.enemies.addEnemy();
   };
 
@@ -94,8 +96,6 @@ export class TankBatallion {
     if (this.rightPressed) this.player.moveRight();
     if (this.upPressed) this.player.moveUp();
     if (this.downPressed) this.player.moveDown();
-
-    this.player.draw();
   };
 
   // Happens on every "tick"
@@ -120,11 +120,13 @@ export class TankBatallion {
       bullet.update(dt, this.levelBuilder);
     });
 
+    this.player.draw();
+    this.enemies.draw();
+
     this.exploder.update();
 
     this.enemies.update();
 
-    // Draw, move player, shoot. MUST come last!
     this.updatePlayer();
   };
 
@@ -143,6 +145,15 @@ export class TankBatallion {
     // TODO: Make sure these listeners are not duplicated on re-render;
     document.addEventListener('keydown', this.keyDownHandler, false);
     document.addEventListener('keyup', this.keyUpHandler, false);
+
+    // Counts seconds spent in game
+    this.gameTimeInSeconds = 0;
+    setInterval(() => {
+      this.gameTimeInSeconds += 1;
+      // if (this.gameTimeInSeconds % 60 === 0) {
+      //   this.enemies.addEnemy();
+      // }
+    }, 1000);
 
     // Set the clock
     this.lastTime = performance.now();

@@ -4,7 +4,10 @@ import { Direction } from './game_types';
 export enum Colors {
   Wall = 174,
   WallBlack = 0,
-  EnemyTank = 85
+  EnemyBlack = 3,
+  EnemyTank = 85,
+  PlayerTank = 255,
+  PlayerBlack = 4
 }
 
 export const DIRECTIONS = [Direction.East, Direction.West, Direction.North, Direction.South];
