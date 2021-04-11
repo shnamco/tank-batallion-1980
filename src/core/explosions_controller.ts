@@ -32,19 +32,19 @@ interface CanvasImageAnimatable {
   ticks: number;
 }
 
-export class Exploder {
-  private static instance: Exploder;
+export class ExplosionsController {
+  private static instance: ExplosionsController;
   private wallExplosions: CanvasImageAnimatable[] = [];
 
   // Singleton
   private constructor(private ctx: CanvasRenderingContext2D) {}
 
-  public static getInstance(ctx: CanvasRenderingContext2D): Exploder {
-    if (!Exploder.instance) {
-      Exploder.instance = new Exploder(ctx);
+  public static getInstance(ctx: CanvasRenderingContext2D): ExplosionsController {
+    if (!ExplosionsController.instance) {
+      ExplosionsController.instance = new ExplosionsController(ctx);
     }
 
-    return Exploder.instance;
+    return ExplosionsController.instance;
   }
 
   public explodeWall(x: number, y: number): void {

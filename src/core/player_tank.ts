@@ -1,5 +1,7 @@
-import { CANVAS_SIZE, Direction, GameAsset, GameObject } from './game_types';
-import { drawObject, containsKnownColor, objectsByColor } from './helpers';
+import { Bullet } from './bullet';
+import { BulletsController } from './bullets_controller';
+import { BULLET_SIZE, CANVAS_SIZE, Direction, GameAsset, GameObject } from './game_types';
+import { drawObject, containsKnownColor } from './helpers';
 
 const playerTankAsset: GameAsset = {
   // SVG  path:
@@ -72,6 +74,43 @@ export class PlayerTank implements GameObject {
     this.bry = value + this.size;
     // debug
     // console.log(this.RValuesForPixelsInFront(this.dir));
+  }
+
+  public fire(): void {
+    let x = this.x;
+    let y = this.y;
+
+    const halfTank = this.size / 2;
+    const halfBullet = BULLET_SIZE / 2;
+
+    // Position the bullet at the tip of the tank's gun
+    if (this.dir === Direction.East) {
+      x = this.x + this.size;
+      y = this.y + halfTank - halfBullet;
+    } else if (this.dir === Direction.West) {
+      x = this.x;
+      y = this.y + halfTank - halfBullet;
+    } else if (this.dir === Direction.North) {
+      x = this.x + halfTank - halfBullet;
+      y = this.tly;
+    } else if (this.dir === Direction.South) {
+      x = this.x + halfTank - halfBullet;
+      y = this.bly - BULLET_SIZE;
+    }
+
+    const bullet = new Bullet(this.ctx, {
+      hot: true,
+      x,
+      y,
+      dir: this.dir,
+      size: 6,
+      speed: 100,
+      firedBy: this,
+      fill: '#55BEBF'
+    });
+
+    const bc = BulletsController.getInstance(this.ctx);
+    if (bc.canFire(this)) bc.track(bullet);
   }
 
   public draw(): void {

@@ -1,6 +1,6 @@
 /* eslint-disable no-case-declarations */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { Exploder } from './exploder';
+import { ExplosionsController } from './explosions_controller';
 import { Direction } from './game_types';
 import { drawObject } from './helpers';
 import { WALL_BASE64_SVG } from './wall_base64';
@@ -99,7 +99,7 @@ export class Wall implements Wallable {
         break;
       case Direction.West:
         hit = new Wall(this.ctx, {
-          x: x % 2 === 0 ? x - 16 : x + 1 - 16,
+          x: x % 2 === 0 ? x : x + 1,
           y: y % 2 === 0 ? y : y - 1,
           w: 16,
           h: 32
@@ -110,7 +110,7 @@ export class Wall implements Wallable {
         hit = new Wall(this.ctx, {
           x: x % 2 === 0 ? x : x + 1,
           y: y % 2 === 0 ? y : y - 1,
-          w: 36,
+          w: 32,
           h: 16
         });
         console.log(`Creating hit, x: ${hit.x}, y: ${hit.y}, w: ${hit.w}, h: ${hit.h}`);
@@ -118,14 +118,14 @@ export class Wall implements Wallable {
       case Direction.North:
         hit = new Wall(this.ctx, {
           x: x % 2 === 0 ? x : x + 1,
-          y: y % 2 === 0 ? y - 16 : y + 1 - 16,
-          w: 36,
+          y: y % 2 === 0 ? y : y + 1,
+          w: 32,
           h: 16
         });
         console.log(`Creating hit, x: ${hit.x}, y: ${hit.y}, w: ${hit.w}, h: ${hit.h}`);
         break;
     }
-    Exploder.getInstance(this.ctx).explodeWall(hit.x, hit.y);
+    ExplosionsController.getInstance(this.ctx).explodeWall(hit.x, hit.y);
     this.hits.add(hit as Wall);
   };
 

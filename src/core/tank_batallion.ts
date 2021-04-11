@@ -1,9 +1,9 @@
-import { BULLET_SIZE, Direction } from './game_types';
+import { Direction } from './game_types';
 import { PlayerTank } from './player_tank';
-import { Bullet } from './bullet';
 import { LevelBuilder } from './level_builder';
-import { Exploder } from './exploder';
-import { EnemyBrain } from './enemy_brain';
+import { ExplosionsController } from './explosions_controller';
+import { EnemiesController } from './enemies_controller';
+import { BulletsController } from './bullets_controller';
 
 export class TankBatallion {
   // "Physics"
@@ -25,9 +25,9 @@ export class TankBatallion {
   // States for game objects
   // should be set in play() method
   private player!: PlayerTank;
-  private bullets: Bullet[] = [];
-  private exploder!: Exploder;
-  private enemies!: EnemyBrain;
+  private bullets!: BulletsController;
+  private exploder!: ExplosionsController;
+  private enemies!: EnemiesController;
 
   // Number of the level, game has 22 levels, but only 8 unique maps
   private level: number;
@@ -45,50 +45,16 @@ export class TankBatallion {
 
   private initGameObjects = () => {
     this.player = new PlayerTank(this.ctx, {
-      x: 0,
-      y: 0,
-      dir: Direction.East,
+      x: 150,
+      y: 340,
+      dir: Direction.North,
       size: 26
     });
 
-    this.exploder = Exploder.getInstance(this.ctx);
-    this.enemies = EnemyBrain.getInstance(this.ctx);
+    this.exploder = ExplosionsController.getInstance(this.ctx);
+    this.bullets = BulletsController.getInstance(this.ctx);
+    this.enemies = EnemiesController.getInstance(this.ctx);
     this.enemies.addEnemy();
-  };
-
-  private fireBullet = () => {
-    let x = this.player.x;
-    let y = this.player.y;
-
-    const halfTank = this.player.size / 2;
-    const halfBullet = BULLET_SIZE / 2;
-
-    // Position the bullet just behind the tip of the tank's "gun"
-    if (this.player.dir === Direction.East) {
-      x = this.player.x + this.player.size - 8;
-      y = this.player.y + halfTank - halfBullet;
-    } else if (this.player.dir === Direction.West) {
-      x = this.player.tlx + halfBullet;
-      y = this.player.y + halfTank - halfBullet;
-    } else if (this.player.dir === Direction.North) {
-      x = this.player.x + halfTank - halfBullet;
-      y = this.player.tly + BULLET_SIZE;
-    } else if (this.player.dir === Direction.South) {
-      x = this.player.x + halfTank - halfBullet;
-      y = this.player.bly - BULLET_SIZE;
-    }
-
-    const bullet = new Bullet(this.ctx, {
-      hot: true,
-      x,
-      y,
-      dir: this.player.dir,
-      size: 6,
-      speed: 100,
-      firedBy: this.player,
-      fill: '#55BEBF'
-    });
-    this.bullets.push(bullet);
   };
 
   private updatePlayer = () => {
@@ -102,7 +68,7 @@ export class TankBatallion {
   private updateWorld = (dt: number) => {
     // clear the animation frame
     // TODO: Define as constant!
-    this.ctx.fillStyle = '#080402';
+    this.ctx.fillStyle = '#080000';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     // draw a level
@@ -112,21 +78,12 @@ export class TankBatallion {
     }
     this.levelBuilder.build();
 
-    // TODO: Remove collided bullets
-    this.bullets = this.bullets.filter((bullet) => bullet.hot);
-
-    // Track bullets
-    this.bullets.forEach((bullet) => {
-      bullet.update(dt, this.levelBuilder);
-    });
-
     this.player.draw();
     this.enemies.draw();
 
+    this.bullets.update(dt, this.levelBuilder);
     this.exploder.update();
-
     this.enemies.update();
-
     this.updatePlayer();
   };
 
@@ -150,9 +107,9 @@ export class TankBatallion {
     this.gameTimeInSeconds = 0;
     setInterval(() => {
       this.gameTimeInSeconds += 1;
-      // if (this.gameTimeInSeconds % 60 === 0) {
-      //   this.enemies.addEnemy();
-      // }
+      if (this.gameTimeInSeconds % 10 === 0) {
+        this.enemies.addEnemy();
+      }
     }, 1000);
 
     // Set the clock
@@ -189,9 +146,7 @@ export class TankBatallion {
     }
 
     if (e.key === ' ') {
-      // Disallow firing >1 bullet at a time. TODO: CHEATCODE to turn this restriction off.
-      const playerBullet = this.bullets.find((bullet) => bullet.firedBy.constructor.name === 'PlayerTank');
-      if (!playerBullet) this.fireBullet();
+      this.player.fire();
     }
   };
 }

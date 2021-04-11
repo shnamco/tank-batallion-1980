@@ -1,14 +1,9 @@
-import { CANVAS_SIZE, Direction, GameAsset, GameObject } from './game_types';
-import {
-  drawObject,
-  containsKnownColor,
-  rotateClockwise,
-  DIRECTIONS,
-  getRandomInt,
-  rotateCounterClockwise,
-  rotateOpposite
-} from './helpers';
+import { Bullet } from './bullet';
+import { BulletsController } from './bullets_controller';
 
+import { BULLET_SIZE, CANVAS_SIZE, Direction, GameAsset, GameObject } from './game_types';
+
+import { drawObject, containsKnownColor, rotateClockwise, getRandomInt, rotateCounterClockwise } from './helpers';
 const enemyTankAsset: GameAsset = {
   // SVG  path:
   path:
@@ -81,6 +76,10 @@ export class EnemyTank implements GameObject {
   public act(): void {
     this.stopColorInFront = this.containsKnownColorForPixelsInFront(this.dir);
     this.moveInRandomDirection();
+    const rand = getRandomInt(200);
+    if (rand === 1) {
+      this.fire();
+    }
   }
 
   private moveInRandomDirection(): void {
@@ -138,6 +137,42 @@ export class EnemyTank implements GameObject {
 
       this.handleDebugMode();
     });
+  }
+
+  public fire(): void {
+    let x = this.x;
+    let y = this.y;
+
+    const halfTank = this.size / 2;
+    const halfBullet = BULLET_SIZE / 2;
+
+    // Position the bullet at the tip of the tank's gun
+    if (this.dir === Direction.East) {
+      x = this.x + this.size;
+      y = this.y + halfTank - halfBullet;
+    } else if (this.dir === Direction.West) {
+      x = this.x;
+      y = this.y + halfTank - halfBullet;
+    } else if (this.dir === Direction.North) {
+      x = this.x + halfTank - halfBullet;
+      y = this.tly;
+    } else if (this.dir === Direction.South) {
+      x = this.x + halfTank - halfBullet;
+      y = this.bly - BULLET_SIZE;
+    }
+
+    const bullet = new Bullet(this.ctx, {
+      hot: true,
+      x,
+      y,
+      dir: this.dir,
+      size: 6,
+      speed: 100,
+      firedBy: this,
+      fill: '#55BEBF'
+    });
+    const bc = BulletsController.getInstance(this.ctx);
+    if (bc.canFire(this)) bc.track(bullet);
   }
 
   private RValuesForPixelsInFront = (dir: Direction, howFar = 2): number[] => {
