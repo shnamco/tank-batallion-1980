@@ -1,6 +1,6 @@
 import { EnemyTank } from './enemy_tank';
-import { Direction } from './game_types';
-import { inclusiveBetween, randomFromArray } from './helpers';
+import { CANVAS_SIZE, Direction, PLAYER_SIZE } from './game_types';
+import { getRandomInt, inclusiveBetween, randomFromArray } from './helpers';
 
 export class EnemiesController {
   private static instance: EnemiesController;
@@ -38,14 +38,16 @@ export class EnemiesController {
   public processKilled(x: number, y: number): void {
     const margin = 10;
     this.enemyTanks = this.enemyTanks.filter((t) => {
-      return !inclusiveBetween(x, t.tlx - margin, t.trx - margin) && !inclusiveBetween(y, t.tly - margin, t.bly - margin);
+      // TODO: Fix bug with several tanks in a row disappearing
+      return !(x >= t.tlx - margin && x <= t.trx + margin && y >= t.tly - margin && y <= t.bly + margin);
     });
   }
 
   public addEnemy(): void {
+    if (this.enemyTanks.length >= 20) return;
     this.enemyTanks.push(
       new EnemyTank(this.ctx, {
-        x: 30,
+        x: getRandomInt(2) === 0 ? 0 : CANVAS_SIZE - PLAYER_SIZE,
         y: 0,
         dir: randomFromArray([Direction.South, Direction.East]) as Direction,
         size: 26

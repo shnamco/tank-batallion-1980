@@ -44,7 +44,7 @@ export class PlayerTank implements GameObject {
     this.dir = opts.dir ?? Direction.East;
     this.size = opts.size ?? playerTankAsset.size;
     this.fill = opts.fill ?? playerTankAsset.fill ?? 'magenta';
-    this.speed = 1;
+    this.speed = 0.8;
     this.calculateCorners();
   }
 
@@ -104,7 +104,7 @@ export class PlayerTank implements GameObject {
       y,
       dir: this.dir,
       size: 6,
-      speed: 100,
+      speed: 70,
       firedBy: this,
       fill: '#55BEBF'
     });

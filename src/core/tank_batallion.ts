@@ -114,7 +114,7 @@ export class TankBatallion {
 
     // Set the clock
     this.lastTime = performance.now();
-    // Start the show
+    // Start the show!
     this.main();
   };
 

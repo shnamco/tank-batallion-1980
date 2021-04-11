@@ -189,6 +189,8 @@ export class Bullet implements Bulletable {
         hitWalls.forEach((hitWall) => console.log('Wall hit at: ', hitWall.x, hitWall.y));
       }
       if (this.didHitEnemy()) {
+        // no friendly fire between enemies
+        if (this.firedBy.constructor.name === 'EnemyTank') return;
         console.log(`Bam! Killed enemy tank at ${hitX}, ${hitY}`);
         // TODO: Change to explodeTank logic when ready
         ExplosionsController.getInstance(this.ctx).explodeWall(hitX, hitY);

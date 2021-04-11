@@ -167,7 +167,7 @@ export class EnemyTank implements GameObject {
       y,
       dir: this.dir,
       size: 6,
-      speed: 100,
+      speed: 70,
       firedBy: this,
       fill: '#55BEBF'
     });
