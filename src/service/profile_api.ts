@@ -1,4 +1,5 @@
 import { praktikumApiUrl } from '../environment/praktikumApiUrl';
+import { ResponseProxy } from '@utils/api';
 
 export type Profile = {
   id: number | null;
@@ -18,15 +19,10 @@ export type Error = {
 
 export type RequestData = Omit<Profile, 'id' | 'avatar'>;
 
-export type Resp = {
-  status: number;
-  response: Profile | Error;
-};
-
 class Api {
   constructor(public baseUrl: string) {}
 
-  changeProfile = async (data: RequestData): Promise<Resp> => {
+  changeProfile = async (data: RequestData): Promise<ResponseProxy<Profile | Error>> => {
     const options = {
       method: 'PUT',
       body: JSON.stringify(data),
