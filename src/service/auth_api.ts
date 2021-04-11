@@ -1,5 +1,6 @@
 import { praktikumApiUrl } from '../environment/praktikumApiUrl';
 import { Profile } from './profile_api';
+import { ResponseProxy } from '@utils/api';
 
 export type SignUpReq = Omit<Profile, 'id' | 'display_name' | 'avatar'>;
 
@@ -12,15 +13,10 @@ export type Reason = {
   reason: string;
 };
 
-export type Resp = {
-  status: number;
-  response: string | Reason | Profile;
-};
-
 class Api {
   constructor(public baseUrl: string) {}
 
-  login = async (data: LoginReq): Promise<Resp> => {
+  login = async (data: LoginReq): Promise<ResponseProxy<string | Reason>> => {
     const options = {
       method: 'POST',
       body: JSON.stringify(data),
@@ -53,7 +49,7 @@ class Api {
     }
   };
 
-  signUp = async (data: SignUpReq): Promise<Resp> => {
+  signUp = async (data: SignUpReq): Promise<ResponseProxy<string | Reason>> => {
     const options = {
       method: 'POST',
       body: JSON.stringify(data),
@@ -77,7 +73,7 @@ class Api {
     }
   };
 
-  getProfile = async (): Promise<Resp> => {
+  getProfile = async (): Promise<ResponseProxy<Reason | Profile>> => {
     const options = {
       method: 'GET',
       credentials: 'include' as RequestCredentials
