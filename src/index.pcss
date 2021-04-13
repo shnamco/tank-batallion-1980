@@ -44,15 +44,7 @@ body {
   background-image: url('assets/arcade_bg_game.png');
 }
 
-@media screen and (max-aspect-ratio: 16/9) {
-  .arcade__background-all {
-    background-image: url('assets/center_logo.png');
-    background-size: 300px 150px;
-    background-position: right 50% top 20px;
-  }
-}
-
-@media screen and (min-aspect-ratio: 16/6) {
+@media screen and (max-aspect-ratio: 16/9), (min-aspect-ratio: 16/6) {
   .arcade__background-all {
     background-image: url('assets/center_logo.png');
     background-size: 300px 150px;
