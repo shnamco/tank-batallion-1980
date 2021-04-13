@@ -51,9 +51,10 @@ export class TankBatallion {
       size: 26
     });
 
+    this.levelBuilder = new LevelBuilder(this.ctx, this.level);
     this.exploder = ExplosionsController.getInstance(this.ctx);
-    this.bullets = BulletsController.getInstance(this.ctx);
-    this.enemies = EnemiesController.getInstance(this.ctx);
+    this.bullets = BulletsController.getInstance(this.ctx, this.levelBuilder);
+    this.enemies = EnemiesController.getInstance(this.ctx, this.bullets);
     this.enemies.addEnemy();
   };
 
@@ -68,20 +69,16 @@ export class TankBatallion {
   private updateWorld = (dt: number) => {
     // clear the animation frame
     // TODO: Define as constant!
+    this.ctx.filter = 'none';
     this.ctx.fillStyle = '#080000';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // draw a level
-    // memoize levelBuilder
-    if (!this.levelBuilder) {
-      this.levelBuilder = new LevelBuilder(this.ctx, this.level);
-    }
     this.levelBuilder.build();
 
     this.player.draw();
     this.enemies.draw();
 
-    this.bullets.update(dt, this.levelBuilder);
+    this.bullets.update(dt);
     this.exploder.update();
     this.enemies.update();
     this.updatePlayer();
@@ -107,7 +104,7 @@ export class TankBatallion {
     this.gameTimeInSeconds = 0;
     setInterval(() => {
       this.gameTimeInSeconds += 1;
-      if (this.gameTimeInSeconds % 10 === 0) {
+      if (this.gameTimeInSeconds % 120 === 0) {
         this.enemies.addEnemy();
       }
     }, 1000);

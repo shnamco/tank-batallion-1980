@@ -1,3 +1,4 @@
+import { BulletsController } from './bullets_controller';
 import { EnemyTank } from './enemy_tank';
 import { CANVAS_SIZE, Direction, PLAYER_SIZE } from './game_types';
 import { getRandomInt, randomFromArray } from './helpers';
@@ -7,18 +8,17 @@ export class EnemiesController {
   private enemyTanks: EnemyTank[] = [];
 
   // Singleton
-  private constructor(private ctx: CanvasRenderingContext2D) {}
+  private constructor(private ctx: CanvasRenderingContext2D, private bullets?: BulletsController) {}
 
-  public static getInstance(ctx: CanvasRenderingContext2D): EnemiesController {
+  public static getInstance(ctx: CanvasRenderingContext2D, bullets?: BulletsController): EnemiesController {
     if (!EnemiesController.instance) {
-      EnemiesController.instance = new EnemiesController(ctx);
+      EnemiesController.instance = new EnemiesController(ctx, bullets);
     }
 
     return EnemiesController.instance;
   }
 
   public update(): void {
-    // TODO: Change to not more than 20 tanks per level as seen in original rules
     // Add enemy if there are none
     if (this.enemyTanks.length === 0) {
       this.addEnemy();
@@ -26,6 +26,9 @@ export class EnemiesController {
 
     this.enemyTanks.forEach((t) => {
       t.act();
+      this.bullets?.all.forEach((b) => {
+        if (b.firedBy.constructor.name === 'PlayerTank' && t.containsPoint(b.x, b.y)) console.log('Enemy hit by player!');
+      });
     });
   }
 
@@ -38,7 +41,6 @@ export class EnemiesController {
   public processKilled(x: number, y: number): void {
     const margin = 10;
     this.enemyTanks = this.enemyTanks.filter((t) => {
-      // TODO: Fix bug with several tanks in a row disappearing
       return !(x >= t.tlx - margin && x <= t.trx + margin && y >= t.tly - margin && y <= t.bly + margin);
     });
   }

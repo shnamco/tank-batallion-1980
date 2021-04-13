@@ -83,12 +83,12 @@ export class PlayerTank implements GameObject {
     const halfTank = this.size / 2;
     const halfBullet = BULLET_SIZE / 2;
 
-    // Position the bullet at the tip of the tank's gun
+    // Position the bullet behind the tip of the tank's gun
     if (this.dir === Direction.East) {
-      x = this.x + this.size;
+      x = this.x + this.size - BULLET_SIZE;
       y = this.y + halfTank - halfBullet;
     } else if (this.dir === Direction.West) {
-      x = this.x;
+      x = this.x + BULLET_SIZE;
       y = this.y + halfTank - halfBullet;
     } else if (this.dir === Direction.North) {
       x = this.x + halfTank - halfBullet;
@@ -134,23 +134,18 @@ export class PlayerTank implements GameObject {
 
   private RValuesForPixelsInFront = (dir: Direction): number[] => {
     let res: number[] = [];
-
     if (dir === Direction.East) {
       res = Array.from(this.ctx.getImageData(this.trx + 2, this.try, 1, this.size).data);
     }
-
     if (dir === Direction.West) {
       res = Array.from(this.ctx.getImageData(this.tlx - 2, this.try, 1, this.size).data);
     }
-
     if (dir === Direction.South) {
       res = Array.from(this.ctx.getImageData(this.blx, this.bly + 2, this.size, 1).data);
     }
-
     if (dir === Direction.North) {
       res = Array.from(this.ctx.getImageData(this.tlx, this.tly - 2, this.size, 1).data);
     }
-
     return res.filter((_, idx) => idx % 4 === 0);
   };
 
@@ -173,6 +168,7 @@ export class PlayerTank implements GameObject {
   public moveDown = (): void => {
     this.dir = Direction.South;
     this.seesColor = this.containsKnownColorForPixelsInFront(this.dir);
+    if (this.seesColor) console.log(this.RValuesForPixelsInFront(this.dir));
     if (this.y < CANVAS_SIZE - this.size && !this.seesColor) this.y += this.speed;
   };
 

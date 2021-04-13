@@ -49,6 +49,15 @@ export class EnemyTank implements GameObject {
     this.calculateCorners();
   }
 
+  public containsPoint(x: number, y: number): boolean {
+    this.ctx.translate(this.x, this.y);
+    const outline = new Path2D();
+    outline.rect(0, 0, this.size, this.size);
+    const res = this.ctx.isPointInPath(outline, x, y);
+    this.ctx.translate(-this.x, -this.y);
+    return res;
+  }
+
   get x(): number {
     return this._x;
   }
@@ -177,23 +186,18 @@ export class EnemyTank implements GameObject {
 
   private RValuesForPixelsInFront = (dir: Direction, howFar = 2): number[] => {
     let res: number[] = [];
-
     if (dir === Direction.East) {
       res = Array.from(this.ctx.getImageData(this.trx + howFar, this.try, 1, this.size).data);
     }
-
     if (dir === Direction.West) {
       res = Array.from(this.ctx.getImageData(this.tlx - howFar, this.try, 1, this.size).data);
     }
-
     if (dir === Direction.South) {
       res = Array.from(this.ctx.getImageData(this.blx, this.bly + howFar, this.size, 1).data);
     }
-
     if (dir === Direction.North) {
       res = Array.from(this.ctx.getImageData(this.tlx, this.tly - howFar, this.size, 1).data);
     }
-
     return res.filter((_, idx) => idx % 4 === 0);
   };
 
