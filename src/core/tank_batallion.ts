@@ -53,9 +53,8 @@ export class TankBatallion {
 
     this.levelBuilder = new LevelBuilder(this.ctx, this.level);
     this.exploder = ExplosionsController.getInstance(this.ctx);
-    this.bullets = BulletsController.getInstance(this.ctx, this.levelBuilder);
-    this.enemies = EnemiesController.getInstance(this.ctx, this.bullets);
-    this.enemies.addEnemy();
+    this.enemies = EnemiesController.getInstance(this.ctx);
+    this.bullets = BulletsController.getInstance(this.ctx, this.levelBuilder, this.enemies, this.exploder);
   };
 
   private updatePlayer = () => {
@@ -104,9 +103,9 @@ export class TankBatallion {
     this.gameTimeInSeconds = 0;
     setInterval(() => {
       this.gameTimeInSeconds += 1;
-      if (this.gameTimeInSeconds % 120 === 0) {
-        this.enemies.addEnemy();
-      }
+      // if (this.gameTimeInSeconds % 120 === 0) {
+      //   this.enemies.addEnemy();
+      // }
     }, 1000);
 
     // Set the clock

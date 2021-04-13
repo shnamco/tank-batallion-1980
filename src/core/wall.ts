@@ -107,7 +107,7 @@ export class Wall implements Wallable {
   // This is fine-tuned manually with MAGIC NUMBERS
   // to have as little "wall shrapnel" as possible
   // Feel free to experiment manually to fine-tune
-  public hit = (x: number, y: number, dir: Direction): void => {
+  public hit = (x: number, y: number, dir: Direction): [number, number] => {
     // margin
     const mg = 2;
     let hit: Wall | null = null;
@@ -149,8 +149,8 @@ export class Wall implements Wallable {
         console.log(`Creating hit, x: ${hit.x}, y: ${hit.y}, w: ${hit.w}, h: ${hit.h}`);
         break;
     }
-    ExplosionsController.getInstance(this.ctx).explodeWall(hit.x, hit.y);
     this.hits.add(hit as Wall);
+    return [hit.x, hit.y];
   };
 
   private handleDebugMode() {

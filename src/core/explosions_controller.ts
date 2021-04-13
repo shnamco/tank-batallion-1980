@@ -47,7 +47,7 @@ export class ExplosionsController {
     return ExplosionsController.instance;
   }
 
-  public explodeWall(x: number, y: number): void {
+  public smallExplosion(x: number, y: number): void {
     const smallExplosion = new Image();
     smallExplosion.src = SMALL_EXPLOSION_BASE64;
 

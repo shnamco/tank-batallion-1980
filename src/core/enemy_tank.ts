@@ -38,6 +38,8 @@ export class EnemyTank implements GameObject {
   // adds outlines and pixel data
   public debug = false;
 
+  public killed = false;
+
   constructor(private ctx: CanvasRenderingContext2D, private opts: GameObject) {
     // Initial positions
     this._x = opts.x;
@@ -85,6 +87,7 @@ export class EnemyTank implements GameObject {
   public act(): void {
     this.stopColorInFront = this.containsKnownColorForPixelsInFront(this.dir);
     this.moveInRandomDirection();
+    // Fire with a certain probability
     const rand = getRandomInt(200);
     if (rand === 1) {
       this.fire();

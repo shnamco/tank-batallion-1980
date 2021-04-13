@@ -5,7 +5,7 @@ import { getRandomInt, randomFromArray } from './helpers';
 
 export class EnemiesController {
   private static instance: EnemiesController;
-  private enemyTanks: EnemyTank[] = [];
+  public enemyTanks: EnemyTank[] = [];
 
   // Singleton
   private constructor(private ctx: CanvasRenderingContext2D, private bullets?: BulletsController) {}
@@ -24,24 +24,16 @@ export class EnemiesController {
       this.addEnemy();
     }
 
+    this.enemyTanks = this.enemyTanks.filter((t) => !t.killed);
+
     this.enemyTanks.forEach((t) => {
       t.act();
-      this.bullets?.all.forEach((b) => {
-        if (b.firedBy.constructor.name === 'PlayerTank' && t.containsPoint(b.x, b.y)) console.log('Enemy hit by player!');
-      });
     });
   }
 
   public draw(): void {
     this.enemyTanks.forEach((t) => {
       t.draw();
-    });
-  }
-
-  public processKilled(x: number, y: number): void {
-    const margin = 10;
-    this.enemyTanks = this.enemyTanks.filter((t) => {
-      return !(x >= t.tlx - margin && x <= t.trx + margin && y >= t.tly - margin && y <= t.bly + margin);
     });
   }
 
