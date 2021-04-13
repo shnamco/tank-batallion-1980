@@ -121,8 +121,8 @@ export class Score extends React.Component<RouteComponentProps, ScoreState> {
 
   render(): React.ReactElement {
     return (
-      <div className="page-background">
-        <div className="container">
+      <div className="arcade__background arcade__background-all">
+        <div className="arcade__background-content score">
           <main className="forums">
             <table className="forums__table">
               <thead>

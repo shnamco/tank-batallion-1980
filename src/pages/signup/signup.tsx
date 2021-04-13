@@ -5,7 +5,9 @@ import './signup.pcss';
 export const Signup: React.FC = () => {
   return (
     <div className="arcade__background arcade__background-all arcade-signup">
-      <SignupForm />
+      <div className="arcade__background-content">
+        <SignupForm />
+      </div>
     </div>
   );
 };

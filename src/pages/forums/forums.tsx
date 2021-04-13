@@ -132,26 +132,24 @@ export class Forums extends React.Component<RouteComponentProps, ForumsState> {
 
   render(): React.ReactElement {
     return (
-      <div className="page-background">
-        <div className="container">
-          <main className="forums">
-            <table className="forums__table">
-              <thead>
-                <tr className="forums__table-header">
-                  <th className="forums__title-col">
-                    <div className="forums__header-name">FORUMS</div>
-                  </th>
-                  <th className="forums__topics-col">
-                    <div className="forums__header-name">TOPICS</div>
-                  </th>
-                  <th className="forums__replies-col">
-                    <div className="forums__header-name">REPLIES</div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>{this.renderForums}</tbody>
-            </table>
-          </main>
+      <div className="arcade__background arcade__background-all">
+        <div className="arcade__background-content forums">
+          <table className="forums__table">
+            <thead>
+              <tr className="forums__table-header">
+                <th className="forums__title-col">
+                  <div className="forums__header-name">FORUMS</div>
+                </th>
+                <th className="forums__topics-col">
+                  <div className="forums__header-name">TOPICS</div>
+                </th>
+                <th className="forums__replies-col">
+                  <div className="forums__header-name">REPLIES</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>{this.renderForums}</tbody>
+          </table>
         </div>
       </div>
     );
