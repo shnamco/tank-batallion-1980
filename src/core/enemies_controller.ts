@@ -1,4 +1,3 @@
-import { BulletsController } from './bullets_controller';
 import { EnemyTank } from './enemy_tank';
 import { CANVAS_SIZE, Direction, PLAYER_SIZE } from './game_types';
 import { getRandomInt, randomFromArray } from './helpers';
@@ -8,11 +7,11 @@ export class EnemiesController {
   public enemyTanks: EnemyTank[] = [];
 
   // Singleton
-  private constructor(private ctx: CanvasRenderingContext2D, private bullets?: BulletsController) {}
+  private constructor(private ctx: CanvasRenderingContext2D) {}
 
-  public static getInstance(ctx: CanvasRenderingContext2D, bullets?: BulletsController): EnemiesController {
+  public static getInstance(ctx: CanvasRenderingContext2D): EnemiesController {
     if (!EnemiesController.instance) {
-      EnemiesController.instance = new EnemiesController(ctx, bullets);
+      EnemiesController.instance = new EnemiesController(ctx);
     }
 
     return EnemiesController.instance;

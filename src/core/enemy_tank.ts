@@ -3,7 +3,7 @@ import { BulletsController } from './bullets_controller';
 
 import { BULLET_SIZE, CANVAS_SIZE, Direction, GameAsset, GameObject } from './game_types';
 
-import { drawObject, containsKnownColor, rotateClockwise, getRandomInt, rotateCounterClockwise } from './helpers';
+import { drawObject, rotateClockwise, getRandomInt, rotateCounterClockwise, seesObjectInFront } from './helpers';
 const enemyTankAsset: GameAsset = {
   // SVG  path:
   path:
@@ -18,21 +18,23 @@ export class EnemyTank implements GameObject {
   private _y: number;
 
   // Helper positions (Top/Bottom-Left/Right)
-  public tlx!: number;
-  public tly!: number;
-  public trx!: number;
-  public try!: number;
-  public blx!: number;
-  public bly!: number;
-  public brx!: number;
-  public bry!: number;
+  // Init with empty values and call
+  // this.calculateCorners() in constructor
+  public tlx = 0;
+  public tly = 0;
+  public trx = 0;
+  public try = 0;
+  public blx = 0;
+  public bly = 0;
+  public brx = 0;
+  public bry = 0;
 
   // Controllable from outside
   public dir: Direction;
   public speed: number;
   public size: number;
   public fill: string;
-  public stopColorInFront = false;
+  public shouldStop = false;
 
   // Debugging flip-switch,
   // adds outlines and pixel data
@@ -85,70 +87,13 @@ export class EnemyTank implements GameObject {
   }
 
   public act(): void {
-    this.stopColorInFront = this.containsKnownColorForPixelsInFront(this.dir);
+    this.shouldStop = seesObjectInFront(this.ctx, this, this.dir);
     this.moveInRandomDirection();
     // Fire with a certain probability
     const rand = getRandomInt(200);
     if (rand === 1) {
       this.fire();
     }
-  }
-
-  private moveInRandomDirection(): void {
-    const possibleDir = this.canMakeTurn(this.dir);
-    if (possibleDir) {
-      const rand = getRandomInt(5);
-      if (rand === 4) {
-        this.dir = possibleDir;
-      }
-    }
-
-    switch (this.dir) {
-      case Direction.East:
-        this.moveRight();
-        break;
-      case Direction.West:
-        this.moveLeft();
-        break;
-      case Direction.North:
-        this.moveUp();
-        break;
-      case Direction.South:
-        this.moveDown();
-        break;
-    }
-
-    if (this.stopColorInFront) {
-      // The more the range here, the likelier tank is going to "stop and think" instead of jitter around
-      const randomInt = getRandomInt(50);
-      switch (randomInt) {
-        case 0:
-          this.dir = rotateClockwise(this.dir);
-          break;
-        case 1:
-          this.dir = rotateCounterClockwise(this.dir);
-          break;
-      }
-    }
-  }
-
-  public draw(): void {
-    const svgPath = new Path2D(enemyTankAsset.path);
-    drawObject(this.ctx, () => {
-      const half = this.size / 2;
-      this.ctx.translate(this.x + half, this.y + half);
-      this.ctx.rotate((this.dir * Math.PI) / 180);
-      this.ctx.translate(-half, -half);
-      // TODO: Refactor into constants;
-      this.ctx.fillStyle = '#030000';
-      this.ctx.fillRect(0, 0, this.size, this.size);
-      this.ctx.globalCompositeOperation = 'source-atop';
-      this.ctx.fillStyle = this.fill;
-      this.ctx.fill(svgPath);
-      this.ctx.resetTransform();
-
-      this.handleDebugMode();
-    });
   }
 
   public fire(): void {
@@ -187,25 +132,39 @@ export class EnemyTank implements GameObject {
     if (bc.canFire(this)) bc.track(bullet);
   }
 
-  private RValuesForPixelsInFront = (dir: Direction, howFar = 2): number[] => {
-    let res: number[] = [];
-    if (dir === Direction.East) {
-      res = Array.from(this.ctx.getImageData(this.trx + howFar, this.try, 1, this.size).data);
-    }
-    if (dir === Direction.West) {
-      res = Array.from(this.ctx.getImageData(this.tlx - howFar, this.try, 1, this.size).data);
-    }
-    if (dir === Direction.South) {
-      res = Array.from(this.ctx.getImageData(this.blx, this.bly + howFar, this.size, 1).data);
-    }
-    if (dir === Direction.North) {
-      res = Array.from(this.ctx.getImageData(this.tlx, this.tly - howFar, this.size, 1).data);
-    }
-    return res.filter((_, idx) => idx % 4 === 0);
+  public draw(): void {
+    const svgPath = new Path2D(enemyTankAsset.path);
+    drawObject(this.ctx, () => {
+      const half = this.size / 2;
+      this.ctx.translate(this.x + half, this.y + half);
+      this.ctx.rotate((this.dir * Math.PI) / 180);
+      this.ctx.translate(-half, -half);
+      // TODO: Refactor into constants;
+      this.ctx.fillStyle = '#030000';
+      this.ctx.fillRect(0, 0, this.size, this.size);
+      this.ctx.globalCompositeOperation = 'source-atop';
+      this.ctx.fillStyle = this.fill;
+      this.ctx.fill(svgPath);
+      this.ctx.resetTransform();
+
+      this.handleDebugMode();
+    });
+  }
+
+  public moveRight = (): void => {
+    if (this.x < CANVAS_SIZE - this.size && !this.shouldStop) this.x += this.speed;
   };
 
-  private containsKnownColorForPixelsInFront = (dir: Direction, howFar = 2): boolean => {
-    return containsKnownColor(this.RValuesForPixelsInFront(dir, howFar));
+  public moveLeft = (): void => {
+    if (this.x > 0 && !this.shouldStop) this.x -= this.speed;
+  };
+
+  public moveDown = (): void => {
+    if (this.y < CANVAS_SIZE - this.size && !this.shouldStop) this.y += this.speed;
+  };
+
+  public moveUp = (): void => {
+    if (this.y > 0 && !this.shouldStop) this.y -= this.speed;
   };
 
   // Make a turn to where available with some probability
@@ -229,7 +188,7 @@ export class EnemyTank implements GameObject {
 
     let dirToGo = null;
     availableDirs.forEach((ad) => {
-      if (!this.containsKnownColorForPixelsInFront(ad, 10)) {
+      if (!seesObjectInFront(this.ctx, this, ad, 10)) {
         if (getRandomInt(5) === 4) {
           dirToGo = ad;
         }
@@ -238,21 +197,41 @@ export class EnemyTank implements GameObject {
     return dirToGo;
   };
 
-  public moveRight = (): void => {
-    if (this.x < CANVAS_SIZE - this.size && !this.stopColorInFront) this.x += this.speed;
-  };
-
-  public moveLeft = (): void => {
-    if (this.x > 0 && !this.stopColorInFront) this.x -= this.speed;
-  };
-
-  public moveDown = (): void => {
-    if (this.y < CANVAS_SIZE - this.size && !this.stopColorInFront) this.y += this.speed;
-  };
-
-  public moveUp = (): void => {
-    if (this.y > 0 && !this.stopColorInFront) this.y -= this.speed;
-  };
+  private moveInRandomDirection(): void {
+    const possibleDir = this.canMakeTurn(this.dir);
+    if (possibleDir) {
+      const rand = getRandomInt(5);
+      if (rand === 4) {
+        this.dir = possibleDir;
+      }
+    }
+    switch (this.dir) {
+      case Direction.East:
+        this.moveRight();
+        break;
+      case Direction.West:
+        this.moveLeft();
+        break;
+      case Direction.North:
+        this.moveUp();
+        break;
+      case Direction.South:
+        this.moveDown();
+        break;
+    }
+    if (this.shouldStop) {
+      // The more the range here, the likelier tank is going to "stop and think" instead of jitter around
+      const randomInt = getRandomInt(50);
+      switch (randomInt) {
+        case 0:
+          this.dir = rotateClockwise(this.dir);
+          break;
+        case 1:
+          this.dir = rotateCounterClockwise(this.dir);
+          break;
+      }
+    }
+  }
 
   private calculateCorners = (): void => {
     // Calculate helpers

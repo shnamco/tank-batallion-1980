@@ -1,6 +1,5 @@
 /* eslint-disable no-case-declarations */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { ExplosionsController } from './explosions_controller';
 import { BULLET_SIZE, Direction, PLAYER_SIZE } from './game_types';
 import { drawObject } from './helpers';
 import { WALL_BASE64_SVG } from './wall_base64';
@@ -58,17 +57,6 @@ export class Wall implements Wallable {
     this.ctx.translate(-this.x, -this.y);
     return res;
   }
-
-  // public containsAnyCorner(go: GameObject): boolean {
-  //   return [
-  //     [go.tlx, go.tly],
-  //     [go.trx, go.try],
-  //     [go.brx, go.bry],
-  //     [go.blx, go.bly]
-  //   ].some((corner) => {
-  //     return this.containsPoint(corner[0] as number, corner[1] as number);
-  //   });
-  // }
 
   private calculateCorners = (): void => {
     // Calculate helpers

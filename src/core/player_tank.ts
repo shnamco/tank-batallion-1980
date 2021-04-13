@@ -1,7 +1,7 @@
 import { Bullet } from './bullet';
 import { BulletsController } from './bullets_controller';
 import { BULLET_SIZE, CANVAS_SIZE, Direction, GameAsset, GameObject } from './game_types';
-import { drawObject, containsKnownColor } from './helpers';
+import { drawObject } from './helpers';
 
 const playerTankAsset: GameAsset = {
   // SVG  path:
@@ -17,21 +17,23 @@ export class PlayerTank implements GameObject {
   private _y: number;
 
   // Helper positions (Top/Bottom-Left/Right)
-  public tlx!: number;
-  public tly!: number;
-  public trx!: number;
-  public try!: number;
-  public blx!: number;
-  public bly!: number;
-  public brx!: number;
-  public bry!: number;
+  // Init with empty values and call
+  // this.calculateCorners() in constructor
+  public tlx = 0;
+  public tly = 0;
+  public trx = 0;
+  public try = 0;
+  public blx = 0;
+  public bly = 0;
+  public brx = 0;
+  public bry = 0;
 
   // Controllable from outside
   public dir: Direction;
   public speed: number;
   public size: number;
   public fill: string;
-  public seesColor = false;
+  public shouldStop = false;
 
   // Debugging flip-switch,
   // adds outlines and pixel data
@@ -88,7 +90,7 @@ export class PlayerTank implements GameObject {
       x = this.x + this.size - BULLET_SIZE;
       y = this.y + halfTank - halfBullet;
     } else if (this.dir === Direction.West) {
-      x = this.x + BULLET_SIZE;
+      x = this.x;
       y = this.y + halfTank - halfBullet;
     } else if (this.dir === Direction.North) {
       x = this.x + halfTank - halfBullet;
@@ -97,7 +99,6 @@ export class PlayerTank implements GameObject {
       x = this.x + halfTank - halfBullet;
       y = this.bly - BULLET_SIZE;
     }
-
     const bullet = new Bullet(this.ctx, {
       hot: true,
       x,
@@ -108,7 +109,6 @@ export class PlayerTank implements GameObject {
       firedBy: this,
       fill: '#55BEBF'
     });
-
     const bc = BulletsController.getInstance(this.ctx);
     if (bc.canFire(this)) bc.track(bullet);
   }
@@ -132,50 +132,24 @@ export class PlayerTank implements GameObject {
     });
   }
 
-  private RValuesForPixelsInFront = (dir: Direction): number[] => {
-    let res: number[] = [];
-    if (dir === Direction.East) {
-      res = Array.from(this.ctx.getImageData(this.trx + 2, this.try, 1, this.size).data);
-    }
-    if (dir === Direction.West) {
-      res = Array.from(this.ctx.getImageData(this.tlx - 2, this.try, 1, this.size).data);
-    }
-    if (dir === Direction.South) {
-      res = Array.from(this.ctx.getImageData(this.blx, this.bly + 2, this.size, 1).data);
-    }
-    if (dir === Direction.North) {
-      res = Array.from(this.ctx.getImageData(this.tlx, this.tly - 2, this.size, 1).data);
-    }
-    return res.filter((_, idx) => idx % 4 === 0);
-  };
-
-  private containsKnownColorForPixelsInFront = (dir: Direction): boolean => {
-    return containsKnownColor(this.RValuesForPixelsInFront(dir));
-  };
-
   public moveRight = (): void => {
     this.dir = Direction.East;
-    this.seesColor = this.containsKnownColorForPixelsInFront(this.dir);
-    if (this.x < CANVAS_SIZE - this.size && !this.seesColor) this.x += this.speed;
+    if (this.x < CANVAS_SIZE - this.size && !this.shouldStop) this.x += this.speed;
   };
 
   public moveLeft = (): void => {
     this.dir = Direction.West;
-    this.seesColor = this.containsKnownColorForPixelsInFront(this.dir);
-    if (this.x > 0 && !this.seesColor) this.x -= this.speed;
+    if (this.x > 0 && !this.shouldStop) this.x -= this.speed;
   };
 
   public moveDown = (): void => {
     this.dir = Direction.South;
-    this.seesColor = this.containsKnownColorForPixelsInFront(this.dir);
-    if (this.seesColor) console.log(this.RValuesForPixelsInFront(this.dir));
-    if (this.y < CANVAS_SIZE - this.size && !this.seesColor) this.y += this.speed;
+    if (this.y < CANVAS_SIZE - this.size && !this.shouldStop) this.y += this.speed;
   };
 
   public moveUp = (): void => {
     this.dir = Direction.North;
-    this.seesColor = this.containsKnownColorForPixelsInFront(this.dir);
-    if (this.y > 0 && !this.seesColor) this.y -= this.speed;
+    if (this.y > 0 && !this.shouldStop) this.y -= this.speed;
   };
 
   private calculateCorners = (): void => {

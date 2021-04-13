@@ -19,22 +19,23 @@ export interface GameAsset {
   size: number;
 }
 
+export interface CornerCalculatable {
+  tlx: number;
+  tly: number;
+  trx: number;
+  try: number;
+  blx: number;
+  bly: number;
+  brx: number;
+  bry: number;
+}
+
 // Any interactive object in a game
 export interface GameObject {
   // Initial place where to draw on canvas
   // Position before any of the updates.
   x: number;
   y: number;
-
-  tlx?: number;
-  tly?: number;
-  trx?: number;
-  try?: number;
-  blx?: number;
-  bly?: number;
-  brx?: number;
-  bry?: number;
-
   dir: Direction;
   // side of a bounding rect
   size: number;

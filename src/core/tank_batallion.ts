@@ -4,6 +4,7 @@ import { LevelBuilder } from './level_builder';
 import { ExplosionsController } from './explosions_controller';
 import { EnemiesController } from './enemies_controller';
 import { BulletsController } from './bullets_controller';
+import { seesObjectInFront } from './helpers';
 
 export class TankBatallion {
   // "Physics"
@@ -30,14 +31,14 @@ export class TankBatallion {
   private enemies!: EnemiesController;
 
   // Number of the level, game has 22 levels, but only 8 unique maps
-  private level: number;
+  private levelNo: number;
   private levelBuilder!: LevelBuilder;
 
   constructor(canvas: HTMLCanvasElement, level: number) {
     if (!canvas) {
       throw new Error('Game must be initialized with a canvas element');
     }
-    this.level = level;
+    this.levelNo = level;
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     this.initGameObjects();
@@ -51,13 +52,14 @@ export class TankBatallion {
       size: 26
     });
 
-    this.levelBuilder = new LevelBuilder(this.ctx, this.level);
+    this.levelBuilder = new LevelBuilder(this.ctx, this.levelNo);
     this.exploder = ExplosionsController.getInstance(this.ctx);
     this.enemies = EnemiesController.getInstance(this.ctx);
     this.bullets = BulletsController.getInstance(this.ctx, this.levelBuilder, this.enemies, this.exploder);
   };
 
   private updatePlayer = () => {
+    this.player.shouldStop = seesObjectInFront(this.ctx, this.player, this.player.dir);
     if (this.leftPressed) this.player.moveLeft();
     if (this.rightPressed) this.player.moveRight();
     if (this.upPressed) this.player.moveUp();
@@ -103,9 +105,9 @@ export class TankBatallion {
     this.gameTimeInSeconds = 0;
     setInterval(() => {
       this.gameTimeInSeconds += 1;
-      // if (this.gameTimeInSeconds % 120 === 0) {
-      //   this.enemies.addEnemy();
-      // }
+      if (this.gameTimeInSeconds % 30 === 0) {
+        this.enemies.addEnemy();
+      }
     }, 1000);
 
     // Set the clock
