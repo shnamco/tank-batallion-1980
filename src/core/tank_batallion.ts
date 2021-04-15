@@ -1,16 +1,14 @@
-import { Direction } from './game_types';
+import { Direction, EMPTY_BLACK } from './game_types';
 import { PlayerTank } from './player_tank';
 import { LevelBuilder } from './level_builder';
 import { ExplosionsController } from './explosions_controller';
 import { EnemiesController } from './enemies_controller';
 import { BulletsController } from './bullets_controller';
 import { seesObjectInFront } from './helpers';
+import { playerTankAsset } from './game_assets';
 
 export class TankBatallion {
-  // "Physics"
   private lastTime!: number;
-
-  // Game time
   private gameTimeInSeconds!: number;
 
   // Keypress states
@@ -45,12 +43,17 @@ export class TankBatallion {
   }
 
   private initGameObjects = () => {
-    this.player = new PlayerTank(this.ctx, {
-      x: 150,
-      y: 340,
-      dir: Direction.North,
-      size: 26
-    });
+    this.player = new PlayerTank(
+      this.ctx,
+      {
+        x: 150,
+        y: 340,
+        dir: Direction.North,
+        size: 26,
+        speed: 0.8
+      },
+      playerTankAsset
+    );
 
     this.levelBuilder = new LevelBuilder(this.ctx, this.levelNo);
     this.exploder = ExplosionsController.getInstance(this.ctx);
@@ -69,9 +72,8 @@ export class TankBatallion {
   // Happens on every "tick"
   private updateWorld = (dt: number) => {
     // clear the animation frame
-    // TODO: Define as constant!
     this.ctx.filter = 'none';
-    this.ctx.fillStyle = '#080000';
+    this.ctx.fillStyle = EMPTY_BLACK;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.levelBuilder.build();

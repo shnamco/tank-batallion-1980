@@ -1,3 +1,7 @@
+// COLOR CONSTANTS
+export const EMPTY_BLACK = '#080000';
+export const TANK_BLACK = '#040000';
+
 // COMMON CONSTANTS
 export const CANVAS_SIZE = 416;
 export const PLAYER_SIZE = 26;
@@ -5,19 +9,6 @@ export const BULLET_SIZE = 6;
 export const WALL_SIZE = 36;
 
 // ==== COMMON TYPES FOR GAME ENTITIES =======
-
-// Describes the media source of the game asset,
-// can be used to build a game object if it requires
-// external media.
-export interface GameAsset {
-  // for SVG d-paths
-  path?: string;
-  // for base64-encoded images
-  base64?: string;
-  fill?: string;
-  // side of a bounding rect
-  size: number;
-}
 
 export interface CornerCalculatable {
   tlx: number;

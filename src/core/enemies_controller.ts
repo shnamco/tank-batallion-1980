@@ -1,4 +1,5 @@
 import { EnemyTank } from './enemy_tank';
+import { enemyTankAsset } from './game_assets';
 import { CANVAS_SIZE, Direction, PLAYER_SIZE } from './game_types';
 import { getRandomInt, randomFromArray } from './helpers';
 
@@ -39,12 +40,17 @@ export class EnemiesController {
   public addEnemy(): void {
     if (this.enemyTanks.length >= 20) return;
     this.enemyTanks.push(
-      new EnemyTank(this.ctx, {
-        x: getRandomInt(2) === 0 ? 2 : CANVAS_SIZE - PLAYER_SIZE - 2,
-        y: 1,
-        dir: randomFromArray([Direction.South, Direction.East]) as Direction,
-        size: 26
-      })
+      new EnemyTank(
+        this.ctx,
+        {
+          x: getRandomInt(2) === 0 ? 2 : CANVAS_SIZE - PLAYER_SIZE - 2,
+          y: 1,
+          dir: randomFromArray([Direction.South, Direction.East]) as Direction,
+          size: 26,
+          speed: 0.5
+        },
+        enemyTankAsset
+      )
     );
   }
 }

@@ -1,4 +1,4 @@
-import { SMALL_EXPLOSION_BASE64 } from './small_explosion_base64';
+import { SMALL_EXPLOSION_BASE64 } from './game_assets';
 
 const SMALL_EXPLOSION_TICKS_1 = 10;
 const SMALL_EXPLOSION_TICKS_2 = 20;

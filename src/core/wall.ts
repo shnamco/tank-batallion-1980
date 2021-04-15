@@ -1,8 +1,6 @@
-/* eslint-disable no-case-declarations */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { BULLET_SIZE, Direction, PLAYER_SIZE } from './game_types';
+import { BULLET_SIZE, Direction, EMPTY_BLACK, PLAYER_SIZE } from './game_types';
 import { drawObject } from './helpers';
-import { WALL_BASE64_SVG } from './wall_base64';
+import { WALL_BASE64_SVG } from './game_assets';
 
 export interface Wallable {
   x: number;
@@ -83,7 +81,7 @@ export class Wall implements Wallable {
       this.ctx.fillStyle = pattern as CanvasPattern;
       this.ctx.fillRect(this.x, this.y, this.w, this.h);
 
-      this.ctx.fillStyle = '#080000';
+      this.ctx.fillStyle = EMPTY_BLACK;
       for (const hit of this.hits) {
         this.ctx.fillRect(hit.x, hit.y, hit.w, hit.h);
       }

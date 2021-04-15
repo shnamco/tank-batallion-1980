@@ -78,7 +78,6 @@ export const objectsByColor = (arr: number[]): string[] => {
 };
 
 // NAVIGATION
-
 export function rotateClockwise(dir: Direction): Direction {
   let rotated: Direction = Direction.North;
   switch (dir) {
