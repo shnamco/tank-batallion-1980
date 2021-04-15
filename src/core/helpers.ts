@@ -18,10 +18,9 @@ export function drawObject(ctx: CanvasRenderingContext2D, instructions: (...args
 export enum GameableRValues {
   Wall = 174,
   WallBlack = 0,
-  EnemyBlack = 3,
   EnemyTank = 85,
   PlayerTank = 255,
-  PlayerBlack = 4
+  TankBlack = 4
 }
 
 export const RValuesForPixelsInFront = (
