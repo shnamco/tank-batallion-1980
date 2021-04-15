@@ -36,9 +36,9 @@ class Form extends Component<FormProps> {
       first_name: null,
       second_name: null,
       display_name: null,
-      email: this.props.profile.data.email,
-      login: this.props.profile.data.login,
-      phone: this.props.profile.data.phone
+      email: null,
+      login: null,
+      phone: null
     };
 
     Object.keys(requestData).forEach((key) => {
