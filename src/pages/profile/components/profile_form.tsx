@@ -5,39 +5,25 @@ import './profile_form.pcss';
 import '@styles/variables.pcss';
 import '@styles/profile.pcss';
 import { ROUTE } from '../../../utils/route';
-import { authApi } from '@service/auth_api';
-import { profileApi, RequestData, Profile, Error } from '@service/profile_api';
+import { RequestData } from '@service/profile_api';
+import { connect } from 'react-redux';
+import { requestProfile, changeProfile } from '@store/profile/action_creators';
+import { ProfileAction, ProfileState } from '@store/profile/profile.reducer';
+import { RootState } from '@store/core/store';
+import { ThunkDispatch } from 'redux-thunk';
 
-export class ProfileForm extends Component {
+type FormProps = {
+  profile: ProfileState;
+  requestProfile: () => void;
+  changeProfile: (requestData: RequestData) => void;
+};
+
+class Form extends Component<FormProps> {
   public mainMenu = ROUTE.MENU;
 
-  state = {
-    profile: {
-      id: null,
-      first_name: null,
-      second_name: null,
-      display_name: null,
-      avatar: null,
-      email: null,
-      login: null,
-      phone: null
-    },
-    error: null
-  };
-
   public componentDidMount(): void {
-    authApi.getProfile().then((res) => {
-      if (res.status === 200) {
-        this.setProfile(res.response as Profile);
-      }
-    });
+    this.props.requestProfile();
   }
-
-  public setProfile = (profile: Profile): void => {
-    this.setState({
-      profile
-    });
-  };
 
   formHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
@@ -50,32 +36,20 @@ export class ProfileForm extends Component {
       first_name: null,
       second_name: null,
       display_name: null,
-      email: this.state.profile.email,
-      login: this.state.profile.login,
-      phone: this.state.profile.phone
+      email: this.props.profile.data.email,
+      login: this.props.profile.data.login,
+      phone: this.props.profile.data.phone
     };
 
     Object.keys(requestData).forEach((key) => {
       requestData[key as keyof RequestData] = formData.get(key) as string;
     });
 
-    const res = await profileApi.changeProfile(requestData);
-
-    if (res.status === 200) {
-      this.setState({
-        profile: res.response,
-        error: null
-      });
-    } else {
-      console.log(res);
-      this.setState({
-        error: (res.response as Error).reason
-      });
-    }
+    this.props.changeProfile(requestData);
   };
 
   public render(): React.ReactElement {
-    const { first_name, second_name, display_name, email, login, phone } = this.state.profile;
+    const { first_name, second_name, display_name, email, login, phone } = this.props.profile.data;
 
     return (
       <main className="profile">
@@ -87,7 +61,7 @@ export class ProfileForm extends Component {
             <Input name="email" type="email" placeholder="EMAIL" value={email ?? ''} />
             <Input name="login" placeholder="LOGIN" value={login ?? ''} />
             <Input name="phone" type="phone" placeholder="PHONE" value={phone ?? ''} />
-            {<span className="profile__form-error">{this.state.error && this.state.error}</span>}
+            {<span className="profile__form-error">{this.props.profile.error && this.props.profile.error}</span>}
           </div>
           <div className="profile__form-actions">
             <button className="profile__button">UPDATE PROFILE</button>
@@ -100,3 +74,18 @@ export class ProfileForm extends Component {
     );
   }
 }
+
+function mapStateToProps(state: RootState) {
+  return {
+    profile: state.profile
+  };
+}
+
+function mapDispatchToProps(dispatch: ThunkDispatch<RootState, void, ProfileAction>) {
+  return {
+    requestProfile: () => dispatch(requestProfile()),
+    changeProfile: (requestData: RequestData) => dispatch(changeProfile(requestData))
+  };
+}
+
+export const ProfileForm = connect(mapStateToProps, mapDispatchToProps)(Form);
