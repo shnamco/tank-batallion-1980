@@ -1,0 +1,4 @@
+export enum ACTIONS {
+  SET_PROFILE = 'SET_PROFILE',
+  SET_ERROR = 'SET_ERROR'
+}
