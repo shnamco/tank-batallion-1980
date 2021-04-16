@@ -1,9 +1,9 @@
 import { createSelector } from 'reselect';
 import { RootState } from '../core/store';
 
-export const authReducer = createSelector(
+export const selectAuthReducer = createSelector(
   (state: RootState) => state.authReducer,
   (authReducer) => authReducer
 );
 
-export const isLoggedIn = createSelector(authReducer, (authReducer) => authReducer.isLoggedIn);
+export const selectIsLoggedIn = createSelector(selectAuthReducer, (authReducer) => authReducer.isLoggedIn);

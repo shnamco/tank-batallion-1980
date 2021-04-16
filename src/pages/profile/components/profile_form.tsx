@@ -4,16 +4,18 @@ import { Input } from '@components/input/input';
 import './profile_form.pcss';
 import '@styles/variables.pcss';
 import '@styles/profile.pcss';
-import { ROUTE } from '../../../utils/route';
-import { RequestData } from '@service/profile_api';
+import { ROUTE } from '@utils/route';
+import { Profile, RequestData } from '@service/profile_api';
 import { connect } from 'react-redux';
-import { requestProfile, changeProfile } from '@store/profile/action_creators';
-import { ProfileAction, ProfileState } from '@store/profile/profile.reducer';
 import { RootState } from '@store/core/store';
 import { ThunkDispatch } from 'redux-thunk';
+import { changeProfile, requestProfile } from '@store/profile/profile.thunks';
+import { ProfileAction } from '@store/profile/profile.actions';
+import { selectProfileError, selectProfile } from '@store/profile/profile.selectors';
 
 type FormProps = {
-  profile: ProfileState;
+  profile: Profile;
+  error: null | string;
   requestProfile: () => void;
   changeProfile: (requestData: RequestData) => void;
 };
@@ -49,7 +51,7 @@ class Form extends Component<FormProps> {
   };
 
   public render(): React.ReactElement {
-    const { first_name, second_name, display_name, email, login, phone } = this.props.profile.data;
+    const { first_name, second_name, display_name, email, login, phone } = this.props.profile;
 
     return (
       <main className="profile">
@@ -61,7 +63,7 @@ class Form extends Component<FormProps> {
             <Input name="email" type="email" placeholder="EMAIL" value={email ?? ''} />
             <Input name="login" placeholder="LOGIN" value={login ?? ''} />
             <Input name="phone" type="phone" placeholder="PHONE" value={phone ?? ''} />
-            {<span className="profile__form-error">{this.props.profile.error && this.props.profile.error}</span>}
+            {<span className="profile__form-error">{this.props.error && this.props.error}</span>}
           </div>
           <div className="profile__form-actions">
             <button className="profile__button">UPDATE PROFILE</button>
@@ -77,7 +79,8 @@ class Form extends Component<FormProps> {
 
 function mapStateToProps(state: RootState) {
   return {
-    profile: state.profile
+    profile: selectProfile(state),
+    error: selectProfileError(state)
   };
 }
 

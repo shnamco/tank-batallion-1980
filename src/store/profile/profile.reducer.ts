@@ -1,5 +1,5 @@
 import { Profile } from '@service/profile_api';
-import { ACTIONS } from './action_types';
+import { PROFILE_ACTIONS, ProfileAction } from '@store/profile/profile.actions';
 
 export type ProfileState = {
   data: Profile;
@@ -20,31 +20,13 @@ const initialState: ProfileState = {
   error: null
 };
 
-export type ProfileAction = ProfileData | ProfileError;
-
-export type ProfileData = {
-  type: ACTIONS.SET_PROFILE;
-  profile: Profile;
-};
-
-export type ProfileError = {
-  type: ACTIONS.SET_ERROR;
-  error: null | string;
-};
-
 export const profileReducer = (state = initialState, action: ProfileAction): ProfileState => {
   switch (action.type) {
-    case ACTIONS.SET_PROFILE:
-      return {
-        ...state,
-        data: action.profile
-      };
+    case PROFILE_ACTIONS.SET_PROFILE:
+      return { ...state, data: action.payload.profile };
 
-    case ACTIONS.SET_ERROR:
-      return {
-        ...state,
-        error: action.error
-      };
+    case PROFILE_ACTIONS.SET_ERROR:
+      return { ...state, error: action.payload.error };
 
     default:
       return state;
