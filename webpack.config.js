@@ -4,12 +4,19 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
 
 const isProd = process.env.NODE_ENV === 'production';
 const isDev = !isProd;
-const filename = (ext) => (isDev ? `bundle.${ext}` : `bundle.[fullhash].${ext}`);
 
 const plugins = [
+  new CopyPlugin({
+    patterns: [
+      {
+        from: path.resolve(__dirname, 'src/sw.js'),
+      }
+    ],
+  }),
   new HTMLWebpackPlugin({
     template: path.resolve(__dirname, 'src/index.html'),
     minify: {
@@ -41,7 +48,7 @@ module.exports = {
   target: 'web',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: filename('js'),
+    filename: 'bundle.js',
     assetModuleFilename: 'assets/[name][ext]'
   },
   resolve: {
@@ -51,7 +58,8 @@ module.exports = {
       '@core': path.resolve(__dirname, './src/core/'),
       '@styles': path.resolve(__dirname, './src/styles/'),
       '@service': path.resolve(__dirname, './src/service/'),
-      '@utils': path.resolve(__dirname, './src/utils/')
+      '@utils': path.resolve(__dirname, './src/utils/'),
+      '@store': path.resolve(__dirname, './src/store/')
     },
     extensions: ['.ts', '.tsx', '.js', '.json'],
     fallback: {
@@ -87,6 +95,7 @@ module.exports = {
     open: true,
     port: 3000,
     hot: isDev,
-    historyApiFallback: true
+    historyApiFallback: true,
+    contentBase: path.join(__dirname, 'src')
   }
 };

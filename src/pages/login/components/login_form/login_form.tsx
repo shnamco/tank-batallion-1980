@@ -3,20 +3,28 @@ import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import './login_form.pcss';
 import '@styles/variables.pcss';
 import '@styles/login.pcss';
-import { authApi, LoginReq, Reason } from '@service/auth_api';
+import { LoginReq, Reason } from '@service/auth_api';
 import { Input } from '@components/input/input';
-import { ROUTE } from '@utils/route';
-import { AuthService } from '@service/auth_service';
+import { logIn } from '@store/auth/auth.thunks';
+import { connect, ConnectedProps } from 'react-redux';
+import { HistoryProxy } from '@utils/history';
 
 type FormState = {
   error: string;
 };
 
-class Form extends Component<RouteComponentProps, FormState> {
+interface FormProps extends RouteComponentProps {
+  logIn: (data: LoginReq, onError: (response: string | Reason) => void, history: HistoryProxy) => unknown;
+}
+
+const connector = connect(null, { logIn });
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+class Form extends Component<FormProps & PropsFromRedux, FormState> {
   public state = {
     error: ''
   };
-  private authService = new AuthService();
 
   public formSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -32,17 +40,14 @@ class Form extends Component<RouteComponentProps, FormState> {
       requestData[key] = formData.get(key) as string;
     });
 
-    authApi.login(requestData as LoginReq).then((res) => {
-      if (res.status === 200 || (res.response as Reason).reason === 'User already in system') {
-        this.authService.auth = true;
-        this.props.history.push(ROUTE.MENU);
-      } else {
-        this.setState({
-          error: (res.response as Reason).reason
-        });
-      }
-    });
+    this.props.logIn(requestData as LoginReq, this.onError.bind(this), this.props.history);
   };
+
+  private onError(res: string | Reason): void {
+    this.setState({
+      error: (res as Reason).reason
+    });
+  }
 
   public render(): React.ReactElement {
     return (
@@ -65,4 +70,4 @@ class Form extends Component<RouteComponentProps, FormState> {
   }
 }
 
-export const LoginForm = withRouter(Form);
+export const LoginForm = withRouter(connector(Form));

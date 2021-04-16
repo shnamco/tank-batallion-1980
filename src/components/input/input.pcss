@@ -28,8 +28,13 @@
   color: #fff;
   background: none;
   border: none;
+ 
   &::placeholder {
     text-transform: uppercase;
+  }
+
+  &[disabled] {
+    color: #888;
   }
 
   &:focus,

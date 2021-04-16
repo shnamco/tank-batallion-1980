@@ -1,15 +1,13 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { Redirect } from 'react-router-dom';
-import { AuthService } from '@service/auth_service';
+import { useLoggedIn } from '@utils/use_logged_in';
 
-export class Private extends PureComponent {
-  public render(): React.ReactElement {
-    const authService = new AuthService();
+export const Private: React.FC = ({ children }) => {
+  const isLogged: boolean = useLoggedIn();
 
-    if (authService.auth) {
-      return <>{this.props.children}</>;
-    }
-
-    return <Redirect to="/login" />;
+  if (isLogged) {
+    return <>{children}</>;
   }
-}
+
+  return <Redirect to="/login" />;
+};
