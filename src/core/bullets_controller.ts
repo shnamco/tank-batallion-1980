@@ -56,7 +56,7 @@ export class BulletsController {
           // bots can't kill each other
           if (bullet.firedBy.constructor.name !== 'PlayerTank') return;
           t.killed = true;
-          this.explosions?.smallExplosion(t.x, t.y);
+          this.explosions?.bigExplosion(t.x, t.y);
           bullet.hot = false;
         }
       });
