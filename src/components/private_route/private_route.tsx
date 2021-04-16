@@ -1,10 +1,9 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { selectIsLoggedIn } from '@store/auth/auth.selectors';
+import { useLoggedIn } from '@utils/use_logged_in';
 
 export const Private: React.FC = ({ children }) => {
-  const isLogged: boolean = useSelector(selectIsLoggedIn);
+  const isLogged: boolean = useLoggedIn();
 
   if (isLogged) {
     return <>{children}</>;
