@@ -1,22 +1,7 @@
-import { ACTIONS } from './action_types';
-import { ProfileAction, ProfileData, ProfileError } from './profile.reducer';
 import { Dispatch } from 'redux';
-import { profileApi, RequestData, Profile, Error } from '@service/profile_api';
 import { authApi } from '@service/auth_api';
-
-export const setProfile = (profile: Profile): ProfileData => {
-  return {
-    type: ACTIONS.SET_PROFILE,
-    profile
-  };
-};
-
-export const setError = (error: null | string): ProfileError => {
-  return {
-    type: ACTIONS.SET_ERROR,
-    error
-  };
-};
+import { Error, Profile, profileApi, RequestData } from '@service/profile_api';
+import { ProfileAction, setError, setProfile } from '@store/profile/profile.actions';
 
 export const requestProfile = () => {
   return (dispatch: Dispatch<ProfileAction>): void => {
