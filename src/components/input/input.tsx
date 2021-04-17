@@ -81,13 +81,13 @@ export class Input extends Component<InputProps, InputState> {
 
     return (
       <>
-        <form className={this.createClassName}>
+        <div className={this.createClassName}>
           <input {...props} onChange={this.inputHandler} value={value} onBlur={this.validate} autoComplete="off" />
           <label htmlFor={this.props.className} />
           <Underline count={6} />
           <span className="form-control__invalid">{label}</span>
           <span className="form-control__error">{error}</span>
-        </form>
+        </div>
       </>
     );
   }

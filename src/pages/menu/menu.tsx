@@ -92,27 +92,29 @@ class MenuComponent extends Component<PropsFromRedux & MenuProps, MenuState> {
 
   public render(): React.ReactElement {
     return (
-      <div className="arcade__background arcade__background-all menu">
-        <ul className="menu-list">
-          {this.menuListIterable.map((item) => (
+      <div className="arcade__background arcade__background-all">
+        <div className="arcade__background-content menu">
+          <ul className="menu-list">
+            {this.menuListIterable.map((item) => (
+              <li
+                onClick={item.action}
+                tabIndex={-1}
+                className={`menu-list__item ${this.state.cursor === item.id ? 'active' : null}`}
+                key={item.id}
+              >
+                {item.name}
+              </li>
+            ))}
             <li
-              onClick={item.action}
+              onClick={this.logout?.action}
               tabIndex={-1}
-              className={`menu-list__item ${this.state.cursor === item.id ? 'active' : null}`}
-              key={item.id}
+              className={`menu-list__item ${this.state.cursor === this.logout?.id ? 'active' : null} logout`}
             >
-              {item.name}
+              <span>{this.logout?.name}</span>
+              <img src={bang} alt="bang" className="logout__icon" />
             </li>
-          ))}
-          <li
-            onClick={this.logout?.action}
-            tabIndex={-1}
-            className={`menu-list__item ${this.state.cursor === this.logout?.id ? 'active' : null} logout`}
-          >
-            <span>{this.logout?.name}</span>
-            <img src={bang} alt="bang" className="logout__icon" />
-          </li>
-        </ul>
+          </ul>
+        </div>
       </div>
     );
   }
