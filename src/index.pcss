@@ -17,14 +17,20 @@ body {
 
 .arcade__background {
   display: flex;
+  align-items: center;
   height: 100vh;
   width: 100vw;
-  min-width: 1200px;
   margin: 0 auto;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   background-color: black;
+}
+
+.arcade__background-content {
+  min-width: 1158px;
+  display: flex;
+  flex-direction: column;
 }
 
 .arcade__background-all {
@@ -36,6 +42,20 @@ body {
   align-items: center;
   justify-content: center;
   background-image: url('assets/arcade_bg_game.png');
+}
+
+@media screen and (max-aspect-ratio: 16/9), (min-aspect-ratio: 16/6), (max-height: 700px) {
+  .arcade__background-all {
+    background-image: url('assets/center_logo.png');
+    background-size: 300px 150px;
+    background-position: right 50% top 20px;
+  }
+}
+
+@media screen and (min-aspect-ratio: 16/4), (max-height: 560px) {
+  .arcade__background-all {
+    background-image: none;
+  }
 }
 
 .container {
