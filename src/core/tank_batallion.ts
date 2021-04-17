@@ -33,7 +33,7 @@ export class TankBatallion {
   private upperCtx!: CanvasRenderingContext2D;
 
   // Controllers for in-game objects
-  private player!: PlayerTank;
+  private player!: PlayerTank | null;
   private bullets!: BulletsController;
   private exploder!: ExplosionsController;
   private enemies!: EnemiesController;
@@ -63,6 +63,9 @@ export class TankBatallion {
     this.upperCanvas = upperCanvas;
     this.upperCtx = upperCanvas.getContext('2d') as CanvasRenderingContext2D;
     this.initGameObjects();
+    // Makes sure these listeners are not duplicated on re-render;
+    document.removeEventListener('keydown', this.keyDownHandler, false);
+    document.removeEventListener('keyup', this.keyUpHandler, false);
   }
 
   private initGameObjects = () => {
@@ -89,6 +92,7 @@ export class TankBatallion {
   };
 
   private updatePlayer = () => {
+    if (!this.player) return;
     this.player.shouldStop = seesObjectInFront(this.ctx, this.player, this.player.dir);
     if (this.leftPressed) this.player.moveLeft();
     if (this.rightPressed) this.player.moveRight();
@@ -98,6 +102,7 @@ export class TankBatallion {
 
   // Happens on every "tick"
   private updateWorld = (dt: number) => {
+    if (!this.player) return;
     // clear the animation frame and disable smoothing
     this.ctx.imageSmoothingEnabled = false;
     this.ctx.filter = 'none';
@@ -126,23 +131,25 @@ export class TankBatallion {
     window.requestAnimationFrame(this.main);
   };
 
+  // All instantiated objects need to be deleted here to avoid
+  // double-renders AND/OR double-updated when pausing/resuming game
+  // through menu
   public stop(): void {
     // Stop the game
     this.gameOn = false;
     if (this.secondsClock) clearInterval(this.secondsClock);
     // Remove all singleton controllers from memory
+    this.bullets.deleteInstance();
     this.levelBuilder.deleteInstance();
     this.exploder.deleteInstance();
     this.enemies.deleteInstance();
-    this.bullets.deleteInstance();
     this.livesPanel.deleteInstance();
     this.scorePanel.deleteInstance();
+    this.player = null;
   }
 
   public play: () => void = () => {
     console.log('this game has no name');
-
-    // TODO: Make sure these listeners are not duplicated on re-render;
     document.addEventListener('keydown', this.keyDownHandler, false);
     document.addEventListener('keyup', this.keyUpHandler, false);
 
@@ -190,6 +197,7 @@ export class TankBatallion {
     }
 
     if (e.key === ' ') {
+      if (!this.player) return;
       this.player.fire();
     }
   };
