@@ -14,7 +14,9 @@ export const Profile: React.FC = () => {
 
   return (
     <div className="arcade__background arcade__background-all arcade-profile">
-      <ProfileForm />
+      <div className="arcade__background-content">
+        <ProfileForm />
+      </div>
     </div>
   );
 };
