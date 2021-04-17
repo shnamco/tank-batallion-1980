@@ -159,6 +159,11 @@ export class Forum extends React.Component<RouteComponentProps<RouteParams>, For
               {this.renderTopics}
             </tbody>
           </table>
+          <div className="forums__footer">
+            <Link to={`/${ROUTE.MENU}`} className="forums__link">
+              BACK TO THE MAIN MENU
+            </Link>
+          </div>
         </div>
       </div>
     );

@@ -150,6 +150,11 @@ export class Forums extends React.Component<RouteComponentProps, ForumsState> {
             </thead>
             <tbody>{this.renderForums}</tbody>
           </table>
+          <div className="forums__footer">
+            <Link to={`/${ROUTE.MENU}`} className="forums__link">
+              BACK TO THE MAIN MENU
+            </Link>
+          </div>
         </div>
       </div>
     );

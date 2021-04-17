@@ -1,6 +1,6 @@
 import React from 'react';
 import './score.pcss';
-import { RouteComponentProps } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { ROUTE } from '@utils/route';
 
 type ScoreType = {
@@ -123,24 +123,27 @@ export class Score extends React.Component<RouteComponentProps, ScoreState> {
     return (
       <div className="arcade__background arcade__background-all">
         <div className="arcade__background-content score">
-          <main className="forums">
-            <table className="forums__table">
-              <thead>
-                <tr className="forums__table-header">
-                  <th className="forum__title-col">
-                    <div className="forums__header-name">PLAYER</div>
-                  </th>
-                  <th className="forums__topics-col">
-                    <div className="forums__header-name">SCORE</div>
-                  </th>
-                  <th className="forums__replies-col">
-                    <div className="forums__header-name">LEVEL</div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>{this.renderForums}</tbody>
-            </table>
-          </main>
+          <table className="forums__table">
+            <thead>
+              <tr className="forums__table-header">
+                <th className="forum__title-col">
+                  <div className="forums__header-name">PLAYER</div>
+                </th>
+                <th className="forums__topics-col">
+                  <div className="forums__header-name">SCORE</div>
+                </th>
+                <th className="forums__replies-col">
+                  <div className="forums__header-name">LEVEL</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>{this.renderForums}</tbody>
+          </table>
+          <div className="forums__footer">
+            <Link to={`/${ROUTE.MENU}`} className="forums__link">
+              BACK TO THE MAIN MENU
+            </Link>
+          </div>
         </div>
       </div>
     );
