@@ -4,7 +4,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const CopyPlugin = require("copy-webpack-plugin");
+const CopyPlugin = require('copy-webpack-plugin');
 
 const isProd = process.env.NODE_ENV === 'production';
 const isDev = !isProd;
@@ -13,12 +13,12 @@ const plugins = [
   new CopyPlugin({
     patterns: [
       {
-        from: path.resolve(__dirname, 'src/sw.js'),
+        from: path.resolve(__dirname, 'src/sw.js')
       }
-    ],
+    ]
   }),
   new HTMLWebpackPlugin({
-    template: path.resolve(__dirname, 'src/index.html'),
+    template: isDev ? path.resolve(__dirname, 'src/index_dev.html') : path.resolve(__dirname, 'src/index.html'),
     minify: {
       removeComments: isProd,
       collapseWhitespace: isProd
