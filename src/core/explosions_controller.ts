@@ -53,7 +53,7 @@ interface CanvasImageAnimatable {
 }
 
 export class ExplosionsController {
-  private static instance: ExplosionsController;
+  private static instance: ExplosionsController | null;
   private wallExplosions: CanvasImageAnimatable[] = [];
   private tankExplosions: CanvasImageAnimatable[] = [];
 
@@ -66,6 +66,10 @@ export class ExplosionsController {
     }
 
     return ExplosionsController.instance;
+  }
+
+  public deleteInstance(): void {
+    ExplosionsController.instance = null;
   }
 
   public smallExplosion(x: number, y: number): void {

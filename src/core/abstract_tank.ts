@@ -1,6 +1,6 @@
 import { Bullet } from './bullet';
 import { BulletsController } from './bullets_controller';
-import { BULLET_SIZE, CANVAS_SIZE, Direction, GameObject, TANK_BLACK } from './game_types';
+import { BULLET_SIZE, CANVAS_SIZE, Direction, GameObject, GameState, TANK_BLACK } from './game_types';
 import { drawObject } from './helpers';
 import { GameAsset } from './game_assets';
 
@@ -34,7 +34,7 @@ export abstract class AbstractTank implements GameObject {
 
   public killed = false;
 
-  constructor(protected ctx: CanvasRenderingContext2D, protected opts: GameObject, private asset: GameAsset) {
+  constructor(protected ctx: CanvasRenderingContext2D, public state: GameState, protected opts: GameObject, private asset: GameAsset) {
     // Initial positions
     this._x = opts.x;
     this._y = opts.y;
@@ -73,6 +73,10 @@ export abstract class AbstractTank implements GameObject {
     // console.log(this.RValuesForPixelsInFront(this.dir));
   }
 
+  public kill(): void {
+    this.killed = true;
+  }
+
   public fire(): void {
     let x = this.x;
     let y = this.y;
@@ -100,11 +104,11 @@ export abstract class AbstractTank implements GameObject {
       y,
       dir: this.dir,
       size: 6,
-      speed: 70,
+      speed: 100,
       firedBy: this,
       fill: '#55BEBF'
     });
-    const bc = BulletsController.getInstance(this.ctx);
+    const bc = BulletsController.getInstance(this.ctx, this.state);
     if (bc.canFire(this)) bc.track(bullet);
   }
 

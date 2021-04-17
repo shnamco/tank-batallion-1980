@@ -1,4 +1,4 @@
-import { Direction, EMPTY_BLACK } from './game_types';
+import { Direction, EMPTY_BLACK, GameState } from './game_types';
 import { PlayerTank } from './player_tank';
 import { LevelBuilder } from './level_builder';
 import { ExplosionsController } from './explosions_controller';
@@ -6,10 +6,16 @@ import { EnemiesController } from './enemies_controller';
 import { BulletsController } from './bullets_controller';
 import { seesObjectInFront } from './helpers';
 import { playerTankAsset } from './game_assets';
+import LivesPanelController from './lives_panel_controller';
 
 export class TankBatallion {
   private lastTime!: number;
   private gameTimeInSeconds!: number;
+
+  // main toggle
+  private gameOn = true;
+  // keep reference to gameClock to clearInterval
+  private secondsClock!: NodeJS.Timeout | null;
 
   // Keypress states
   private leftPressed!: boolean;
@@ -19,32 +25,42 @@ export class TankBatallion {
 
   // Canvas
   private canvas: HTMLCanvasElement;
+  private lowerCanvas: HTMLCanvasElement;
   private ctx!: CanvasRenderingContext2D;
+  private lowerCtx!: CanvasRenderingContext2D;
 
-  // States for game objects
-  // should be set in play() method
+  // Controllers for in-game objects
   private player!: PlayerTank;
   private bullets!: BulletsController;
   private exploder!: ExplosionsController;
   private enemies!: EnemiesController;
+  private livesPanel!: LivesPanelController;
+  private levelBuilder!: LevelBuilder;
 
   // Number of the level, game has 22 levels, but only 8 unique maps
   private levelNo: number;
-  private levelBuilder!: LevelBuilder;
 
-  constructor(canvas: HTMLCanvasElement, level: number) {
+  constructor(canvas: HTMLCanvasElement, lowerCanvas: HTMLCanvasElement, public gameState: GameState) {
     if (!canvas) {
-      throw new Error('Game must be initialized with a canvas element');
+      throw new Error('Game must be initialized with a main canvas element');
     }
-    this.levelNo = level;
+    if (!lowerCanvas) {
+      throw new Error('Game must be initialized with a lower canvas element');
+    }
+    this.gameState = { ...gameState };
+    this.levelNo = this.gameState.levelNo;
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+    this.lowerCanvas = lowerCanvas;
+    this.lowerCtx = lowerCanvas.getContext('2d') as CanvasRenderingContext2D;
     this.initGameObjects();
   }
 
   private initGameObjects = () => {
     this.player = new PlayerTank(
       this.ctx,
+      this.gameState,
       {
         x: 150,
         y: 340,
@@ -55,10 +71,11 @@ export class TankBatallion {
       playerTankAsset
     );
 
-    this.levelBuilder = new LevelBuilder(this.ctx, this.levelNo);
+    this.levelBuilder = LevelBuilder.getInstance(this.ctx, this.levelNo);
     this.exploder = ExplosionsController.getInstance(this.ctx);
-    this.enemies = EnemiesController.getInstance(this.ctx);
-    this.bullets = BulletsController.getInstance(this.ctx, this.levelBuilder, this.enemies, this.exploder);
+    this.enemies = EnemiesController.getInstance(this.ctx, this.gameState);
+    this.bullets = BulletsController.getInstance(this.ctx, this.gameState, this.levelBuilder, this.enemies, this.exploder);
+    this.livesPanel = LivesPanelController.getInstance(this.lowerCtx, this.gameState);
   };
 
   private updatePlayer = () => {
@@ -75,7 +92,6 @@ export class TankBatallion {
     this.ctx.filter = 'none';
     this.ctx.fillStyle = EMPTY_BLACK;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
     this.levelBuilder.build();
 
     this.player.draw();
@@ -85,16 +101,30 @@ export class TankBatallion {
     this.exploder.update();
     this.enemies.update();
     this.updatePlayer();
+    this.livesPanel.update();
   };
 
   private main = () => {
+    if (!this.gameOn) return;
+
     const now = performance.now();
     const dt = (now - this.lastTime) / 1000.0;
     this.updateWorld(dt);
     this.lastTime = now;
-
     window.requestAnimationFrame(this.main);
   };
+
+  public stop(): void {
+    // Stop the game
+    this.gameOn = false;
+    if (this.secondsClock) clearInterval(this.secondsClock);
+    // Remove all singleton controllers from memory
+    this.levelBuilder.deleteInstance();
+    this.exploder.deleteInstance();
+    this.enemies.deleteInstance();
+    this.bullets.deleteInstance();
+    this.livesPanel.deleteInstance();
+  }
 
   public play: () => void = () => {
     console.log('this game has no name');
@@ -105,10 +135,11 @@ export class TankBatallion {
 
     // Counts seconds spent in game
     this.gameTimeInSeconds = 0;
-    setInterval(() => {
+    this.secondsClock = setInterval(() => {
       this.gameTimeInSeconds += 1;
-      if (this.gameTimeInSeconds % 30 === 0) {
-        this.enemies.addEnemy();
+      console.log(`Game seconds passed: ${this.gameTimeInSeconds}`);
+      if (this.gameTimeInSeconds % 10 === 0) {
+        this.enemies?.addEnemy();
       }
     }, 1000);
 

@@ -34,12 +34,25 @@ const LEVEL_WALLS: { [key in number]: { x: number; y: number; w: number; h: numb
 };
 
 export class LevelBuilder {
+  private static instance: LevelBuilder | null;
   public walls: Wall[] = [];
 
-  constructor(private ctx: CanvasRenderingContext2D, private level: number) {}
+  private constructor(private ctx: CanvasRenderingContext2D, private levelNo: number) {}
+
+  public deleteInstance(): void {
+    LevelBuilder.instance = null;
+  }
+
+  public static getInstance(ctx: CanvasRenderingContext2D, levelNo: number): LevelBuilder {
+    if (!LevelBuilder.instance) {
+      LevelBuilder.instance = new LevelBuilder(ctx, levelNo);
+    }
+
+    return LevelBuilder.instance;
+  }
 
   public build = (): void => {
-    const currentLevel = LEVEL_WALLS[this.level];
+    const currentLevel = LEVEL_WALLS[this.levelNo];
     currentLevel.forEach((segment) => {
       let wall = this.walls.find((wall) => {
         return segment.x === wall.x && segment.y === wall.y && segment.w === wall.w && segment.h === wall.h;

@@ -12,11 +12,21 @@ export interface GameAsset {
 }
 
 export const playerTankAsset: GameAsset = {
-  // SVG  path:
   path: 'M16 6L16 0L0 0V6H4V8H2L2 18H4V20H0V26H16L16 20H12V18H14V16H16L16 14L22 14V16H26V10H22V12L16 12V10H14V8L12 8V6L16 6Z',
-  // Default fill
   fill: '#FFFD54',
   size: 26
+};
+
+export const playerLifeAsset: GameAsset = {
+  path: 'M6 10L0 10L0 26H6L6 22H8L8 24L18 24V22H20V26H26V10L20 10V14H18V12H16V10H14L14 4L16 4V0L10 0V4L12 4L12 10H10V12H8L8 14H6L6 10Z',
+  fill: '#FFFD54',
+  size: 26
+};
+
+export const tankKillAsset: GameAsset = {
+  path: 'M0 14V4H4V6H6V2H4V0H10V2H8V6H10V4H14V14H10V12H4V14H0ZM10 8V10H4V8H10Z',
+  fill: '#55BEBF',
+  size: 14
 };
 
 export const enemyTankAsset: GameAsset = {

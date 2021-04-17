@@ -4,9 +4,21 @@ export const TANK_BLACK = '#040000';
 
 // COMMON CONSTANTS
 export const CANVAS_SIZE = 416;
+export const LOWER_CANVAS_HEIGHT = 40;
 export const PLAYER_SIZE = 26;
 export const BULLET_SIZE = 6;
 export const WALL_SIZE = 36;
+
+// ==== GAME STATE ===========================
+
+export const MAX_ENEMIES = 20;
+
+export interface GameState {
+  levelNo: number;
+  playerLives?: number;
+  enemiesLeft?: number;
+  playerScore?: number;
+}
 
 // ==== COMMON TYPES FOR GAME ENTITIES =======
 

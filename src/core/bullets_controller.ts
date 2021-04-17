@@ -1,29 +1,35 @@
 import { Bullet } from './bullet';
 import { EnemiesController } from './enemies_controller';
 import { ExplosionsController } from './explosions_controller';
-import { GameObject } from './game_types';
+import { GameObject, GameState } from './game_types';
 import { LevelBuilder } from './level_builder';
 
 export class BulletsController {
-  private static instance: BulletsController;
+  private static instance: BulletsController | null;
   private bullets: Bullet[] = [];
 
   // Singleton
   private constructor(
     private ctx: CanvasRenderingContext2D,
+    public state: GameState,
     private level?: LevelBuilder,
     private enemies?: EnemiesController,
     private explosions?: ExplosionsController
   ) {}
 
+  public deleteInstance(): void {
+    BulletsController.instance = null;
+  }
+
   public static getInstance(
     ctx: CanvasRenderingContext2D,
+    state: GameState,
     level?: LevelBuilder,
     enemies?: EnemiesController,
     explosions?: ExplosionsController
   ): BulletsController {
     if (!BulletsController.instance) {
-      BulletsController.instance = new BulletsController(ctx, level, enemies, explosions);
+      BulletsController.instance = new BulletsController(ctx, state, level, enemies, explosions);
     }
 
     return BulletsController.instance;
@@ -55,7 +61,13 @@ export class BulletsController {
           console.log(`[PATH-BASED ]tank at ${t.x}, ${t.y} hit by bullet at ${bullet.centerX}, ${bullet.centerY}`);
           // bots can't kill each other
           if (bullet.firedBy.constructor.name !== 'PlayerTank') return;
-          t.killed = true;
+          t.kill();
+          if (this.enemies) this.enemies.enemiesKilled += 1;
+          if (this.state.enemiesLeft && this.state.enemiesLeft > 0) {
+            console.log(this.state.enemiesLeft);
+            this.state.enemiesLeft--;
+            console.log(this.state.enemiesLeft);
+          }
           this.explosions?.bigExplosion(t.x, t.y);
           bullet.hot = false;
         }
