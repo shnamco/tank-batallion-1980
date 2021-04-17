@@ -27,6 +27,7 @@ export abstract class AbstractTank implements GameObject {
   public size: number;
   public fill: string;
   public shouldStop = false;
+  public name: string;
 
   // Debugging flip-switch,
   // adds outlines and pixel data
@@ -42,6 +43,7 @@ export abstract class AbstractTank implements GameObject {
     this.size = opts.size ?? asset.size;
     this.fill = opts.fill ?? asset.fill ?? 'magenta';
     this.speed = opts.speed ?? 1;
+    this.name = opts.name ?? 'Enemy';
     this.calculateCorners();
   }
 

@@ -51,6 +51,9 @@ export class TankBatallion {
     if (!lowerCanvas) {
       throw new Error('Game must be initialized with a lower canvas element');
     }
+    if (!upperCanvas) {
+      throw new Error('Game must be initialized with an upper canvas element');
+    }
     this.gameState = { ...gameState };
     this.levelNo = this.gameState.levelNo;
     this.canvas = canvas;
@@ -71,7 +74,8 @@ export class TankBatallion {
         y: 340,
         dir: Direction.North,
         size: 26,
-        speed: 0.8
+        speed: 0.8,
+        name: 'Player'
       },
       playerTankAsset
     );
@@ -94,7 +98,7 @@ export class TankBatallion {
 
   // Happens on every "tick"
   private updateWorld = (dt: number) => {
-    // clear the animation frame and disbable smoothing
+    // clear the animation frame and disable smoothing
     this.ctx.imageSmoothingEnabled = false;
     this.ctx.filter = 'none';
     this.ctx.fillStyle = EMPTY_BLACK;

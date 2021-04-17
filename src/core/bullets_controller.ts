@@ -71,7 +71,7 @@ export class BulletsController {
         if (t.containsPoint(bullet.centerX, bullet.centerY)) {
           // console.log(`[PATH-BASED ]tank at ${t.x}, ${t.y} hit by bullet at ${bullet.centerX}, ${bullet.centerY}`);
           // bots can't kill each other
-          if (bullet.firedBy.constructor.name !== 'EnemyTank') {
+          if (bullet.firedBy.name !== 'Enemy') {
             t.kill();
             if (this.enemies) this.enemies.enemiesKilled += 1;
             if (this.state.enemiesLeft && this.state.enemiesLeft > 0) {

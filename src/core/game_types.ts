@@ -46,9 +46,8 @@ export interface GameObject {
   size: number;
   // override default fill if necessary
   fill?: string | undefined;
-  collideWithWall?: () => void;
-
   speed?: number;
+  name?: string;
 }
 
 // Compass - Grad
