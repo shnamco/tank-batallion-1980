@@ -104,7 +104,7 @@ export abstract class AbstractTank implements GameObject {
       y,
       dir: this.dir,
       size: 6,
-      speed: 100,
+      speed: 120,
       firedBy: this,
       fill: '#55BEBF'
     });

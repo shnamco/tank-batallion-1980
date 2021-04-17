@@ -82,6 +82,15 @@ export class Bullet implements Bulletable {
     this.bry = value + this.size;
   }
 
+  public containsPoint(x: number, y: number): boolean {
+    this.ctx.translate(this.x, this.y);
+    const outline = new Path2D();
+    outline.rect(0, 0, this.size, this.size);
+    const res = this.ctx.isPointInPath(outline, x, y);
+    this.ctx.translate(-this.x, -this.y);
+    return res;
+  }
+
   // dt is a delta taken from the main game loop
   public update(dt: number): void {
     this.calculateCorners();

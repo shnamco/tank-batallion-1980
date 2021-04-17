@@ -7,6 +7,7 @@ import { BulletsController } from './bullets_controller';
 import { seesObjectInFront } from './helpers';
 import { playerTankAsset } from './game_assets';
 import LivesPanelController from './lives_panel_controller';
+import ScorePanelController from './score_panel_controller';
 
 export class TankBatallion {
   private lastTime!: number;
@@ -26,8 +27,10 @@ export class TankBatallion {
   // Canvas
   private canvas: HTMLCanvasElement;
   private lowerCanvas: HTMLCanvasElement;
+  private upperCanvas: HTMLCanvasElement;
   private ctx!: CanvasRenderingContext2D;
   private lowerCtx!: CanvasRenderingContext2D;
+  private upperCtx!: CanvasRenderingContext2D;
 
   // Controllers for in-game objects
   private player!: PlayerTank;
@@ -35,12 +38,13 @@ export class TankBatallion {
   private exploder!: ExplosionsController;
   private enemies!: EnemiesController;
   private livesPanel!: LivesPanelController;
+  private scorePanel!: ScorePanelController;
   private levelBuilder!: LevelBuilder;
 
   // Number of the level, game has 22 levels, but only 8 unique maps
   private levelNo: number;
 
-  constructor(canvas: HTMLCanvasElement, lowerCanvas: HTMLCanvasElement, public gameState: GameState) {
+  constructor(canvas: HTMLCanvasElement, lowerCanvas: HTMLCanvasElement, upperCanvas: HTMLCanvasElement, public gameState: GameState) {
     if (!canvas) {
       throw new Error('Game must be initialized with a main canvas element');
     }
@@ -51,9 +55,10 @@ export class TankBatallion {
     this.levelNo = this.gameState.levelNo;
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-
     this.lowerCanvas = lowerCanvas;
     this.lowerCtx = lowerCanvas.getContext('2d') as CanvasRenderingContext2D;
+    this.upperCanvas = upperCanvas;
+    this.upperCtx = upperCanvas.getContext('2d') as CanvasRenderingContext2D;
     this.initGameObjects();
   }
 
@@ -76,6 +81,7 @@ export class TankBatallion {
     this.enemies = EnemiesController.getInstance(this.ctx, this.gameState);
     this.bullets = BulletsController.getInstance(this.ctx, this.gameState, this.levelBuilder, this.enemies, this.exploder);
     this.livesPanel = LivesPanelController.getInstance(this.lowerCtx, this.gameState);
+    this.scorePanel = ScorePanelController.getInstance(this.upperCtx, this.gameState);
   };
 
   private updatePlayer = () => {
@@ -88,7 +94,8 @@ export class TankBatallion {
 
   // Happens on every "tick"
   private updateWorld = (dt: number) => {
-    // clear the animation frame
+    // clear the animation frame and disbable smoothing
+    this.ctx.imageSmoothingEnabled = false;
     this.ctx.filter = 'none';
     this.ctx.fillStyle = EMPTY_BLACK;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -102,6 +109,7 @@ export class TankBatallion {
     this.enemies.update();
     this.updatePlayer();
     this.livesPanel.update();
+    this.scorePanel.update();
   };
 
   private main = () => {
@@ -124,6 +132,7 @@ export class TankBatallion {
     this.enemies.deleteInstance();
     this.bullets.deleteInstance();
     this.livesPanel.deleteInstance();
+    this.scorePanel.deleteInstance();
   }
 
   public play: () => void = () => {

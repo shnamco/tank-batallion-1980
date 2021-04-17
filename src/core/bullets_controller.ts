@@ -1,7 +1,8 @@
 import { Bullet } from './bullet';
 import { EnemiesController } from './enemies_controller';
 import { ExplosionsController } from './explosions_controller';
-import { GameObject, GameState } from './game_types';
+import { GameObject, GameState, HIT_SCORES } from './game_types';
+import { randomFromArray } from './helpers';
 import { LevelBuilder } from './level_builder';
 
 export class BulletsController {
@@ -55,21 +56,33 @@ export class BulletsController {
     this.bullets.forEach((bullet) => {
       bullet.update(dt);
 
+      // Bullets can shoot down other bullets
+      this.bullets
+        .filter((b) => b != bullet)
+        .forEach((b) => {
+          if (b.containsPoint(bullet.centerX, bullet.centerY)) {
+            bullet.hot = false;
+            b.hot = false;
+          }
+        });
+
       // Check collisions with enemies
       this.enemies?.enemyTanks.forEach((t) => {
         if (t.containsPoint(bullet.centerX, bullet.centerY)) {
-          console.log(`[PATH-BASED ]tank at ${t.x}, ${t.y} hit by bullet at ${bullet.centerX}, ${bullet.centerY}`);
+          // console.log(`[PATH-BASED ]tank at ${t.x}, ${t.y} hit by bullet at ${bullet.centerX}, ${bullet.centerY}`);
           // bots can't kill each other
-          if (bullet.firedBy.constructor.name !== 'PlayerTank') return;
-          t.kill();
-          if (this.enemies) this.enemies.enemiesKilled += 1;
-          if (this.state.enemiesLeft && this.state.enemiesLeft > 0) {
-            console.log(this.state.enemiesLeft);
-            this.state.enemiesLeft--;
-            console.log(this.state.enemiesLeft);
+          if (bullet.firedBy.constructor.name !== 'EnemyTank') {
+            t.kill();
+            if (this.enemies) this.enemies.enemiesKilled += 1;
+            if (this.state.enemiesLeft && this.state.enemiesLeft > 0) {
+              this.state.enemiesLeft--;
+            }
+            const scored = randomFromArray(HIT_SCORES) as number;
+            if (typeof this.state.playerScore === 'number') this.state.playerScore += scored;
+            this.explosions?.bigExplosion(t.x, t.y, scored);
+            bullet.hot = false;
+            console.log(this.state.playerScore);
           }
-          this.explosions?.bigExplosion(t.x, t.y);
-          bullet.hot = false;
         }
       });
 

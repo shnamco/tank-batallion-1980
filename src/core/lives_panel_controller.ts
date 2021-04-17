@@ -1,5 +1,5 @@
 import { playerLifeAsset, tankKillAsset } from './game_assets';
-import { CANVAS_SIZE, EMPTY_BLACK, GameState, LOWER_CANVAS_HEIGHT, PLAYER_SIZE } from './game_types';
+import { CANVAS_SIZE, EMPTY_BLACK, GameState, AUX_CANVAS_HEIGHT, PLAYER_SIZE } from './game_types';
 
 export default class LivesPanelController {
   private static instance: LivesPanelController | null;
@@ -23,9 +23,10 @@ export default class LivesPanelController {
 
   public draw(): void {
     // clear the animation frame
+    this.ctx.imageSmoothingEnabled = false;
     this.ctx.filter = 'none';
     this.ctx.fillStyle = EMPTY_BLACK;
-    this.ctx.fillRect(0, 0, CANVAS_SIZE, LOWER_CANVAS_HEIGHT);
+    this.ctx.fillRect(0, 0, CANVAS_SIZE, AUX_CANVAS_HEIGHT);
     this.drawKills();
     this.drawLives();
   }

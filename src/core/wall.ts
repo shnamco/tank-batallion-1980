@@ -92,7 +92,7 @@ export class Wall implements Wallable {
 
   // This is fine-tuned manually with MAGIC NUMBERS
   // to have as little "wall shrapnel" as possible
-  // Feel free to experiment manually to fine-tune
+  // Feel free to experiment manually to tune even more
   public hit = (x: number, y: number, dir: Direction): [number, number] => {
     // margin
     const mg = 2;
@@ -101,36 +101,36 @@ export class Wall implements Wallable {
       case Direction.East:
         hit = new Wall(this.ctx, {
           x: x - BULLET_SIZE / 2 - mg,
-          y: y - PLAYER_SIZE / 2 - mg,
-          w: 24,
+          y: y - PLAYER_SIZE / 2 - mg - 1,
+          w: 16,
           h: 32
         });
         console.log(`Creating hit, x: ${hit.x}, y: ${hit.y}, w: ${hit.w}, h: ${hit.h}`);
         break;
       case Direction.West:
         hit = new Wall(this.ctx, {
-          x: x - PLAYER_SIZE / 2 - BULLET_SIZE / 2 - mg,
-          y: y - PLAYER_SIZE / 2 - mg,
-          w: 24,
+          x: x - PLAYER_SIZE / 2 + BULLET_SIZE / 2,
+          y: y - PLAYER_SIZE / 2 - mg * 2 - 1,
+          w: 16,
           h: 32
         });
         console.log(`Creating hit, x: ${hit.x}, y: ${hit.y}, w: ${hit.w}, h: ${hit.h}`);
         break;
       case Direction.South:
         hit = new Wall(this.ctx, {
-          x: x - PLAYER_SIZE / 2,
-          y: y - BULLET_SIZE / 2 + mg,
+          x: x - PLAYER_SIZE / 2 - 1,
+          y: y - BULLET_SIZE / 2,
           w: 32,
-          h: 16
+          h: 10
         });
         console.log(`Creating hit, x: ${hit.x}, y: ${hit.y}, w: ${hit.w}, h: ${hit.h}`);
         break;
       case Direction.North:
         hit = new Wall(this.ctx, {
-          x: x - PLAYER_SIZE / 2 - BULLET_SIZE / 2,
-          y: y - BULLET_SIZE / 2 - 16 + 2 + mg,
+          x: x - PLAYER_SIZE / 2 - BULLET_SIZE / 2 - 1,
+          y: y - BULLET_SIZE / 2 - 4,
           w: 32,
-          h: 16
+          h: 10
         });
         console.log(`Creating hit, x: ${hit.x}, y: ${hit.y}, w: ${hit.w}, h: ${hit.h}`);
         break;

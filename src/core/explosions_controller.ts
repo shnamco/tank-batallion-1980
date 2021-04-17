@@ -1,4 +1,5 @@
 import { BIG_EXPLOSION_BASE64, SMALL_EXPLOSION_BASE64 } from './game_assets';
+import { ALMOST_WHITE } from './game_types';
 
 const SMALL_EXPLOSION_TICKS_1 = 10;
 const SMALL_EXPLOSION_TICKS_2 = 20;
@@ -17,6 +18,7 @@ const BIG_EXPLOSION_TICKS_1 = 10;
 const BIG_EXPLOSION_TICKS_2 = 20;
 const BIG_EXPLOSION_TICKS_3 = 30;
 const BIG_EXPLOSION_TICKS_4 = 40;
+const BIG_EXPLOSION_TICKS_5 = 70;
 
 const BIG_EXPLOSION_1_SX = 0;
 const BIG_EXPLOSION_1_SY = 28;
@@ -50,6 +52,7 @@ interface CanvasImageAnimatable {
   frames: CanvasImageDrawable[];
   createdAt: number;
   ticks: number;
+  score?: number;
 }
 
 export class ExplosionsController {
@@ -110,7 +113,7 @@ export class ExplosionsController {
     this.wallExplosions.push(smallExplosionAnimation);
   }
 
-  public bigExplosion(x: number, y: number): void {
+  public bigExplosion(x: number, y: number, score: number): void {
     const bigExplosion = new Image();
     bigExplosion.src = BIG_EXPLOSION_BASE64;
 
@@ -166,6 +169,7 @@ export class ExplosionsController {
       image: bigExplosion,
       frames: [bigExplosionFrame1, bigExplosionFrame2, bigExplosionFrame3, bigExplosionFrame4],
       createdAt: performance.now(),
+      score,
       ticks: 0
     };
 
@@ -188,27 +192,34 @@ export class ExplosionsController {
     // clear explosions older than 10 seconds
     this.wallExplosions.filter((we) => we.createdAt < performance.now() - 10000);
 
-    this.tankExplosions.forEach((we) => {
-      if (we.ticks < BIG_EXPLOSION_TICKS_1) {
-        const f = we.frames[0];
-        this.ctx.drawImage(we.image, f.sx, f.sy, f.sw, f.sh, f.dx, f.dy, f.dw, f.dh);
+    this.tankExplosions.forEach((te) => {
+      if (te.ticks < BIG_EXPLOSION_TICKS_1) {
+        const f = te.frames[0];
+        this.ctx.drawImage(te.image, f.sx, f.sy, f.sw, f.sh, f.dx, f.dy, f.dw, f.dh);
       }
 
-      if (we.ticks > BIG_EXPLOSION_TICKS_1 && we.ticks < BIG_EXPLOSION_TICKS_2) {
-        const f = we.frames[1];
-        this.ctx.drawImage(we.image, f.sx, f.sy, f.sw, f.sh, f.dx, f.dy, f.dw, f.dh);
+      if (te.ticks > BIG_EXPLOSION_TICKS_1 && te.ticks < BIG_EXPLOSION_TICKS_2) {
+        const f = te.frames[1];
+        this.ctx.drawImage(te.image, f.sx, f.sy, f.sw, f.sh, f.dx, f.dy, f.dw, f.dh);
       }
 
-      if (we.ticks > BIG_EXPLOSION_TICKS_2 && we.ticks < BIG_EXPLOSION_TICKS_3) {
-        const f = we.frames[2];
-        this.ctx.drawImage(we.image, f.sx, f.sy, f.sw, f.sh, f.dx, f.dy, f.dw, f.dh);
+      if (te.ticks > BIG_EXPLOSION_TICKS_2 && te.ticks < BIG_EXPLOSION_TICKS_3) {
+        const f = te.frames[2];
+        this.ctx.drawImage(te.image, f.sx, f.sy, f.sw, f.sh, f.dx, f.dy, f.dw, f.dh);
       }
 
-      if (we.ticks > BIG_EXPLOSION_TICKS_3 && we.ticks < BIG_EXPLOSION_TICKS_4) {
-        const f = we.frames[3];
-        this.ctx.drawImage(we.image, f.sx, f.sy, f.sw, f.sh, f.dx, f.dy, f.dw, f.dh);
+      if (te.ticks > BIG_EXPLOSION_TICKS_3 && te.ticks < BIG_EXPLOSION_TICKS_4) {
+        const f = te.frames[3];
+        this.ctx.drawImage(te.image, f.sx, f.sy, f.sw, f.sh, f.dx, f.dy, f.dw, f.dh);
       }
-      we.ticks++;
+
+      if (te.ticks > BIG_EXPLOSION_TICKS_4 && te.ticks < BIG_EXPLOSION_TICKS_5) {
+        this.ctx.fillStyle = ALMOST_WHITE;
+        this.ctx.font = "10px 'Press Start 2P'";
+        this.ctx.fillText(`${te.score}`, te.frames[1].dx + 5, te.frames[1].dy + 5);
+        console.log(te.score);
+      }
+      te.ticks++;
     });
 
     this.tankExplosions.filter((we) => we.createdAt < performance.now() - 10000);
