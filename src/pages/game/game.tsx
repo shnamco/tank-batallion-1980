@@ -13,7 +13,8 @@ class GameComponent extends React.Component<GameProps, GameState> {
   private readonly lowerCanvas: React.RefObject<HTMLCanvasElement>;
   private readonly upperCanvas: React.RefObject<HTMLCanvasElement>;
   private tb!: TankBatallion | null;
-  private keyPressHandler: (() => void) | undefined;
+  private escPressHandler: (() => void) | undefined;
+  private fPressHandler: (() => void) | undefined;
 
   constructor(props: GameProps) {
     super(props);
@@ -23,8 +24,18 @@ class GameComponent extends React.Component<GameProps, GameState> {
   }
 
   public escapeHandler(): void {
-    this.keyPressHandler = keyPressHandler('Escape', () => {
+    this.escPressHandler = keyPressHandler('Escape', () => {
       this.props.history.push(ROUTE.MENU);
+    });
+
+    this.fPressHandler = keyPressHandler('f', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
     });
   }
 
@@ -38,8 +49,11 @@ class GameComponent extends React.Component<GameProps, GameState> {
 
   public componentWillUnmount(): void {
     this.tb?.stop();
-    if (this.keyPressHandler) {
-      this.keyPressHandler();
+    if (this.escPressHandler) {
+      this.escPressHandler();
+    }
+    if (this.fPressHandler) {
+      this.fPressHandler();
     }
   }
 
