@@ -1,19 +1,26 @@
 /* These are pixel-perfect, keep in pixels */
 .game__centerpiece {
-  width: 582px;
-  height: 582px;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  background-color: #080000;
+}
+
+.game__checkers-wrapper {
+  height: 456px;
+  width: 456px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: url('../../assets/checkers.svg');
 }
 
 #game-canvas {
   background-color: black;
-  min-width: 94%;
-  min-height: 94%;
-  max-width: 94%;
-  max-height: 94%;
+  min-width: 416px;
+  min-height: 416px;
+  max-width: 416px;
+  max-height: 416px;
 }

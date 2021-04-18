@@ -31,7 +31,7 @@ export const App: React.FC = () => {
           <Private>
             <Switch>
               <Route path="/game">
-                <Game level={1} />
+                <Game levelNo={1} playerLives={3} enemiesLeft={20} playerScore={0} />
               </Route>
               <Route path="/profile" component={Profile} />
               <Route path="/forums" component={Forums} />

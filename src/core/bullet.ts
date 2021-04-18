@@ -1,5 +1,5 @@
-import { Direction, GameObject } from './game_types';
-import { Colors, drawObject } from './helpers';
+import { BULLET_SIZE, CANVAS_SIZE, Direction, GameObject } from './game_types';
+import { drawObject } from './helpers';
 
 interface Bulletable extends GameObject {
   speed: number;
@@ -20,7 +20,6 @@ export class Bullet implements Bulletable {
   public speed: number;
   public hot: boolean;
   public firedBy: GameObject;
-  public collidedWithWall = false;
 
   // Helper positions (Top/Bottom-Left/Right)
   public tlx!: number;
@@ -31,8 +30,6 @@ export class Bullet implements Bulletable {
   public bly!: number;
   public brx!: number;
   public bry!: number;
-
-  public pixelColorUnder?: number;
 
   // Debugging flip-switch,
   // adds outlines and pixel data
@@ -46,11 +43,19 @@ export class Bullet implements Bulletable {
 
     // Default values
     this.dir = opts.dir ?? Direction.East;
-    this.size = opts.size ?? 6;
+    this.size = opts.size ?? BULLET_SIZE;
     this.hot = opts.hot ?? false;
     this.speed = opts.speed ?? 10;
     this.firedBy = opts.firedBy;
     this.fill = opts.fill ?? this.firedBy.fill ?? 'magenta';
+  }
+
+  get centerX(): number {
+    return this.x + this.size / 2;
+  }
+
+  get centerY(): number {
+    return this.y + this.size / 2;
   }
 
   get x(): number {
@@ -77,94 +82,39 @@ export class Bullet implements Bulletable {
     this.bry = value + this.size;
   }
 
-  private containsKnownColor = (arr: number[]): boolean => {
-    return arr.some((pix) => {
-      return Object.values(Colors).some((num) => {
-        return pix === num;
-      });
-    });
-  };
-
-  // TODO: hit detection stripes and hit squares are off, figure out magic numbers and unify
-
-  private RValuesForPixelsInFront = (dir: Direction): number[] => {
-    let res: number[] = [];
-
-    if (dir === Direction.East) {
-      res = Array.from(this.ctx.getImageData(this.trx + 1, this.try - 10, 1, this.size + 10).data);
-    }
-
-    if (dir === Direction.West) {
-      res = Array.from(this.ctx.getImageData(this.tlx - 1, this.try - 10, 1, this.size + 10).data);
-    }
-
-    if (dir === Direction.South) {
-      res = Array.from(this.ctx.getImageData(this.blx, this.bly + 1, this.size, 1).data);
-    }
-
-    if (dir === Direction.North) {
-      res = Array.from(this.ctx.getImageData(this.tlx, this.tly - 1, this.size, 1).data);
-    }
-
-    return res.filter((_, idx) => idx % 4 === 0);
-  };
-
-  private containsKnownColorForPixelsInFront = (dir: Direction): boolean => {
-    return this.containsKnownColor(this.RValuesForPixelsInFront(dir));
-  };
+  public containsPoint(x: number, y: number): boolean {
+    this.ctx.translate(this.x, this.y);
+    const outline = new Path2D();
+    outline.rect(0, 0, this.size, this.size);
+    const res = this.ctx.isPointInPath(outline, x, y);
+    this.ctx.translate(-this.x, -this.y);
+    return res;
+  }
 
   // dt is a delta taken from the main game loop
-  public update(dt: number): [number, number] {
-    if (!this.hot) return [-1, -1];
+  public update(dt: number): void {
     this.calculateCorners();
-    let hitX = -1;
-    let hitY = -1;
-
     // Bullet flies to the right
     if (this.dir === Direction.East) {
       this.x += dt * this.speed;
-      if (this.containsKnownColorForPixelsInFront(this.dir)) {
-        console.log(`Bam! at ${this.trx}, ${this.try}`);
-        this.hot = false;
-        hitX = this.trx - dt * this.speed - this.size; // TODO: const for magic number
-        hitY = this.try - 20; // TODO: const for magic number
-      }
+      if (this.x > CANVAS_SIZE) this.hot = false;
     }
-
     // Bullet flies to the left
     if (this.dir === Direction.West) {
       this.x -= dt * this.speed;
-      if (this.containsKnownColorForPixelsInFront(this.dir)) {
-        console.log(`Bam! at ${this.tlx}, ${this.tly}`);
-        this.hot = false;
-        hitX = this.tlx - dt * this.speed - this.size * 2;
-        hitY = this.tly - 20;
-      }
+      if (this.x < 0) this.hot = false;
     }
-
     // Bullet flies up
     if (this.dir === Direction.North) {
       this.y -= dt * this.speed;
-      if (this.containsKnownColorForPixelsInFront(this.dir)) {
-        console.log(`Bam!`);
-        this.hot = false;
-        hitX = this.tlx - 10;
-        hitY = this.tly - dt * this.speed - this.size * 2;
-      }
+      if (this.y < 0) this.hot = false;
     }
-
     // Bullet flies down
     if (this.dir === Direction.South) {
       this.y += dt * this.speed;
-      if (this.containsKnownColorForPixelsInFront(this.dir)) {
-        console.log(`Bam!`);
-        this.hot = false;
-        hitX = this.tlx - 10;
-        hitY = this.tly + dt * this.speed - this.size;
-      }
+      if (this.y > CANVAS_SIZE) this.hot = false;
     }
     this.draw();
-    return [hitX, hitY];
   }
 
   public draw = (): void => {
@@ -172,36 +122,36 @@ export class Bullet implements Bulletable {
       this.ctx.fillStyle = this.fill;
       this.ctx.fillRect(this.x, this.y, this.size, this.size);
 
-      if (this.debug) {
-        this.ctx.font = '9px monospace';
-        this.ctx.fillStyle = 'white';
-        this.ctx.strokeStyle = 'white';
-        this.ctx.strokeRect(this.x, this.y, this.size, this.size);
-
-        // Top left corner
-        this.ctx.fillText(`x${this.tlx}`, this.tlx - 9, this.tly - 6);
-        this.ctx.fillText(`y${this.tly}`, this.tlx - 9, this.tly);
-
-        // Top right corner
-        this.ctx.fillText(`x${this.trx}`, this.trx - 9, this.try - 6);
-        this.ctx.fillText(`y${this.try}`, this.trx - 9, this.try);
-
-        // Bottom left corner
-        this.ctx.fillText(`x${this.blx}`, this.blx - 9, this.bly - 6);
-        this.ctx.fillText(`y${this.bly}`, this.blx - 9, this.bly);
-
-        // Bottom right corner
-        this.ctx.fillText(`x${this.brx}`, this.brx - 9, this.bry - 6);
-        this.ctx.fillText(`y${this.bry}`, this.brx - 9, this.bry);
-      }
+      this.handleDebug();
     });
   };
 
+  private handleDebug = (): void => {
+    if (this.debug) {
+      this.ctx.font = '9px monospace';
+      this.ctx.fillStyle = 'white';
+      this.ctx.strokeStyle = 'white';
+      this.ctx.strokeRect(this.x, this.y, this.size, this.size);
+
+      // Top left corner
+      this.ctx.fillText(`x${this.tlx}`, this.tlx - 9, this.tly - 6);
+      this.ctx.fillText(`y${this.tly}`, this.tlx - 9, this.tly);
+
+      // Top right corner
+      this.ctx.fillText(`x${this.trx}`, this.trx - 9, this.try - 6);
+      this.ctx.fillText(`y${this.try}`, this.trx - 9, this.try);
+
+      // Bottom left corner
+      this.ctx.fillText(`x${this.blx}`, this.blx - 9, this.bly - 6);
+      this.ctx.fillText(`y${this.bly}`, this.blx - 9, this.bly);
+
+      // Bottom right corner
+      this.ctx.fillText(`x${this.brx}`, this.brx - 9, this.bry - 6);
+      this.ctx.fillText(`y${this.bry}`, this.brx - 9, this.bry);
+    }
+  };
+
   private calculateCorners = (): void => {
-    // Calculate helpers
-    // Walls are static so we don't need accessors.
-    // But we need to keep them updated, so
-    // we calculate on every draw.
     this.tlx = this.x;
     this.tly = this.y;
     this.trx = this.x + this.size;

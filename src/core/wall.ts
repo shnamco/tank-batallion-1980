@@ -1,15 +1,12 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { Direction, GameObject } from './game_types';
-import { drawObject, between } from './helpers';
-import { PlayerTank } from './player_tank';
-import { WALL_BASE64_SVG } from './wall_base64';
+import { BULLET_SIZE, Direction, EMPTY_BLACK, PLAYER_SIZE } from './game_types';
+import { drawObject } from './helpers';
+import { WALL_BASE64_SVG } from './game_assets';
 
 export interface Wallable {
   x: number;
   y: number;
   w: number;
   h: number;
-  checkCollisions: ((gameObjects: GameObject[]) => void) | (() => never);
   empty?: boolean;
 }
 
@@ -36,8 +33,7 @@ export class Wall implements Wallable {
   public debug = false;
 
   // Regions that were hit by bullets
-  public hits: Wall[] = [];
-  public createdAt: number;
+  public hits: Set<Wall> = new Set();
 
   // If true, wall will appear as a black square (for hits)
   public empty;
@@ -49,7 +45,15 @@ export class Wall implements Wallable {
     this.h = opts.h;
     this.calculateCorners();
     this.empty = opts.empty ?? false;
-    this.createdAt = performance.now();
+  }
+
+  public containsPoint(x: number, y: number): boolean {
+    this.ctx.translate(this.x, this.y);
+    const outline = new Path2D();
+    outline.rect(0, 0, this.w, this.h);
+    const res = this.ctx.isPointInPath(outline, x, y);
+    this.ctx.translate(-this.x, -this.y);
+    return res;
   }
 
   private calculateCorners = (): void => {
@@ -71,91 +75,92 @@ export class Wall implements Wallable {
     this.calculateCorners();
 
     drawObject(this.ctx, () => {
-      if (!this.empty) {
-        const bricks = new Image();
-        bricks.src = WALL_BASE64_SVG;
-        const pattern = this.ctx.createPattern(bricks, 'repeat');
-        this.ctx.fillStyle = pattern as CanvasPattern;
-      }
-
-      if (this.empty) {
-        this.ctx.fillStyle = '#111111';
-      }
-
+      const bricks = new Image();
+      bricks.src = WALL_BASE64_SVG;
+      const pattern = this.ctx.createPattern(bricks, 'repeat');
+      this.ctx.fillStyle = pattern as CanvasPattern;
       this.ctx.fillRect(this.x, this.y, this.w, this.h);
 
-      if (this.debug) {
-        this.ctx.font = '9px monospace';
-        this.ctx.fillStyle = 'white';
-        this.ctx.strokeStyle = 'white';
-        this.ctx.strokeRect(this.x, this.y, this.w, this.h);
-
-        // Top left corner
-        this.ctx.fillText(`x${Math.round(this.tlx)}`, this.tlx - 9, this.tly - 6);
-        this.ctx.fillText(`y${Math.round(this.tly)}`, this.tlx - 9, this.tly);
-
-        // Top right corner
-        this.ctx.fillText(`x${Math.round(this.trx)}`, this.trx - 9, this.try - 6);
-        this.ctx.fillText(`y${Math.round(this.try)}`, this.trx - 9, this.try);
-
-        // Bottom left corner
-        this.ctx.fillText(`x${Math.round(this.blx)}`, this.blx - 9, this.bly - 6);
-        this.ctx.fillText(`y${Math.round(this.bly)}`, this.blx - 9, this.bly);
-
-        // Bottom right corner
-        this.ctx.fillText(`x${Math.round(this.brx)}`, this.brx - 9, this.bry - 6);
-        this.ctx.fillText(`y${Math.round(this.bry)}`, this.brx - 9, this.bry);
+      this.ctx.fillStyle = EMPTY_BLACK;
+      for (const hit of this.hits) {
+        this.ctx.fillRect(hit.x, hit.y, hit.w, hit.h);
       }
+
+      this.handleDebugMode();
     });
   };
 
-  // Walls are responsible for checking collisions with tanks
-  // TODO: only deal with tanks then and not general game objects?
-  // TODO: Get rid of casts!
-  public checkCollisions = (gameObjects: GameObject[]): void => {
-    gameObjects.forEach((go) => {
-      let collided = false;
-
-      // Catch tank moving right
-      if (go.dir === Direction.East) {
-        collided =
-          go.trx! >= this.x && !(go.trx! >= this.brx) && (between(go.try!, this.tly, this.bly) || between(go.bry!, this.tly, this.bly));
-        if (collided) {
-          console.log(`${go.constructor.name} collided with wall at ${this.x},${this.y} heading East!`);
-          if (go.collideWithWall && (go as PlayerTank).seesColor) go.collideWithWall();
-        }
-      }
-
-      // Catch tank moving to the left
-      if (go.dir === Direction.West) {
-        collided =
-          go.tlx! <= this.trx && !(go.tlx! <= this.tlx) && (between(go.tly!, this.try, this.bry) || between(go.bly!, this.try, this.bry));
-        if (collided) {
-          console.log(`${go.constructor.name} collided with wall at ${this.x},${this.y} heading West!`);
-          if (go.collideWithWall && (go as PlayerTank).seesColor) go.collideWithWall();
-        }
-      }
-
-      // Catch tank moving down
-      if (go.dir === Direction.South) {
-        collided =
-          go.bly! >= this.y && !(go.bly! >= this.bly) && (between(go.blx!, this.tlx, this.trx) || between(go.brx!, this.tlx, this.trx));
-
-        if (collided) {
-          console.log(`${go.constructor.name} collided with wall at ${this.x},${this.y} heading South!`);
-          console.log(`${go.constructor.name} seesColor = ${(go as PlayerTank).seesColor}`);
-          if (go.collideWithWall && (go as PlayerTank).seesColor) go.collideWithWall();
-        }
-      }
-
-      if (go.dir === Direction.North) {
-        collided =
-          go.tly! <= this.bly && !(go.tly! <= this.tly) && (between(go.trx!, this.blx, this.brx) || between(go.tlx!, this.blx, this.brx));
-        if (collided) {
-          console.log(`${go.constructor.name} collided with wall at ${this.x},${this.y} heading North!`);
-          if (go.collideWithWall) go.collideWithWall();
-        }
-      }
-    });
+  // This is fine-tuned manually with MAGIC NUMBERS
+  // to have as little "wall shrapnel" as possible
+  // Feel free to experiment manually to tune even more
+  public hit = (x: number, y: number, dir: Direction): [number, number] => {
+    // margin
+    const mg = 2;
+    let hit: Wall | null = null;
+    switch (dir) {
+      case Direction.East:
+        hit = new Wall(this.ctx, {
+          x: x - BULLET_SIZE / 2 - mg,
+          y: y - PLAYER_SIZE / 2 - mg - 1,
+          w: 16,
+          h: 32
+        });
+        console.log(`Creating hit, x: ${hit.x}, y: ${hit.y}, w: ${hit.w}, h: ${hit.h}`);
+        break;
+      case Direction.West:
+        hit = new Wall(this.ctx, {
+          x: x - PLAYER_SIZE / 2 + BULLET_SIZE / 2,
+          y: y - PLAYER_SIZE / 2 - mg * 2 - 1,
+          w: 16,
+          h: 32
+        });
+        console.log(`Creating hit, x: ${hit.x}, y: ${hit.y}, w: ${hit.w}, h: ${hit.h}`);
+        break;
+      case Direction.South:
+        hit = new Wall(this.ctx, {
+          x: x - PLAYER_SIZE / 2 - 1,
+          y: y - BULLET_SIZE / 2,
+          w: 32,
+          h: 10
+        });
+        console.log(`Creating hit, x: ${hit.x}, y: ${hit.y}, w: ${hit.w}, h: ${hit.h}`);
+        break;
+      case Direction.North:
+        hit = new Wall(this.ctx, {
+          x: x - PLAYER_SIZE / 2 - BULLET_SIZE / 2 - 1,
+          y: y - BULLET_SIZE / 2 - 4,
+          w: 32,
+          h: 10
+        });
+        console.log(`Creating hit, x: ${hit.x}, y: ${hit.y}, w: ${hit.w}, h: ${hit.h}`);
+        break;
+    }
+    this.hits.add(hit as Wall);
+    return [hit.x, hit.y];
   };
+
+  private handleDebugMode() {
+    if (this.debug) {
+      this.ctx.font = '9px monospace';
+      this.ctx.fillStyle = 'white';
+      this.ctx.strokeStyle = 'white';
+      this.ctx.strokeRect(this.x, this.y, this.w, this.h);
+
+      // Top left corner
+      this.ctx.fillText(`x${Math.round(this.tlx)}`, this.tlx - 9, this.tly - 6);
+      this.ctx.fillText(`y${Math.round(this.tly)}`, this.tlx - 9, this.tly);
+
+      // Top right corner
+      this.ctx.fillText(`x${Math.round(this.trx)}`, this.trx - 9, this.try - 6);
+      this.ctx.fillText(`y${Math.round(this.try)}`, this.trx - 9, this.try);
+
+      // Bottom left corner
+      this.ctx.fillText(`x${Math.round(this.blx)}`, this.blx - 9, this.bly - 6);
+      this.ctx.fillText(`y${Math.round(this.bly)}`, this.blx - 9, this.bly);
+
+      // Bottom right corner
+      this.ctx.fillText(`x${Math.round(this.brx)}`, this.brx - 9, this.bry - 6);
+      this.ctx.fillText(`y${Math.round(this.bry)}`, this.brx - 9, this.bry);
+    }
+  }
 }
