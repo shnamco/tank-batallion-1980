@@ -5,3 +5,4 @@ webpack.config.js
 postcss.config.js
 server.js
 jest.config.js
+setupTest.js

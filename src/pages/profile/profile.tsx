@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProfileForm } from '@pages/profile/components/profile_form';
+import { ProfileForm } from './components/profile_form';
 import { useKeypress } from '@utils/use_key_press';
 import { ROUTE } from '@utils/route';
 import { useHistory } from 'react-router-dom';
