@@ -1,12 +1,12 @@
 import { Profile } from '@service/profile_api';
-import { PROFILE_ACTIONS, ProfileAction } from '@store/profile/profile.actions';
+import { PROFILE_ACTIONS, ProfileAction } from './profile.actions';
 
 export type ProfileState = {
   data: Profile;
   error: null | string;
 };
 
-const initialState: ProfileState = {
+export const initialState: ProfileState = {
   data: {
     id: null,
     first_name: null,
