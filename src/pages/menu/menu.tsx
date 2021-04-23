@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { ROUTE } from '@utils/route';
 import bang from '../../assets/bang.svg';
-import { AuthService } from '@service/auth_service';
-import { authApi } from '@service/auth_api';
+import { logOut } from '@store/auth/auth.thunks';
+import { connect, ConnectedProps } from 'react-redux';
 import './menu.pcss';
 
 interface MenuState {
@@ -11,14 +11,20 @@ interface MenuState {
   menuList: MenuItem[];
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-class MenuComponent extends Component<RouteComponentProps, MenuState> {
+interface MenuProps extends RouteComponentProps {
+  logOut: () => unknown;
+}
+
+const connector = connect(null, { logOut });
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+class MenuComponent extends Component<PropsFromRedux & MenuProps, MenuState> {
   public state = {
     cursor: 0,
     menuList: this.menuActions
   };
   private handler: (() => void) | undefined;
-  private authService = new AuthService();
 
   public get menuListIterable(): MenuAction[] {
     return this.state.menuList.filter((item) => item.route !== ROUTE.LOGIN);
@@ -64,12 +70,7 @@ class MenuComponent extends Component<RouteComponentProps, MenuState> {
   }
 
   private logoutClicked(): void {
-    authApi.logout().then((res) => {
-      if (res && res.status === 200) {
-        this.authService.auth = false;
-        this.props.history.push(ROUTE.LOGIN);
-      }
-    });
+    this.props.logOut();
   }
 
   private keyPressHandler(): () => void {
@@ -91,33 +92,35 @@ class MenuComponent extends Component<RouteComponentProps, MenuState> {
 
   public render(): React.ReactElement {
     return (
-      <div className="arcade__background arcade__background-all menu">
-        <ul className="menu-list">
-          {this.menuListIterable.map((item) => (
+      <div className="arcade__background arcade__background-all">
+        <div className="arcade__background-content menu">
+          <ul className="menu-list">
+            {this.menuListIterable.map((item) => (
+              <li
+                onClick={item.action}
+                tabIndex={-1}
+                className={`menu-list__item ${this.state.cursor === item.id ? 'active' : null}`}
+                key={item.id}
+              >
+                {item.name}
+              </li>
+            ))}
             <li
-              onClick={item.action}
+              onClick={this.logout?.action}
               tabIndex={-1}
-              className={`menu-list__item ${this.state.cursor === item.id ? 'active' : null}`}
-              key={item.id}
+              className={`menu-list__item ${this.state.cursor === this.logout?.id ? 'active' : null} logout`}
             >
-              {item.name}
+              <span>{this.logout?.name}</span>
+              <img src={bang} alt="bang" className="logout__icon" />
             </li>
-          ))}
-          <li
-            onClick={this.logout?.action}
-            tabIndex={-1}
-            className={`menu-list__item ${this.state.cursor === this.logout?.id ? 'active' : null} logout`}
-          >
-            <span>{this.logout?.name}</span>
-            <img src={bang} alt="bang" className="logout__icon" />
-          </li>
-        </ul>
+          </ul>
+        </div>
       </div>
     );
   }
 }
 
-export const Menu = withRouter(MenuComponent);
+export const Menu = withRouter(connector(MenuComponent));
 
 class MenuItem {
   constructor(public id: number, public name: string, public route: ROUTE) {}

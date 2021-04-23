@@ -126,41 +126,44 @@ export class Forum extends React.Component<RouteComponentProps<RouteParams>, For
 
   render(): React.ReactElement {
     return (
-      <div className="page-background">
-        <div className="container">
-          <main className="forums">
-            <table className="forums__table">
-              <thead>
-                <tr className="forums__table-header">
-                  <th className="forum__title-col">
-                    <div className="forums__header-name">NEW GAMES</div>
-                  </th>
-                  <th className="forums__topics-col">
-                    <div className="forums__header-name">AUTHOR</div>
-                  </th>
-                  <th className="forums__replies-col">
-                    <div className="forums__header-name">REPL</div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="forums__row forum__new-topic">
-                  <td className="forums__title">
-                    <Link className="eagle-after" to={`/forum/${this.props.match.params.id}/new_topic`}>
-                      NEW TOPIC
-                    </Link>
-                  </td>
-                  <td>
-                    <div className="forums__topic">YOU!</div>
-                  </td>
-                  <td>
-                    <div className="forum__replies">?</div>
-                  </td>
-                </tr>
-                {this.renderTopics}
-              </tbody>
-            </table>
-          </main>
+      <div className="arcade__background arcade__background-all">
+        <div className="arcade__background-content forums">
+          <table className="forums__table">
+            <thead>
+              <tr className="forums__table-header">
+                <th className="forum__title-col">
+                  <div className="forums__header-name">NEW GAMES</div>
+                </th>
+                <th className="forums__topics-col">
+                  <div className="forums__header-name">AUTHOR</div>
+                </th>
+                <th className="forums__replies-col">
+                  <div className="forums__header-name">REPL</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="forums__row forum__new-topic">
+                <td className="forums__title">
+                  <Link className="eagle-after" to={`/forum/${this.props.match.params.id}/new_topic`}>
+                    NEW TOPIC
+                  </Link>
+                </td>
+                <td>
+                  <div className="forums__topic">YOU!</div>
+                </td>
+                <td>
+                  <div className="forum__replies">?</div>
+                </td>
+              </tr>
+              {this.renderTopics}
+            </tbody>
+          </table>
+          <div className="forums__footer">
+            <Link to={`/${ROUTE.MENU}`} className="forums__link">
+              BACK TO THE MAIN MENU
+            </Link>
+          </div>
         </div>
       </div>
     );

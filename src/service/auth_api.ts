@@ -1,4 +1,8 @@
 import { praktikumApiUrl } from '../environment/praktikumApiUrl';
+import { Profile } from './profile_api';
+import { ResponseProxy } from '@utils/api';
+
+export type SignUpReq = Omit<Profile, 'id' | 'display_name' | 'avatar'>;
 
 export type LoginReq = {
   login: string;
@@ -9,35 +13,10 @@ export type Reason = {
   reason: string;
 };
 
-export type Resp = {
-  status: number;
-  response: string | Reason;
-};
-
-export type SignUpReq = {
-  first_name: string;
-  second_name: string;
-  login: string;
-  email: string;
-  password: string;
-  phone: string;
-};
-
-export type Profile = {
-  id: number;
-  first_name: string;
-  second_name: string;
-  display_name: string | null;
-  login: string;
-  avatar: string | null;
-  email: string;
-  phone: string;
-};
-
 class Api {
   constructor(public baseUrl: string) {}
 
-  login = async (data: LoginReq): Promise<Resp> => {
+  login = async (data: LoginReq): Promise<ResponseProxy<string | Reason>> => {
     const options = {
       method: 'POST',
       body: JSON.stringify(data),
@@ -70,7 +49,7 @@ class Api {
     }
   };
 
-  signUp = async (data: SignUpReq): Promise<Resp> => {
+  signUp = async (data: SignUpReq): Promise<ResponseProxy<string | Reason>> => {
     const options = {
       method: 'POST',
       body: JSON.stringify(data),
@@ -94,7 +73,7 @@ class Api {
     }
   };
 
-  getProfile = async (): Promise<Resp> => {
+  getProfile = async (): Promise<ResponseProxy<Reason | Profile>> => {
     const options = {
       method: 'GET',
       credentials: 'include' as RequestCredentials

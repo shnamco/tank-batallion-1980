@@ -1,22 +1,38 @@
+// COLOR CONSTANTS
+export const EMPTY_BLACK = '#080000';
+export const TANK_BLACK = '#040000';
+export const ALMOST_WHITE = '#fdffff';
+
 // COMMON CONSTANTS
 export const CANVAS_SIZE = 416;
+export const AUX_CANVAS_HEIGHT = 40;
 export const PLAYER_SIZE = 26;
 export const BULLET_SIZE = 6;
 export const WALL_SIZE = 36;
 
+// ==== GAME STATE ===========================
+
+export const MAX_ENEMIES = 20;
+export const HIT_SCORES = [30, 60, 150, 300, 800];
+
+export interface GameState {
+  levelNo: number;
+  playerLives?: number;
+  enemiesLeft?: number;
+  playerScore?: number;
+}
+
 // ==== COMMON TYPES FOR GAME ENTITIES =======
 
-// Describes the media source of the game asset,
-// can be used to build a game object if it requires
-// external media.
-export interface GameAsset {
-  // for SVG d-paths
-  path?: string;
-  // for base64-encoded images
-  base64?: string;
-  fill?: string;
-  // side of a bounding rect
-  size: number;
+export interface CornerCalculatable {
+  tlx: number;
+  tly: number;
+  trx: number;
+  try: number;
+  blx: number;
+  bly: number;
+  brx: number;
+  bry: number;
 }
 
 // Any interactive object in a game
@@ -25,24 +41,13 @@ export interface GameObject {
   // Position before any of the updates.
   x: number;
   y: number;
-
-  tlx?: number;
-  tly?: number;
-  trx?: number;
-  try?: number;
-  blx?: number;
-  bly?: number;
-  brx?: number;
-  bry?: number;
-
   dir: Direction;
   // side of a bounding rect
   size: number;
   // override default fill if necessary
   fill?: string | undefined;
-  collideWithWall?: () => void;
-
   speed?: number;
+  name?: string;
 }
 
 // Compass - Grad
