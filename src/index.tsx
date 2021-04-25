@@ -6,7 +6,7 @@ import { App } from './app';
 import { Provider } from 'react-redux';
 import { store } from '@store/core/store';
 
-ReactDOM.render(
+ReactDOM.hydrate(
   <Provider store={store}>
     <App />
   </Provider>,
