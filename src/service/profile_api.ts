@@ -36,6 +36,7 @@ class Api {
 
     try {
       const response = await res.json();
+
       return {
         status: res.status,
         response

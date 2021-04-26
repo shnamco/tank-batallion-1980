@@ -1,11 +1,13 @@
 import * as AuthActions from '@store/auth/auth.actions';
 import { authApi, LoginReq, Reason, SignUpReq } from '@service/auth_api';
+import { oauthApi } from '@service/oauth_api';
 import { Dispatch } from 'react';
 import { ROUTE } from '@utils/route';
 import { ThunkAction } from 'redux-thunk';
 import { RootState } from '@store/core/store';
 import { AnyAction } from 'redux';
 import { HistoryProxy } from '@utils/history';
+import { praktikumApiUrl } from '../../environment/praktikumApiUrl';
 
 export const logIn = (
   data: LoginReq,
@@ -23,6 +25,28 @@ export const logIn = (
           history.push(`/${ROUTE.MENU}`);
         } else {
           onError(res.response);
+        }
+      })
+      .catch(() => {
+        dispatch(AuthActions.logInFailureAction());
+      });
+  };
+};
+
+export const logInWith = (): ThunkAction<void, RootState, unknown, AnyAction> => {
+  return async (dispatch: Dispatch<AuthActions.AuthActions>) => {
+    oauthApi
+      .serviceId(praktikumApiUrl.redirectUri)
+      .then((res) => {
+        if (res.status === 200) {
+          oauthApi
+            .signIn({ code: res.response.service_id, redirect_uri: praktikumApiUrl.redirectUri })
+            .then((res) => {
+              console.log(res);
+            })
+            .catch(() => {
+              dispatch(AuthActions.logInFailureAction());
+            });
         }
       })
       .catch(() => {
