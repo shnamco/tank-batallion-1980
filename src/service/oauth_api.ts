@@ -1,5 +1,5 @@
 import { ResponseProxy } from '@utils/api';
-import { praktikumApiUrl } from '../environment/praktikumApiUrl';
+import { environment } from '../environment/environment';
 
 class OauthApi {
   constructor(public baseUrl: string) {}
@@ -49,7 +49,7 @@ class OauthApi {
   };
 }
 
-export const oauthApi = new OauthApi(praktikumApiUrl.praktikum);
+export const oauthApi = new OauthApi(environment.praktikum);
 
 export interface SignInWithData {
   code: string;

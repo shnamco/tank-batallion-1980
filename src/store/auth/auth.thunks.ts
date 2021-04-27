@@ -7,7 +7,7 @@ import { ThunkAction } from 'redux-thunk';
 import { RootState } from '@store/core/store';
 import { AnyAction } from 'redux';
 import { HistoryProxy } from '@utils/history';
-import { praktikumApiUrl } from '../../environment/praktikumApiUrl';
+import { environment } from '../../environment/environment';
 
 export const logIn = (
   data: LoginReq,
@@ -36,11 +36,11 @@ export const logIn = (
 export const logInWith = (): ThunkAction<void, RootState, unknown, AnyAction> => {
   return async (dispatch: Dispatch<AuthActions.AuthActions>) => {
     oauthApi
-      .serviceId(praktikumApiUrl.redirectUri)
+      .serviceId(environment.redirectUri)
       .then((res) => {
         if (res.status === 200) {
           oauthApi
-            .signIn({ code: res.response.service_id, redirect_uri: praktikumApiUrl.redirectUri })
+            .signIn({ code: res.response.service_id, redirect_uri: environment.redirectUri })
             .then((res) => {
               console.log(res);
             })

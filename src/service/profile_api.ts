@@ -1,4 +1,4 @@
-import { praktikumApiUrl } from '../environment/praktikumApiUrl';
+import { environment } from '../environment/environment';
 import { ResponseProxy } from '@utils/api';
 
 export type Profile = {
@@ -47,6 +47,6 @@ class Api {
   };
 }
 
-const profileApi = new Api(praktikumApiUrl.praktikum);
+const profileApi = new Api(environment.praktikum);
 
 export { profileApi };

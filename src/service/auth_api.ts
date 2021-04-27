@@ -1,4 +1,4 @@
-import { praktikumApiUrl } from '../environment/praktikumApiUrl';
+import { environment } from '../environment/environment';
 import { Profile } from './profile_api';
 import { ResponseProxy } from '@utils/api';
 
@@ -105,6 +105,6 @@ class Api {
   };
 }
 
-const authApi = new Api(praktikumApiUrl.praktikum);
+const authApi = new Api(environment.praktikum);
 
 export { authApi };
