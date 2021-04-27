@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=development webpack serve",
+    "start1": "cross-env NODE_ENV=development webpack serve",
     "build": "cross-env NODE_ENV=production webpack --mode production",
     "lint": "eslint src --ext .ts,.tsx",
     "test": "jest",
@@ -88,6 +88,7 @@
     "webpack-node-externals": "^2.5.2"
   },
   "dependencies": {
+    "helmet": "^4.5.0",
     "hot-module-reload": "^0.4.1",
     "htmlescape": "^1.1.1",
     "react": "^17.0.1",
