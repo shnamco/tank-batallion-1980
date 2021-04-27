@@ -39,14 +39,10 @@ export const logInWith = (): ThunkAction<void, RootState, unknown, AnyAction> =>
       .serviceId(environment.redirectUri)
       .then((res) => {
         if (res.status === 200) {
-          oauthApi
-            .signIn({ code: res.response.service_id, redirect_uri: environment.redirectUri })
-            .then((res) => {
-              console.log(res);
-            })
-            .catch(() => {
-              dispatch(AuthActions.logInFailureAction());
-            });
+          const id =
+            environment.redirectUri === 'http://localhost:3000/login' ? '57b1a130e03547bf8600d0d585ee1f1d' : res.response.service_id;
+
+          window.location.href = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${id}&redirect_uri=${environment.redirectUri}`;
         }
       })
       .catch(() => {

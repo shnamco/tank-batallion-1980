@@ -31,7 +31,10 @@ class OauthApi {
   serviceId = async (url: string): Promise<ResponseProxy<{ service_id: string }>> => {
     const options = {
       method: 'GET',
-      credentials: 'include' as RequestCredentials
+      credentials: 'include' as RequestCredentials,
+      headers: {
+        'content-type': 'application/json'
+      }
     };
 
     const res = await fetch(`${this.baseUrl}/oauth/yandex/service-id?redirect_uri=${url}`, options);
