@@ -5,7 +5,7 @@ import '@styles/variables.pcss';
 import '@styles/login.pcss';
 import { LoginReq, Reason } from '@service/auth_api';
 import { Input } from '@components/input/input';
-import { logIn, logInWith } from '@store/auth/auth.thunks';
+import { logIn, getServiceId } from '@store/auth/auth.thunks';
 import { connect, ConnectedProps } from 'react-redux';
 import { HistoryProxy } from '@utils/history';
 
@@ -18,7 +18,7 @@ interface FormProps extends RouteComponentProps {
   logInWith: () => unknown;
 }
 
-const connector = connect(null, { logIn, logInWith });
+const connector = connect(null, { logIn, logInWith: getServiceId });
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 

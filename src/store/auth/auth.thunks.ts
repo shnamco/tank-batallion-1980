@@ -33,16 +33,31 @@ export const logIn = (
   };
 };
 
-export const logInWith = (): ThunkAction<void, RootState, unknown, AnyAction> => {
+export const getServiceId = (): ThunkAction<void, RootState, unknown, AnyAction> => {
   return async (dispatch: Dispatch<AuthActions.AuthActions>) => {
     oauthApi
       .serviceId(environment.redirectUri)
       .then((res) => {
         if (res.status === 200) {
-          const id =
-            environment.redirectUri === 'http://localhost:3000/login' ? '57b1a130e03547bf8600d0d585ee1f1d' : res.response.service_id;
+          const id = res.response.service_id;
 
           window.location.href = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${id}&redirect_uri=${environment.redirectUri}`;
+        }
+      })
+      .catch(() => {
+        dispatch(AuthActions.logInFailureAction());
+      });
+  };
+};
+
+export const loginWithYandex = (code: string): ThunkAction<void, RootState, unknown, AnyAction> => {
+  return async (dispatch: Dispatch<AuthActions.AuthActions>) => {
+    oauthApi
+      .signIn({ code, redirect_uri: environment.redirectUri })
+      .then((res) => {
+        console.log(code, res);
+        if (res.status === 200) {
+          console.log(res);
         }
       })
       .catch(() => {
