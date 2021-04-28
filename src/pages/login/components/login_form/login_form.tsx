@@ -67,9 +67,9 @@ class Form extends Component<FormProps & PropsFromRedux, FormState> {
             <button type="submit" className="login__button">
               LOG IN
             </button>
-            <button onClick={this.loginWithClicked} type="button" className="login__button">
+            <a onClick={this.loginWithClicked} type="button" className="login__yandex">
               LOG IN WITH YANDEX
-            </button>
+            </a>
             <Link to="signup" className="login__link">
               SIGN UP
             </Link>
