@@ -1,21 +1,8 @@
-import React, { useEffect } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-import './login.pcss';
+import React from 'react';
 import { LoginForm } from './components/login_form/login_form';
-import { useDispatch } from 'react-redux';
-import { loginWithYandex } from '@store/auth/auth.thunks';
+import './login.pcss';
 
-const LoginComponent: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (props.location.search) {
-      const code = props.location.search.slice(6);
-
-      dispatch(loginWithYandex(code));
-    }
-  });
-
+export const Login: React.FC = () => {
   return (
     <div className="arcade__background arcade__background-all arcade-login">
       <div className="arcade__background-content">
@@ -24,5 +11,3 @@ const LoginComponent: React.FC<RouteComponentProps> = (props: RouteComponentProp
     </div>
   );
 };
-
-export const Login = withRouter(LoginComponent);

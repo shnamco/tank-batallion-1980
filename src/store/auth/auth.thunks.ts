@@ -50,14 +50,14 @@ export const getServiceId = (): ThunkAction<void, RootState, unknown, AnyAction>
   };
 };
 
-export const loginWithYandex = (code: string): ThunkAction<void, RootState, unknown, AnyAction> => {
+export const loginWithYandex = (code: string, history: HistoryProxy): ThunkAction<void, RootState, unknown, AnyAction> => {
   return async (dispatch: Dispatch<AuthActions.AuthActions>) => {
     oauthApi
       .signIn({ code, redirect_uri: environment.redirectUri })
       .then((res) => {
-        console.log(code, res);
-        if (res.status === 200) {
-          console.log(res);
+        if (res.status === 200 || (res.response as Reason).reason === 'User already in system') {
+          dispatch(AuthActions.logInSuccessAction());
+          history.push(`/${ROUTE.MENU}`);
         }
       })
       .catch(() => {
