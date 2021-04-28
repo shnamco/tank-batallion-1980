@@ -7,5 +7,5 @@ postcss.config.js
 server.js
 jest.config.js
 setupTest.js
-ssr.js
+index.js
 ssr.ts

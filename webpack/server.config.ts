@@ -46,10 +46,11 @@ const config: Configuration = {
   },
   output: {
     filename: 'server.js',
-    libraryTarget: 'commonjs2',
     path: path.resolve(__dirname, '../dist'),
     assetModuleFilename: 'assets/[name][ext]',
-    publicPath: '/static/',
+    library: {
+      type: 'commonjs2'
+    }
   },
   resolve: {
     alias: {
@@ -70,47 +71,6 @@ const config: Configuration = {
   },
   devtool: 'source-map',
   plugins,
-
 };
 
 export default config;
-
-module.exports = {
-  mode: isDev ? 'development' : 'production',
-  entry: path.resolve(__dirname, 'ssr.ts'),
-  // entry: path.resolve(__dirname, 'src/index.tsx'),
-  devtool: 'source-map',
-  target: 'web',
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
-    assetModuleFilename: 'assets/[name][ext]'
-  },
-  resolve: {
-    alias: {
-      '@components': path.resolve(__dirname, './src/components/'),
-      '@pages': path.resolve(__dirname, './src/pages/'),
-      '@core': path.resolve(__dirname, './src/core/'),
-      '@styles': path.resolve(__dirname, './src/styles/'),
-      '@service': path.resolve(__dirname, './src/service/'),
-      '@utils': path.resolve(__dirname, './src/utils/'),
-      '@store': path.resolve(__dirname, './src/store/')
-    },
-    extensions: ['.ts', '.tsx', '.js', '.json'],
-    fallback: {
-      fs: false,
-      path: false,
-      assert: false
-    }
-  },
-  module: {
-    rules: loaders.server
-  },
-  plugins,
-  devServer: {
-    open: true,
-    port: 3000,
-    hot: isDev,
-    historyApiFallback: true
-  }
-};

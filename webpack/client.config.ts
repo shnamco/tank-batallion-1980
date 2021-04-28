@@ -1,5 +1,5 @@
 import path from 'path';
-import webpack from 'webpack';
+import webpack, { Configuration } from 'webpack';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import HTMLWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
@@ -42,14 +42,14 @@ if (isProd) {
   plugins.push(new MiniCssExtractPlugin());
 }
 
-module.exports = {
+const config: Configuration = {
   mode: isDev ? 'development' : 'production',
-  entry: path.resolve(__dirname, 'ssr.ts'),
+  entry: path.resolve(__dirname, '../src/index.ts'),
   // entry: path.resolve(__dirname, 'src/index.tsx'),
   devtool: 'source-map',
   target: 'web',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, '../dist'),
     filename: 'bundle.js',
     assetModuleFilename: 'assets/[name][ext]'
   },
@@ -73,11 +73,7 @@ module.exports = {
   module: {
     rules: loaders.client
   },
-  plugins,
-  devServer: {
-    open: true,
-    port: 3000,
-    hot: isDev,
-    historyApiFallback: true
-  }
+  plugins
 };
+
+export default config;
