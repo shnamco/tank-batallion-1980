@@ -17,7 +17,7 @@ class OauthApi {
       headers: { 'Content-Type': 'application/json' }
     });
 
-    return JSONMapper(response);
+    return JSONMapper<unknown>(response);
   };
 
   public serviceId = async (url: string): Promise<ResponseProxy<{ service_id: string }>> => {
@@ -26,7 +26,7 @@ class OauthApi {
       headers: { 'Content-Type': 'application/json' }
     });
 
-    return JSONMapper(response);
+    return JSONMapper<{ service_id: string }>(response);
   };
 }
 

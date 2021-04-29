@@ -1,7 +1,6 @@
 import { ResponseProxy } from '../interfaces/api';
 
-// eslint-disable-next-line
-export const JSONMapper = async (data: Promise<Response>): Promise<ResponseProxy<any>> => {
+export const JSONMapper = async <T>(data: Promise<Response>): Promise<ResponseProxy<T>> => {
   const res = await data;
 
   try {

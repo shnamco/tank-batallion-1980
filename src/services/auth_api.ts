@@ -24,7 +24,7 @@ class Api {
       headers: { 'Content-Type': 'application/json' }
     });
 
-    return JSONMapper(response);
+    return JSONMapper<string | Reason>(response);
   };
 
   public signUp = async (data: SignUpReq): Promise<ResponseProxy<string | Reason>> => {
@@ -33,7 +33,7 @@ class Api {
       headers: { 'Content-Type': 'application/json' }
     });
 
-    return JSONMapper(response);
+    return JSONMapper<string | Reason>(response);
   };
 
   public getProfile = async (): Promise<ResponseProxy<Reason | Profile>> => {
@@ -42,7 +42,7 @@ class Api {
       headers: { 'Content-Type': 'application/json' }
     });
 
-    return JSONMapper(response);
+    return JSONMapper<Reason | Profile>(response);
   };
 
   public logout = (): Promise<ResponseProxy<unknown>> => {
@@ -51,7 +51,7 @@ class Api {
       headers: { 'Content-Type': 'application/json' }
     });
 
-    return JSONMapper(response);
+    return JSONMapper<unknown>(response);
   };
 }
 
