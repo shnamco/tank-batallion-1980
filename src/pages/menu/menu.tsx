@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { ROUTE } from '@utils/route';
+import { ROUTE } from '../../interfaces/route';
 import bang from '../../assets/bang.svg';
 import { logOut } from '@store/auth/auth.thunks';
 import { connect, ConnectedProps } from 'react-redux';

@@ -1,4 +1,4 @@
-import { Profile } from '@service/profile_api';
+import { Profile } from '../../services/profile_api';
 import { Action } from 'redux';
 
 export enum PROFILE_ACTIONS {

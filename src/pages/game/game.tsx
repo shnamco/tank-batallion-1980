@@ -1,7 +1,7 @@
 import React from 'react';
 import { TankBatallion } from '@core/tank_batallion';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { ROUTE } from '@utils/route';
+import { ROUTE } from '../../interfaces/route';
 import { keyPressHandler } from '@utils/use_key_press';
 import './game.pcss';
 import { CANVAS_SIZE, AUX_CANVAS_HEIGHT, GameState } from '@core/game_types';

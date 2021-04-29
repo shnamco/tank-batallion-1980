@@ -1,7 +1,7 @@
 import React from 'react';
 import './forum.pcss';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import { ROUTE } from '@utils/route';
+import { ROUTE } from '../../interfaces/route';
 
 type ForumType = {
   title: string;

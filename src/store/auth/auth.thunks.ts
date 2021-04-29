@@ -1,13 +1,13 @@
 import * as AuthActions from '@store/auth/auth.actions';
-import { authApi, LoginReq, Reason, SignUpReq } from '@service/auth_api';
-import { oauthApi } from '@service/oauth_api';
 import { Dispatch } from 'react';
-import { ROUTE } from '@utils/route';
 import { ThunkAction } from 'redux-thunk';
 import { RootState } from '@store/core/store';
 import { AnyAction } from 'redux';
-import { HistoryProxy } from '@utils/history';
 import { environment } from '../../environment/environment';
+import { ROUTE } from '../../interfaces/route';
+import { HistoryProxy } from '../../interfaces/history';
+import { authApi, LoginReq, Reason, SignUpReq } from '../../services/auth_api';
+import { oauthApi } from '../../services/oauth_api';
 
 export const logIn = (
   data: LoginReq,
