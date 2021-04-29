@@ -1,11 +1,13 @@
 import * as AuthActions from '@store/auth/auth.actions';
 import { authApi, LoginReq, Reason, SignUpReq } from '@service/auth_api';
+import { oauthApi } from '@service/oauth_api';
 import { Dispatch } from 'react';
 import { ROUTE } from '@utils/route';
 import { ThunkAction } from 'redux-thunk';
 import { RootState } from '@store/core/store';
 import { AnyAction } from 'redux';
 import { HistoryProxy } from '@utils/history';
+import { environment } from '../../environment/environment';
 
 export const logIn = (
   data: LoginReq,
@@ -23,6 +25,39 @@ export const logIn = (
           history.push(`/${ROUTE.MENU}`);
         } else {
           onError(res.response);
+        }
+      })
+      .catch(() => {
+        dispatch(AuthActions.logInFailureAction());
+      });
+  };
+};
+
+export const getServiceId = (): ThunkAction<void, RootState, unknown, AnyAction> => {
+  return async (dispatch: Dispatch<AuthActions.AuthActions>) => {
+    oauthApi
+      .serviceId(environment.redirectUri)
+      .then((res) => {
+        if (res.status === 200) {
+          const id = res.response.service_id;
+
+          window.location.href = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${id}&redirect_uri=${environment.redirectUri}`;
+        }
+      })
+      .catch(() => {
+        dispatch(AuthActions.logInFailureAction());
+      });
+  };
+};
+
+export const loginWithYandex = (code: string, history: HistoryProxy): ThunkAction<void, RootState, unknown, AnyAction> => {
+  return async (dispatch: Dispatch<AuthActions.AuthActions>) => {
+    oauthApi
+      .signIn({ code, redirect_uri: environment.redirectUri })
+      .then((res) => {
+        if (res.status === 200 || (res.response as Reason).reason === 'User already in system') {
+          dispatch(AuthActions.logInSuccessAction());
+          history.push(`/${ROUTE.MENU}`);
         }
       })
       .catch(() => {

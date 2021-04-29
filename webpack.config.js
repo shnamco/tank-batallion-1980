@@ -33,7 +33,11 @@ const plugins = [
   }),
   new webpack.DefinePlugin({
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-  })
+  }),
+  new webpack.NormalModuleReplacementPlugin(
+    /src\/environment\/environment\.ts/,
+    isProd ? './environment.prod.ts' : './environment.ts'
+  )
 ];
 
 if (isProd) {
@@ -92,7 +96,6 @@ module.exports = {
   },
   plugins,
   devServer: {
-    open: true,
     port: 3000,
     hot: isDev,
     historyApiFallback: true,

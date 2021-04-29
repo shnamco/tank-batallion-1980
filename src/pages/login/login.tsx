@@ -1,6 +1,6 @@
 import React from 'react';
-import './login.pcss';
 import { LoginForm } from './components/login_form/login_form';
+import './login.pcss';
 
 export const Login: React.FC = () => {
   return (
