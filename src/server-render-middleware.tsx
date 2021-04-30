@@ -2,12 +2,29 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { Request, Response } from 'express';
 import { App } from './app';
+import { StaticRouter } from 'react-router-dom';
+import { StaticRouterContext } from 'react-router';
+import { Provider } from 'react-redux';
+import { store } from '@store/core/store';
 
 export default (req: Request, res: Response): void => {
-  const jsx = <App />;
+  const location = req.url;
+  const context: StaticRouterContext = {};
+
+  const jsx = (
+    <StaticRouter context={context} location={location}>
+      <App />;
+    </StaticRouter>
+  );
+
   const reactHtml = renderToString(jsx);
 
-  res.send(getHtml(reactHtml));
+  if (context.url) {
+    res.redirect(context.url);
+    return;
+  }
+
+  res.status(context.statusCode || 200).send(getHtml(reactHtml));
 };
 
 function getHtml(reactHtml: string) {

@@ -1,5 +1,5 @@
 import path from 'path';
-import webpack, { Configuration } from 'webpack';
+import webpack, { Configuration, RuleSetRule } from 'webpack';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import HTMLWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
@@ -14,12 +14,12 @@ const plugins: any[] = [
   new CopyPlugin({
     patterns: [
       {
-        from: path.resolve(__dirname, 'src/sw.js')
+        from: path.resolve(__dirname, '../src/sw.js')
       }
     ]
   }),
   new HTMLWebpackPlugin({
-    template: isDev ? path.resolve(__dirname, 'src/index_dev.html') : path.resolve(__dirname, 'src/index.html'),
+    template: isDev ? path.resolve(__dirname, '../src/index_dev.html') : path.resolve(__dirname, '../src/index.html'),
     minify: {
       removeComments: isProd,
       collapseWhitespace: isProd
@@ -29,7 +29,7 @@ const plugins: any[] = [
   new ForkTsCheckerWebpackPlugin({
     async: false,
     eslint: {
-      files: path.resolve(__dirname, 'src/**/*.{ts,tsx,js,jsx}')
+      files: path.resolve(__dirname, '../src/**/*.{ts,tsx,js,jsx}')
     }
   }),
   new webpack.DefinePlugin({
@@ -44,34 +44,28 @@ if (isProd) {
 
 const config: Configuration = {
   mode: isDev ? 'development' : 'production',
-  entry: path.resolve(__dirname, '../src/index.ts'),
+  entry: path.resolve(__dirname, '../src/index.tsx'),
   // entry: path.resolve(__dirname, 'src/index.tsx'),
   devtool: 'source-map',
   target: 'web',
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: 'bundle.js',
-    assetModuleFilename: 'assets/[name][ext]'
   },
   resolve: {
     alias: {
-      '@components': path.resolve(__dirname, './src/components/'),
-      '@pages': path.resolve(__dirname, './src/pages/'),
-      '@core': path.resolve(__dirname, './src/core/'),
-      '@styles': path.resolve(__dirname, './src/styles/'),
-      '@service': path.resolve(__dirname, './src/service/'),
-      '@utils': path.resolve(__dirname, './src/utils/'),
-      '@store': path.resolve(__dirname, './src/store/')
+      '@components': path.resolve(__dirname, '../src/components/'),
+      '@pages': path.resolve(__dirname, '../src/pages/'),
+      '@core': path.resolve(__dirname, '../src/core/'),
+      '@styles': path.resolve(__dirname, '../src/styles/'),
+      '@service': path.resolve(__dirname, '../src/service/'),
+      '@utils': path.resolve(__dirname, '../src/utils/'),
+      '@store': path.resolve(__dirname, '../src/store/')
     },
     extensions: ['.ts', '.tsx', '.js', '.json'],
-    fallback: {
-      fs: false,
-      path: false,
-      assert: false
-    }
   },
   module: {
-    rules: loaders.client
+    rules: loaders.client as RuleSetRule[]
   },
   plugins
 };

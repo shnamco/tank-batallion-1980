@@ -9,6 +9,8 @@ export interface RootState {
   profile: ProfileState;
 }
 
+export const isServer = !(typeof window !== 'undefined' && window.document && window.document.createElement);
+
 export const store = createStore(
   combineReducers<RootState>({ authReducer, profile: profileReducer }),
   composeWithDevTools(applyMiddleware(thunk))

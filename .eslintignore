@@ -3,6 +3,7 @@ dist
 webpack
 tsconfig.json
 webpack.config.js
+webpack.config.ts
 postcss.config.js
 server.js
 jest.config.js
