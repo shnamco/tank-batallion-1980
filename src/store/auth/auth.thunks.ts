@@ -6,8 +6,8 @@ import { AnyAction } from 'redux';
 import { environment } from '../../environment/environment';
 import { ROUTE } from '../../interfaces/route';
 import { HistoryProxy } from '../../interfaces/history';
-import { authApi, LoginReq, Reason, SignUpReq } from '../../services/auth_api';
-import { oauthApi } from '../../services/oauth_api';
+import { authApi, LoginReq, Reason, SignUpReq } from '@services/auth_api';
+import { oauthApi } from '@services/oauth_api';
 
 export const logIn = (
   data: LoginReq,

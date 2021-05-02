@@ -8,7 +8,7 @@ interface GetLeaderboardAction extends Action<LEADERBOARD_ACTIONS.GET_LEADERBOAR
   payload: { data: unknown[] };
 }
 
-export const getLeaderboardAction = (data: unknown[]): GetLeaderboardAction => {
+export const getLeaderboardSuccessAction = (data: unknown[]): GetLeaderboardAction => {
   return { type: LEADERBOARD_ACTIONS.GET_LEADERBOARD, payload: { data } };
 };
 

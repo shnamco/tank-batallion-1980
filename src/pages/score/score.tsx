@@ -2,6 +2,13 @@ import React from 'react';
 import './score.pcss';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { ROUTE } from '../../interfaces/route';
+import { RootState } from '@store/core/store';
+import { selectProfile, selectProfileError } from '@store/profile/profile.selectors';
+import { ThunkDispatch } from 'redux-thunk';
+import { ProfileAction } from '@store/profile/profile.actions';
+import { Profile } from '@services/profile_api';
+import { connect } from 'react-redux';
+import { getLeaderboard } from '@store/leaderbord/leaderboard.thunks';
 
 type ScoreType = {
   name: string;
@@ -10,13 +17,19 @@ type ScoreType = {
   active: boolean;
 };
 
+interface ScoreProps extends RouteComponentProps {
+  profile: Profile;
+  error: null | string;
+  getLeaderboard: () => void;
+}
+
 type ListenerType = () => void;
 
 interface ScoreState {
   leaders: ScoreType[];
 }
 
-export class Score extends React.Component<RouteComponentProps, ScoreState> {
+class ScoreComponent extends React.Component<ScoreProps, ScoreState> {
   public state = {
     leaders: [
       {
@@ -43,6 +56,8 @@ export class Score extends React.Component<RouteComponentProps, ScoreState> {
   public listeners: ListenerType[] = [];
 
   public componentDidMount(): void {
+    this.props.getLeaderboard();
+
     const listener = this.keyListener();
 
     this.listeners.push(listener);
@@ -149,3 +164,18 @@ export class Score extends React.Component<RouteComponentProps, ScoreState> {
     );
   }
 }
+
+function mapStateToProps(state: RootState) {
+  return {
+    profile: selectProfile(state),
+    error: selectProfileError(state)
+  };
+}
+
+function mapDispatchToProps(dispatch: ThunkDispatch<RootState, void, ProfileAction>) {
+  return {
+    getLeaderboard: () => dispatch(getLeaderboard())
+  };
+}
+
+export const Score = connect(mapStateToProps, mapDispatchToProps)(ScoreComponent);
