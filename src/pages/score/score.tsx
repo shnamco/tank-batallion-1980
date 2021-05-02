@@ -80,13 +80,14 @@ class ScoreComponent extends React.Component<ScoreProps> {
   };
 
   public get renderForums(): React.ReactNode {
-    const profileName = 'MARIO99';
+    // eslint-disable-next-line prefer-spread
+    const leaderName = this.props.leaders[0]?.name ?? '';
 
     return this.props.leaders.map((player) => {
       return (
         <tr className="forums__row" key={player.name}>
           <td className={player.active ? 'forums__title active' : 'forums__title'}>
-            <span className={player.name === profileName ? 'eagle-after' : ''}>{player.name}</span>
+            <span className={player.name === leaderName ? 'eagle-after' : ''}>{player.name}</span>
           </td>
           <td>
             <div className="forums__topic">{player.score}</div>
