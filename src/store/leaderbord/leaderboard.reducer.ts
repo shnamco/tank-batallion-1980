@@ -1,17 +1,18 @@
 import { LEADERBOARD_ACTIONS, LeaderboardActions } from '@store/leaderbord/leaderboard.actions';
+import { Leader } from '@store/leaderbord/interfaces/leader';
 
 export interface LeaderboardState {
-  data: unknown[];
+  list: Leader[];
 }
 
 export const initialState: LeaderboardState = {
-  data: []
+  list: []
 };
 
 export const leaderboardReducer = (state = initialState, action: LeaderboardActions): LeaderboardState => {
   switch (action.type) {
-    case LEADERBOARD_ACTIONS.GET_LEADERBOARD: {
-      return { ...state, data: action.payload.data };
+    case LEADERBOARD_ACTIONS.GET_LEADERBOARD_SUCCESS: {
+      return { ...state, list: action.payload.list };
     }
     default:
       return state;

@@ -5,3 +5,7 @@ export const selectLeaderboardReducer = createSelector(
   (state: RootState) => state.leaderboardReducer,
   (leaderboardReducer) => leaderboardReducer
 );
+
+export const selectLeaderList = createSelector(selectLeaderboardReducer, (leaderboardReducer) =>
+  leaderboardReducer.list.map((item) => ({ ...item.data }))
+);
