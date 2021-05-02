@@ -80,8 +80,7 @@ class ScoreComponent extends React.Component<ScoreProps> {
   };
 
   public get renderForums(): React.ReactNode {
-    // eslint-disable-next-line prefer-spread
-    const leaderName = this.props.leaders[0]?.name ?? '';
+    const leaderName = this.props.leaders[0]?.name;
 
     return this.props.leaders.map((player) => {
       return (
