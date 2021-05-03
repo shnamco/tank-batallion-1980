@@ -7,7 +7,6 @@ import { Provider } from 'react-redux';
 import { store } from '@store/core/store';
 
 ReactDOM.hydrate(
-  // <h1>Hello</h1>,
   <Provider store={store}>
     <App />
   </Provider>,

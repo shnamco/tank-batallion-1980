@@ -9,9 +9,18 @@ export interface RootState {
   profile: ProfileState;
 }
 
+declare global {
+  interface Window {
+    __INITIAL_STATE__: RootState;
+  }
+}
+
 export const isServer = !(typeof window !== 'undefined' && window.document && window.document.createElement);
+
+const initialState = isServer ? undefined : window.__INITIAL_STATE__;
 
 export const store = createStore(
   combineReducers<RootState>({ authReducer, profile: profileReducer }),
+  initialState,
   composeWithDevTools(applyMiddleware(thunk))
 );

@@ -1,6 +1,5 @@
 import path from 'path';
 import webpack, { Configuration } from 'webpack';
-import HTMLWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import nodeExternals from 'webpack-node-externals';
@@ -10,13 +9,6 @@ const isProd = process.env.NODE_ENV === 'production';
 const isDev = !isProd;
 
 const plugins: any[] = [
-  new HTMLWebpackPlugin({
-    template: isDev ? path.resolve(__dirname, '../src/index_dev.html') : path.resolve(__dirname, '../src/index.html'),
-    minify: {
-      removeComments: isProd,
-      collapseWhitespace: isProd
-    }
-  }),
   new ForkTsCheckerWebpackPlugin({
     async: false,
     eslint: {

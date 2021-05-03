@@ -1,7 +1,6 @@
 import path from 'path';
 import webpack, { Configuration, RuleSetRule } from 'webpack';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
-import HTMLWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
@@ -17,13 +16,6 @@ const plugins: any[] = [
         from: path.resolve(__dirname, '../src/sw.js')
       }
     ]
-  }),
-  new HTMLWebpackPlugin({
-    template: isDev ? path.resolve(__dirname, '../src/index_dev.html') : path.resolve(__dirname, '../src/index.html'),
-    minify: {
-      removeComments: isProd,
-      collapseWhitespace: isProd
-    }
   }),
   new CleanWebpackPlugin(),
   new ForkTsCheckerWebpackPlugin({
@@ -43,9 +35,9 @@ if (isProd) {
 }
 
 const config: Configuration = {
+	name: 'client',
   mode: isDev ? 'development' : 'production',
-  entry: path.resolve(__dirname, '../src/index.tsx'),
-  // entry: path.resolve(__dirname, 'src/index.tsx'),
+  entry: path.resolve(__dirname, '../src/index'),
   devtool: 'source-map',
   target: 'web',
   output: {
