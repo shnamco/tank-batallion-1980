@@ -27,6 +27,6 @@ export class HTTPClient {
     if (method === METHOD.GET || !data) {
       return fetch(url, { method, headers, credentials: 'include' });
     }
-    return fetch(url, { method, headers, body: data, credentials: 'include' });
+    return fetch(url, { method, headers, body: JSON.stringify(data), credentials: 'include' });
   };
 }
