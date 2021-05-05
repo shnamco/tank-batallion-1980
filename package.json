@@ -10,7 +10,8 @@
     "start": "cross-env NODE_ENV=development webpack serve",
     "build": "cross-env NODE_ENV=production webpack --mode production",
     "lint": "eslint src --ext .ts,.tsx",
-    "test": "jest"
+    "test": "jest",
+    "start-server": "npm run build & node server.js"
   },
   "repository": {
     "type": "git",
