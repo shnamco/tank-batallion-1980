@@ -4,7 +4,7 @@ import { NextFunction, Request, Response } from 'express';
 const PRAKTIKUM_AUTH_ENDPOINT = 'https://ya-praktikum.tech/api/v2/auth/user';
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  req.app.locals.user = null;
+  res.locals.user = null;
 
   const authData = {
     authCookie: req.cookies.authCookie,
@@ -17,9 +17,9 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     const { data } = await axios.get(PRAKTIKUM_AUTH_ENDPOINT, {
       headers: { Cookie: cookies }
     });
-    req.app.locals.user = data;
+    res.locals.user = data;
   } catch (err) {
-    req.app.locals.user = null;
+    res.locals.user = null;
   }
   await next();
 };
