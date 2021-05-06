@@ -1,6 +1,6 @@
 import { getApp } from './server';
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 const isDev = process.env.NODE_ENV === 'development';
 
 const app = getApp(isDev);

@@ -1,6 +1,8 @@
 import express, { Express } from 'express';
 import { createServer, Server } from 'https';
+import cookieParser from 'cookie-parser';
 import { readFileSync } from 'fs';
+import { authMiddleware } from './middlewares/auth';
 
 const server: Express = express();
 
@@ -9,7 +11,11 @@ const options = {
   cert: readFileSync(__dirname + '/certificates/local.ya-praktikum.tech.pem')
 };
 
-server.get('/*', (req: any, res: any) => {
+server.use(cookieParser());
+
+server.get('/*', authMiddleware);
+
+server.get('/*', (req, res) => {
   res.send('ok');
 });
 
