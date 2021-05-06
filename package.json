@@ -2,7 +2,7 @@
   "name": "tank-batallion-1980",
   "version": "0.0.0",
   "description": "The task is to reproduce the original arcade game [\"Tank Batallion\"](https://en.wikipedia.org/wiki/Tank_Battalion), released by Namco in 1980.",
-  "main": "index.js",
+  "main": "server/index.ts",
   "directories": {
     "doc": "docs"
   },
@@ -11,7 +11,8 @@
     "build": "cross-env NODE_ENV=production webpack --mode production",
     "lint": "eslint src --ext .ts,.tsx",
     "test": "jest",
-    "start-server": "npm run build & node server.js"
+    "start:server": "npm run hosts:aliases && ts-node server/index.ts",
+    "hosts:aliases": "WHO_AM_I=$(whoami) ts-node server/utils/aliases.ts"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
     "@babel/preset-react": "^7.12.13",
     "@babel/preset-typescript": "^7.13.0",
     "@babel/runtime": "^7.13.10",
+    "@types/express": "^4.17.11",
     "@types/fork-ts-checker-webpack-plugin": "^0.4.5",
     "@types/jest": "^26.0.22",
     "@types/react": "^17.0.3",

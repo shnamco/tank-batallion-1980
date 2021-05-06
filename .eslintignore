@@ -3,6 +3,6 @@ dist
 tsconfig.json
 webpack.config.js
 postcss.config.js
-server.js
+index.ts
 jest.config.js
 setupTest.js
