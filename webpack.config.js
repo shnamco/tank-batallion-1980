@@ -96,6 +96,7 @@ module.exports = {
   },
   plugins,
   devServer: {
+    disableHostCheck: isDev,
     port: 3000,
     hot: isDev,
     historyApiFallback: true,

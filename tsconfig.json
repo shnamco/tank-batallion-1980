@@ -11,19 +11,20 @@
       "@utils/*": ["src/utils/*"],
       "@store/*": ["src/store/*"]
     },
+    "importHelpers": true,
     "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true,
     "esModuleInterop": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
+    "module": "commonjs",
     "moduleResolution": "node",
+    "experimentalDecorators": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react"
+    "jsx": "react",
+    "skipLibCheck": true
   },
-  "include": ["src/**/*"],
   "exclude": [
     "node_modules"
   ]
