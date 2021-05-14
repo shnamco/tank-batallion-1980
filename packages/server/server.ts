@@ -6,8 +6,6 @@ import routes from './src/routes/turorial.routes';
 
 const app = express();
 
-routes(app);
-
 const corsOptions = {
   origin: 'http://localhost:8081'
 };
@@ -33,3 +31,5 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
+
+routes(app);
