@@ -1,7 +1,7 @@
 import express from 'express';
 import * as bodyParser from 'body-parser';
 import errorhandler from 'strong-error-handler';
-import { user } from './routes/user.routes';
+import { users } from './routes/user.routes';
 
 export const app = express();
 
@@ -18,7 +18,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/users', user);
+app.use('/users', users);
 
 app.use(
   errorhandler({

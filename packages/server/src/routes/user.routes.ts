@@ -1,9 +1,9 @@
 import * as UserController from '../controllers/user.controller';
 import { Router } from 'express';
 
-export const user = Router();
+export const users = Router();
 
-user.get('', async (req, res, next) => {
+users.get('', async (req, res, next) => {
   try {
     res.json(await UserController.findAll());
   } catch (e) {

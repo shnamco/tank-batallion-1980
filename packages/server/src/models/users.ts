@@ -4,7 +4,7 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } 
   timestamps: false,
   tableName: 'users'
 })
-export class User extends Model<User> {
+export class Users extends Model<Users> {
   @AutoIncrement
   @PrimaryKey
   @Column(DataType.INTEGER)

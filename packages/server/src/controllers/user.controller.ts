@@ -1,6 +1,6 @@
-import * as UserModels from '../models/user';
-import { User } from '../models/user';
+import * as UserModels from '../models/users';
+import { Users } from '../models/users';
 
-export const findAll = (): Promise<User[]> => {
-  return UserModels.User.scope().findAll();
+export const findAll = (): Promise<Users[]> => {
+  return UserModels.Users.scope().findAll();
 };
