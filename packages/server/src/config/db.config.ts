@@ -1,6 +1,6 @@
 export default {
   HOST: 'localhost',
-  USER: 'evtkhvch',
+  USER: 'evtikhovich',
   PASSWORD: '123',
   DB: 'postgres',
   dialect: 'postgres',
