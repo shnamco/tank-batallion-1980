@@ -1,4 +1,5 @@
 export default {
+  PORT: 5432,
   HOST: 'localhost',
   USER: 'evtikhovich',
   PASSWORD: '123',
