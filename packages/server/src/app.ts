@@ -1,9 +1,12 @@
 import express from 'express';
 import * as bodyParser from 'body-parser';
 import errorhandler from 'strong-error-handler';
-import { users } from './routes/user.routes';
+import { themesRoutes } from './routes/theme.routes';
+import { Router } from 'express';
 
 export const app = express();
+
+const router = Router();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -18,11 +21,11 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/users', users);
-
 app.use(
   errorhandler({
     debug: process.env.ENV !== 'prod',
     log: true
   })
 );
+
+themesRoutes(router);

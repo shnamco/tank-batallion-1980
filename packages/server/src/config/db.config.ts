@@ -1,7 +1,7 @@
 export default {
   PORT: 5432,
   HOST: 'localhost',
-  USER: 'evtikhovich',
+  USER: 'evtkhvch',
   PASSWORD: '123',
   DB: 'postgres',
   dialect: 'postgres',
