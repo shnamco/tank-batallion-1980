@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+		"target": "ESNext",
+    "baseUrl": "./",
+    "importHelpers": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "emitDecoratorMetadata": true
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
