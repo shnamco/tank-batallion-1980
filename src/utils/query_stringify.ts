@@ -1,5 +1,5 @@
 export const queryStringify = (data: { [name: string]: unknown }): string => {
-  if (!data) {
+  if (!data || !Object.keys(data).length) {
     return '';
   }
   const str = Object.keys(data).reduce((acc: string[], p) => {

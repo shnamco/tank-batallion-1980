@@ -10,9 +10,10 @@ import routes from './src/routes/index';
 
 const app = express();
 
+app.use(cors({ credentials: true, origin: 'https://local.ya-praktikum.tech:3000' }));
 app.use(cookieParser());
 app.use(express.json());
-app.use(cors({ credentials: true, origin: 'https://local.ya-praktikum.tech:8080' }));
+
 app.use(authorization);
 
 app.use('/api', routes);

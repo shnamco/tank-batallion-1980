@@ -5,6 +5,7 @@ import bang from '../../assets/bang.svg';
 import { logOut } from '@store/auth/auth.thunks';
 import { connect, ConnectedProps } from 'react-redux';
 import './menu.pcss';
+import { themeApi } from '@services/theme_api';
 
 interface MenuState {
   cursor: number;
@@ -81,6 +82,7 @@ class MenuComponent extends Component<PropsFromRedux & MenuProps, MenuState> {
   }
 
   public componentDidMount(): void {
+    themeApi.userTheme().then((item) => console.log(item));
     this.handler = this.keyPressHandler();
   }
 

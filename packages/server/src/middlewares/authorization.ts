@@ -13,7 +13,6 @@ export const authorization = async (request: Request, response: Response, next: 
     const cookies = Object.entries(requestCookies)
       .map(([key, value]) => `${key}=${value}`)
       .join(';');
-
     try {
       const { data } = await axios.get('https://ya-praktikum.tech/api/v2/auth/user', {
         headers: { Cookie: cookies }
