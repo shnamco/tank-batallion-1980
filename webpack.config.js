@@ -5,6 +5,7 @@ const HTMLWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const fs = require('fs');
 
 const isProd = process.env.NODE_ENV === 'production';
 const isDev = !isProd;
@@ -98,6 +99,12 @@ module.exports = {
   },
   plugins,
   devServer: {
+    host: '0.0.0.0',
+    https: {
+      key: fs.readFileSync('server/certificates/local.ya-praktikum.tech-key.pem'),
+      cert: fs.readFileSync('server/certificates/local.ya-praktikum.tech.pem'),
+    },
+    public: 'https://local.ya-praktikum.tech:3000',
     disableHostCheck: true,
     port: 3000,
     hot: true,

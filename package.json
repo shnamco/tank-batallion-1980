@@ -15,8 +15,7 @@
     "lint": "eslint src --ext .ts,.tsx",
     "test": "jest",
     "start:server": "npm run hosts:aliases && cross-env NODE_ENV=development ts-node server/index.ts",
-    "hosts:aliases": "WHO_AM_I=$(whoami) ts-node server/utils/aliases.ts",
-    "start:https": "cross-env NODE_ENV=development npx webpack serve --https --key server/certificates/local.ya-praktikum.tech-key.pem --cert server/certificates/local.ya-praktikum.tech.pem"
+    "hosts:aliases": "WHO_AM_I=$(whoami) ts-node server/utils/aliases.ts"
   },
   "repository": {
     "type": "git",
