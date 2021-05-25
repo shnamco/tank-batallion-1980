@@ -5,7 +5,7 @@ import './profile_form.pcss';
 import '@styles/variables.pcss';
 import '@styles/profile.pcss';
 import { ROUTE } from '../../../interfaces/route';
-import { Profile, RequestData } from '../../../services/profile_api';
+import { Profile, RequestData } from '@services/profile_api';
 import { connect } from 'react-redux';
 import { RootState } from '@store/core/store';
 import { ThunkDispatch } from 'redux-thunk';
@@ -50,6 +50,15 @@ class Form extends Component<FormProps> {
     this.props.changeProfile(requestData);
   };
 
+  public get theme(): string {
+    const id = 1;
+
+    if (THEME.DARK === id) {
+      return 'DARK';
+    }
+    return 'LIGHT';
+  }
+
   public render(): React.ReactElement {
     const { first_name, second_name, display_name, email, login, phone } = this.props.profile;
 
@@ -67,6 +76,7 @@ class Form extends Component<FormProps> {
           </div>
           <div className="profile__form-actions">
             <button className="profile__button">UPDATE PROFILE</button>
+            <button className="profile__switch">SWITCH TO {this.theme}</button>
             <Link to={this.mainMenu} className="profile__link">
               BACK TO THE MAIN MENU
             </Link>
@@ -75,6 +85,11 @@ class Form extends Component<FormProps> {
       </main>
     );
   }
+}
+
+enum THEME {
+  LIGHT = 1,
+  DARK = 2
 }
 
 function mapStateToProps(state: RootState) {
