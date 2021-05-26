@@ -129,3 +129,13 @@ export const getUserTheme = (): ThunkAction<void, RootState, unknown, AnyAction>
     });
   };
 };
+
+export const changeUserTheme = (id: number): ThunkAction<void, RootState, unknown, AnyAction> => {
+  return (dispatch: Dispatch<AuthActions.AuthActions>) => {
+    themeApi.changeTheme(id).then((res) => {
+      if (res.status === 200) {
+        dispatch(AuthActions.getThemeSuccess(res.response.id));
+      }
+    });
+  };
+};
