@@ -23,8 +23,8 @@ const port = process.env.PORT || 8080;
 (async () => {
   await sequelize.sync({ force: true });
 
-  await Theme.create({ name: 'light' } as Theme);
   await Theme.create({ name: 'dark' } as Theme);
+  await Theme.create({ name: 'light' } as Theme);
 
   https
     .createServer(

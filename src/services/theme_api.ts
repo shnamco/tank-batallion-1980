@@ -20,13 +20,13 @@ class Api {
     return JSONMapper<unknown | Error>(response);
   };
 
-  public userTheme = async (): Promise<ResponseProxy<unknown | Error>> => {
+  public userTheme = async (): Promise<ResponseProxy<{ id: number }>> => {
     const response = this.httpClient.get(`${this.baseUrl}/theme/user`, {
       data: {},
       headers: { 'Content-Type': 'application/json' }
     });
 
-    return JSONMapper<unknown | Error>(response);
+    return JSONMapper<{ id: number }>(response);
   };
 
   public changeTheme = async (id: number): Promise<ResponseProxy<unknown | Error>> => {

@@ -12,10 +12,13 @@ import { ThunkDispatch } from 'redux-thunk';
 import { changeProfile, requestProfile } from '@store/profile/profile.thunks';
 import { ProfileAction } from '@store/profile/profile.actions';
 import { selectProfileError, selectProfile } from '@store/profile/profile.selectors';
+import { THEME } from '@store/auth/auth.reducer';
+import { selectTheme } from '@store/auth/auth.selectors';
 
 type FormProps = {
   profile: Profile;
   error: null | string;
+  theme: THEME;
   requestProfile: () => void;
   changeProfile: (requestData: RequestData) => void;
 };
@@ -51,9 +54,7 @@ class Form extends Component<FormProps> {
   };
 
   public get theme(): string {
-    const id = 1;
-
-    if (THEME.DARK === id) {
+    if (THEME.DARK === this.props.theme) {
       return 'DARK';
     }
     return 'LIGHT';
@@ -87,15 +88,11 @@ class Form extends Component<FormProps> {
   }
 }
 
-enum THEME {
-  LIGHT = 1,
-  DARK = 2
-}
-
 function mapStateToProps(state: RootState) {
   return {
     profile: selectProfile(state),
-    error: selectProfileError(state)
+    error: selectProfileError(state),
+    theme: selectTheme(state)
   };
 }
 

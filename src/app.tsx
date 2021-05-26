@@ -12,13 +12,14 @@ import { Score } from '@pages/score/score';
 import { Menu } from '@pages/menu/menu';
 import './app.pcss';
 import { useDispatch } from 'react-redux';
-import { getProfile } from '@store/auth/auth.thunks';
+import { getProfile, getUserTheme } from '@store/auth/auth.thunks';
 
 export const App: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getProfile());
+    dispatch(getUserTheme());
   });
 
   return (
