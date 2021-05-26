@@ -3,6 +3,7 @@ import { Profile } from './profile_api';
 import { ResponseProxy } from '../interfaces/api';
 import { HTTPClient } from '@utils/http_client';
 import { JSONMapper } from '@utils/json_mapper';
+import { AuthMapper } from '@utils/auth_mapper';
 
 export type SignUpReq = Omit<Profile, 'id' | 'display_name' | 'avatar'>;
 
@@ -24,7 +25,7 @@ class Api {
       headers: { 'Content-Type': 'application/json' }
     });
 
-    return JSONMapper<string | Reason>(response);
+    return AuthMapper<string | Reason>(response);
   };
 
   public signUp = async (data: SignUpReq): Promise<ResponseProxy<string | Reason>> => {
@@ -51,7 +52,7 @@ class Api {
       headers: { 'Content-Type': 'application/json' }
     });
 
-    return JSONMapper<unknown>(response);
+    return AuthMapper<unknown>(response);
   };
 }
 

@@ -5,20 +5,14 @@ const HTMLWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const fs = require('fs');
 
 const isProd = process.env.NODE_ENV === 'production';
 const isDev = !isProd;
 
 const plugins = [
-  new CopyPlugin({
-    patterns: [
-      {
-        from: path.resolve(__dirname, 'src/sw.js')
-      }
-    ]
-  }),
   new HTMLWebpackPlugin({
-    template: isDev ? path.resolve(__dirname, 'src/index_dev.html') : path.resolve(__dirname, 'src/index.html'),
+    template: isDev ? path.resolve(__dirname, 'src/index.html') : path.resolve(__dirname, 'src/index_prod.html'),
     minify: {
       removeComments: isProd,
       collapseWhitespace: isProd
@@ -42,7 +36,16 @@ const plugins = [
 
 if (isProd) {
   // enable in production only
-  plugins.push(new MiniCssExtractPlugin());
+  plugins.push(
+    new MiniCssExtractPlugin(),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, 'src/sw.js')
+        }
+      ]
+    }),
+  );
 }
 
 module.exports = {
@@ -96,9 +99,15 @@ module.exports = {
   },
   plugins,
   devServer: {
-    disableHostCheck: isDev,
+    host: '0.0.0.0',
+    https: {
+      key: fs.readFileSync('server/certificates/local.ya-praktikum.tech-key.pem'),
+      cert: fs.readFileSync('server/certificates/local.ya-praktikum.tech.pem'),
+    },
+    public: 'https://local.ya-praktikum.tech:3000',
+    disableHostCheck: true,
     port: 3000,
-    hot: isDev,
+    hot: true,
     historyApiFallback: true,
     contentBase: path.join(__dirname, 'src')
   }

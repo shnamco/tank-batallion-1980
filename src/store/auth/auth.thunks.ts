@@ -8,6 +8,7 @@ import { ROUTE } from '../../interfaces/route';
 import { HistoryProxy } from '../../interfaces/history';
 import { authApi, LoginReq, Reason, SignUpReq } from '@services/auth_api';
 import { oauthApi } from '@services/oauth_api';
+import { themeApi } from '@services/theme_api';
 
 export const logIn = (
   data: LoginReq,
@@ -116,5 +117,25 @@ export const signUp = (
       .catch(() => {
         dispatch(AuthActions.logInFailureAction());
       });
+  };
+};
+
+export const getUserTheme = (): ThunkAction<void, RootState, unknown, AnyAction> => {
+  return (dispatch: Dispatch<AuthActions.AuthActions>) => {
+    themeApi.userTheme().then((res) => {
+      if (res.status === 200) {
+        dispatch(AuthActions.getThemeSuccess(res.response.id));
+      }
+    });
+  };
+};
+
+export const changeUserTheme = (id: number): ThunkAction<void, RootState, unknown, AnyAction> => {
+  return (dispatch: Dispatch<AuthActions.AuthActions>) => {
+    themeApi.changeTheme(id).then((res) => {
+      if (res.status === 200) {
+        dispatch(AuthActions.getThemeSuccess(res.response.id));
+      }
+    });
   };
 };

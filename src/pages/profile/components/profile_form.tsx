@@ -5,19 +5,24 @@ import './profile_form.pcss';
 import '@styles/variables.pcss';
 import '@styles/profile.pcss';
 import { ROUTE } from '../../../interfaces/route';
-import { Profile, RequestData } from '../../../services/profile_api';
+import { Profile, RequestData } from '@services/profile_api';
 import { connect } from 'react-redux';
 import { RootState } from '@store/core/store';
 import { ThunkDispatch } from 'redux-thunk';
 import { changeProfile, requestProfile } from '@store/profile/profile.thunks';
 import { ProfileAction } from '@store/profile/profile.actions';
-import { selectProfileError, selectProfile } from '@store/profile/profile.selectors';
+import { selectProfile, selectProfileError } from '@store/profile/profile.selectors';
+import { THEME } from '@store/auth/auth.reducer';
+import { selectTheme } from '@store/auth/auth.selectors';
+import { changeUserTheme } from '@store/auth/auth.thunks';
 
 type FormProps = {
   profile: Profile;
   error: null | string;
+  theme: THEME;
   requestProfile: () => void;
   changeProfile: (requestData: RequestData) => void;
+  changeUserTheme: (id: number) => void;
 };
 
 class Form extends Component<FormProps> {
@@ -50,6 +55,19 @@ class Form extends Component<FormProps> {
     this.props.changeProfile(requestData);
   };
 
+  public themeClicked(): void {
+    const theme = THEME.DARK === this.props.theme ? THEME.LIGHT : THEME.DARK;
+
+    this.props.changeUserTheme(theme);
+  }
+
+  public get theme(): string {
+    if (THEME.DARK === this.props.theme) {
+      return 'LIGHT';
+    }
+    return 'DARK';
+  }
+
   public render(): React.ReactElement {
     const { first_name, second_name, display_name, email, login, phone } = this.props.profile;
 
@@ -66,7 +84,12 @@ class Form extends Component<FormProps> {
             {<span className="profile__form-error">{this.props.error && this.props.error}</span>}
           </div>
           <div className="profile__form-actions">
-            <button className="profile__button">UPDATE PROFILE</button>
+            <button type="submit" className="profile__button">
+              UPDATE PROFILE
+            </button>
+            <button type="button" onClick={this.themeClicked.bind(this)} className="profile__switch">
+              SWITCH TO {this.theme}
+            </button>
             <Link to={this.mainMenu} className="profile__link">
               BACK TO THE MAIN MENU
             </Link>
@@ -80,14 +103,16 @@ class Form extends Component<FormProps> {
 function mapStateToProps(state: RootState) {
   return {
     profile: selectProfile(state),
-    error: selectProfileError(state)
+    error: selectProfileError(state),
+    theme: selectTheme(state)
   };
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch<RootState, void, ProfileAction>) {
   return {
     requestProfile: () => dispatch(requestProfile()),
-    changeProfile: (requestData: RequestData) => dispatch(changeProfile(requestData))
+    changeProfile: (requestData: RequestData) => dispatch(changeProfile(requestData)),
+    changeUserTheme: (id: number) => dispatch(changeUserTheme(id))
   };
 }
 
