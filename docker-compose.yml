@@ -3,17 +3,15 @@ services:
   nodejs:
     container_name: api
     restart: always
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     ports:
-      - 8080:8080
+      - "8080:8080"
     depends_on:
       - postgres
   postgres:
     container_name: postgres
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
       POSTGRES_DB: postgress
       DB_LOGIN: postgress

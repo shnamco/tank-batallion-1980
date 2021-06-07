@@ -9,8 +9,14 @@ import { authorization } from './src/middlewares/authorization';
 import routes from './src/routes';
 
 const app = express();
+const isDevelopment = process.env.NODE_ENV === 'development';
 
-app.use(cors({ credentials: true, origin: 'https://local.ya-praktikum.tech:3000' }));
+app.use(
+  cors({
+    credentials: true,
+    origin: isDevelopment ? 'https://local.ya-praktikum.tech:3000' : 'https://neapol-tanks-4.ya-praktikum.tech'
+  })
+);
 app.use(cookieParser());
 app.use(express.json());
 
@@ -26,16 +32,31 @@ const port = process.env.PORT || 8080;
   await Theme.create({ name: 'dark' } as Theme);
   await Theme.create({ name: 'light' } as Theme);
 
-  https
-    .createServer(
-      {
-        key: fs.readFileSync(__dirname + '/src/certificates/local.ya-praktikum.tech-key.pem'),
-        cert: fs.readFileSync(__dirname + '/src/certificates/local.ya-praktikum.tech.pem')
-      },
-      app
-    )
-    .listen(port, () => {
-      // eslint-disable-next-line no-console
-      console.log('Application is started on localhost HTTPS:', port);
-    });
+  if (isDevelopment) {
+    https
+      .createServer(
+        {
+          key: fs.readFileSync(__dirname + '/src/certificates/local.ya-praktikum.tech-key.pem'),
+          cert: fs.readFileSync(__dirname + '/src/certificates/local.ya-praktikum.tech.pem')
+        },
+        app
+      )
+      .listen(port, () => {
+        // eslint-disable-next-line no-console
+        console.log('Application is started on localhost HTTPS:', port);
+      });
+  } else {
+    https
+      .createServer(
+        {
+          key: fs.readFileSync('/etc/letsencrypt/live/neapol-tanks-4.ya-praktikum.tech/privkey.pem'),
+          cert: fs.readFileSync('/etc/letsencrypt/live/neapol-tanks-4.ya-praktikum.tech/fullchain.pem')
+        },
+        app
+      )
+      .listen(port, () => {
+        // eslint-disable-next-line no-console
+        console.log('Application is started on localhost HTTPS:', port);
+      });
+  }
 })();

@@ -3,7 +3,7 @@ export default {
   USER: 'postgres',
   PASSWORD: 'postgres',
   DB: 'postgres',
-  HOST: 'host.docker.internal',
+  HOST: 'postgres',
   dialect: 'postgres',
   pool: {
     max: 5,

@@ -6,7 +6,8 @@
     "doc": "docs"
   },
   "scripts": {
-    "api:start": "ts-node --project api/tsconfig.json api/server.ts",
+    "api:start": "cross-env NODE_ENV=production ts-node --project api/tsconfig.json api/server.ts",
+    "api:start-dev": "cross-env NODE_ENV=development ts-node --project api/tsconfig.json api/server.ts",
     "client:start": "npm run hosts:aliases && cross-env NODE_ENV=development webpack serve",
     "client:build": "cross-env NODE_ENV=production webpack --mode production",
     "server:start": "npm run hosts:aliases && cross-env NODE_ENV=development ts-node server/index.ts",
