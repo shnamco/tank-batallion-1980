@@ -1,9 +1,9 @@
 export default {
   PORT: 5432,
-  HOST: 'localhost',
-  USER: 'evtikhovich',
-  PASSWORD: '123',
+  USER: 'postgres',
+  PASSWORD: 'postgres',
   DB: 'postgres',
+  HOST: 'host.docker.internal',
   dialect: 'postgres',
   pool: {
     max: 5,

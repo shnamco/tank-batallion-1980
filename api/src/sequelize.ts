@@ -5,11 +5,11 @@ import { Theme } from './models/theme';
 import { UserTheme } from './models/user_theme';
 
 export const sequelize = new Sequelize({
-  port: dbConfig.PORT,
-  username: dbConfig.USER,
-  password: dbConfig.PASSWORD,
-  database: dbConfig.DB,
+  port: dbConfig.PORT || 5432,
+  username: dbConfig.USER || 'postgres',
+  password: dbConfig.PASSWORD || 'postgres',
+  database: dbConfig.DB || 'postgres',
   host: dbConfig.HOST,
-  dialect: dbConfig.dialect as Dialect,
+  dialect: (dbConfig.dialect || 'postgres') as Dialect,
   models: [UserTheme, Theme]
 });

@@ -10,7 +10,6 @@ import { Forums } from '@pages/forums/forums';
 import { Forum } from '@pages/forum/forum';
 import { Score } from '@pages/score/score';
 import { Menu } from '@pages/menu/menu';
-import './app.pcss';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProfile, getUserTheme } from '@store/auth/auth.thunks';
 import { selectTheme } from '@store/auth/auth.selectors';

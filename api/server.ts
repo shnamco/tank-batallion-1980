@@ -6,7 +6,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { authorization } from './src/middlewares/authorization';
-import routes from './src/routes/index';
+import routes from './src/routes';
 
 const app = express();
 

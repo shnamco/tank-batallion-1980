@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
-import './login_form.pcss';
 import '@styles/variables.pcss';
 import '@styles/login.pcss';
-import { LoginReq, Reason } from '../../../../services/auth_api';
+import { LoginReq, Reason } from '@services/auth_api';
 import { Input } from '@components/input/input';
 import { logIn, getServiceId } from '@store/auth/auth.thunks';
 import { connect, ConnectedProps } from 'react-redux';
