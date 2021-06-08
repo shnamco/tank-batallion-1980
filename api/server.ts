@@ -14,7 +14,7 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 app.use(
   cors({
     credentials: true,
-    origin: isDevelopment ? 'https://local.ya-praktikum.tech:8080' : 'https://neapol-tanks-4.ya-praktikum.tech:8080'
+    origin: isDevelopment ? 'https://local.ya-praktikum.tech:3000' : 'https://neapol-tanks-4.ya-praktikum.tech'
   })
 );
 app.use(cookieParser());
