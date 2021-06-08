@@ -27,9 +27,7 @@ app.use('/api', routes);
 const port = process.env.PORT || 8080;
 
 const certificateIsExist =
-  isDevelopment &&
-  fs.existsSync(__dirname + '/src/certificates/local.ya-praktikum.tech-key.pem') &&
-  fs.existsSync(__dirname + '/src/certificates/local.ya-praktikum.tech.pem');
+  !isDevelopment && fs.existsSync(__dirname + '../certificates/privkey.pem') && fs.existsSync(__dirname + '/../certificates/fullchain.pem');
 
 (async () => {
   await sequelize.sync({ force: true });
@@ -41,8 +39,8 @@ const certificateIsExist =
     https
       .createServer(
         {
-          key: fs.readFileSync(__dirname + '/src/certificates/local.ya-praktikum.tech-key.pem'),
-          cert: fs.readFileSync(__dirname + '/src/certificates/local.ya-praktikum.tech.pem')
+          key: fs.readFileSync(__dirname + '../certificates/privkey.pem'),
+          cert: fs.readFileSync(__dirname + '/../certificates/fullchain.pem')
         },
         app
       )
