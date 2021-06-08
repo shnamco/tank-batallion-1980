@@ -27,7 +27,9 @@ app.use('/api', routes);
 const port = process.env.PORT || 8080;
 
 const certificateIsExist =
-  !isDevelopment && fs.existsSync(__dirname + '../certificates/privkey.pem') && fs.existsSync(__dirname + '/../certificates/fullchain.pem');
+  !isDevelopment &&
+  fs.existsSync(__dirname + 'src/certificates/privkey.pem') &&
+  fs.existsSync(__dirname + 'src/certificates/fullchain.pem');
 
 (async () => {
   await sequelize.sync({ force: true });
