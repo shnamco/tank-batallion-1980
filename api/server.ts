@@ -11,12 +11,12 @@ import routes from './src/routes';
 const app = express();
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-// app.use(
-//   cors({
-//     credentials: true,
-//     origin: isDevelopment ? 'https://local.ya-praktikum.tech:3000' : 'https://neapol-tanks-4.ya-praktikum.tech'
-//   })
-// );
+app.use(
+  cors({
+    credentials: true,
+    origin: ['https://local.ya-praktikum.tech:3000', 'https://neapol-tanks-4.ya-praktikum.tech']
+  })
+);
 app.use(cookieParser());
 app.use(express.json());
 
