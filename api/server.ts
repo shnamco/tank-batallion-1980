@@ -49,8 +49,8 @@ const port = process.env.PORT || 8080;
     https
       .createServer(
         {
-          key: fs.readFileSync('/etc/letsencrypt/live/neapol-tanks-4.ya-praktikum.tech/privkey.pem'),
-          cert: fs.readFileSync('/etc/letsencrypt/live/neapol-tanks-4.ya-praktikum.tech/fullchain.pem')
+          key: fs.readFileSync(__dirname + '../certificates/privkey.pem'),
+          cert: fs.readFileSync(__dirname + '../certificates/fullchain.pem')
         },
         app
       )
