@@ -39,8 +39,8 @@ const certificateIsExist =
     https
       .createServer(
         {
-          key: fs.readFileSync(__dirname + '../certificates/privkey.pem'),
-          cert: fs.readFileSync(__dirname + '/../certificates/fullchain.pem')
+          key: fs.readFileSync(__dirname + 'src/certificates/privkey.pem'),
+          cert: fs.readFileSync(__dirname + 'src/certificates/fullchain.pem')
         },
         app
       )
