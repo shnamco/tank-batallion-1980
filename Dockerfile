@@ -12,4 +12,4 @@ COPY . .
 
 EXPOSE 8080
 
-CMD npm run api:start-dev
+CMD npm run api:start
