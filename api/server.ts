@@ -26,13 +26,18 @@ app.use('/api', routes);
 
 const port = process.env.PORT || 8080;
 
+const certificateIsExist =
+  isDevelopment &&
+  fs.existsSync(__dirname + '/src/certificates/local.ya-praktikum.tech-key.pem') &&
+  fs.existsSync(__dirname + '/src/certificates/local.ya-praktikum.tech.pem');
+
 (async () => {
   await sequelize.sync({ force: true });
 
   await Theme.create({ name: 'dark' } as Theme);
   await Theme.create({ name: 'light' } as Theme);
 
-  if (isDevelopment) {
+  if (certificateIsExist) {
     https
       .createServer(
         {
@@ -46,17 +51,9 @@ const port = process.env.PORT || 8080;
         console.log('Application is started on localhost HTTPS:', port);
       });
   } else {
-    https
-      .createServer(
-        {
-          key: fs.readFileSync(__dirname + '../certificates/privkey.pem'),
-          cert: fs.readFileSync(__dirname + '../certificates/fullchain.pem')
-        },
-        app
-      )
-      .listen(port, () => {
-        // eslint-disable-next-line no-console
-        console.log('Application is started on localhost HTTPS:', port);
-      });
+    app.listen(port, () => {
+      // eslint-disable-next-line no-console
+      console.log('Application is started on localhost HTTP:', port);
+    });
   }
 })();
