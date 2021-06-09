@@ -1,0 +1,25 @@
+version: "3.3"
+services:
+  nodejs:
+    container_name: api
+    restart: always
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+  postgres:
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: postgress
+      DB_LOGIN: postgress
+      DB_PASSWORD: postgress
+    restart: always
+    image: postgres:9.6.5-alpine
+    volumes:
+      - ./postgres-initdb.sh:/docker-entrypoint-initdb.d/init.sh
+
+volumes:
+  data-volume:

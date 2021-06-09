@@ -4,12 +4,11 @@ import dbConfig from './config/db.config';
 import { Theme } from './models/theme';
 import { UserTheme } from './models/user_theme';
 
-export const sequelize = new Sequelize({
+const isDev = process.env.NODE_ENV === 'development';
+
+export const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   port: dbConfig.PORT,
-  username: dbConfig.USER,
-  password: dbConfig.PASSWORD,
-  database: dbConfig.DB,
-  host: dbConfig.HOST,
+  host: isDev ? 'localhost' : dbConfig.HOST,
   dialect: dbConfig.dialect as Dialect,
   models: [UserTheme, Theme]
 });

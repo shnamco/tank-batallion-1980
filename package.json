@@ -2,19 +2,18 @@
   "name": "tank-batallion-1980",
   "version": "0.0.0",
   "description": "The task is to reproduce the original arcade game [\"Tank Batallion\"](https://en.wikipedia.org/wiki/Tank_Battalion), released by Namco in 1980.",
-  "main": "server/index.ts",
   "directories": {
     "doc": "docs"
   },
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
-    "start": "npm run hosts:aliases && cross-env NODE_ENV=development webpack serve",
-    "build": "cross-env NODE_ENV=production webpack --mode production",
+    "api:deploy": "docker-compose up -d --build",
+    "api:start": "cross-env NODE_ENV=production ts-node --project api/tsconfig.json api/server.ts",
+    "api:start-dev": "cross-env NODE_ENV=development ts-node --project api/tsconfig.json api/server.ts",
+    "client:start": "npm run hosts:aliases && cross-env NODE_ENV=development webpack serve",
+    "client:build": "cross-env NODE_ENV=production webpack --mode production",
+    "server:start": "npm run hosts:aliases && cross-env NODE_ENV=development ts-node server/index.ts",
     "lint": "eslint src --ext .ts,.tsx",
     "test": "jest",
-    "start:server": "npm run hosts:aliases && cross-env NODE_ENV=development ts-node server/index.ts",
     "hosts:aliases": "WHO_AM_I=$(whoami) ts-node server/utils/aliases.ts"
   },
   "repository": {
@@ -35,9 +34,11 @@
     "@babel/preset-typescript": "^7.13.0",
     "@babel/runtime": "^7.13.10",
     "@types/cookie-parser": "^1.4.2",
+    "@types/cors": "^2.8.10",
     "@types/express": "^4.17.11",
     "@types/fork-ts-checker-webpack-plugin": "^0.4.5",
     "@types/jest": "^26.0.22",
+    "@types/pg": "^7.14.11",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.2",
     "@types/react-redux": "^7.1.16",
@@ -67,6 +68,7 @@
     "html-webpack-plugin": "^5.3.1",
     "jest": "^26.6.3",
     "mini-css-extract-plugin": "^1.4.0",
+    "nodemon": "^1.18.9",
     "path": "^0.12.7",
     "postcss": "^8.2.8",
     "postcss-loader": "^5.2.0",
@@ -75,6 +77,8 @@
     "prettier": "2.2.1",
     "prettier-eslint": "12.0.0",
     "prettier-eslint-cli": "5.0.1",
+    "redux-devtools-extension": "^2.13.9",
+    "sequelize-cli": "^6.2.0",
     "style-loader": "^2.0.0",
     "stylelint": "^13.12.0",
     "stylelint-prettier": "^1.2.0",
@@ -83,17 +87,24 @@
     "webpack": "^5.26.0",
     "webpack-cli": "^4.5.0",
     "webpack-dev-server": "^3.11.2",
-    "webpack-node-externals": "^2.5.2",
-    "redux-devtools-extension": "^2.13.9"
+    "webpack-node-externals": "^2.5.2"
   },
   "dependencies": {
+    "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "pg": "^8.6.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-redux": "^7.2.3",
     "react-router-dom": "^5.2.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "reselect": "^4.0.0"
+    "reflect-metadata": "^0.1.13",
+    "reselect": "^4.0.0",
+    "sequelize": "^6.6.2",
+    "sequelize-typescript": "^2.1.0",
+    "strong-error-handler": "^4.0.0"
   }
 }
