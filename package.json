@@ -6,6 +6,7 @@
     "doc": "docs"
   },
   "scripts": {
+    "api:deploy": "docker-compose up -d --build",
     "api:start": "cross-env NODE_ENV=production ts-node --project api/tsconfig.json api/server.ts",
     "api:start-dev": "cross-env NODE_ENV=development ts-node --project api/tsconfig.json api/server.ts",
     "client:start": "npm run hosts:aliases && cross-env NODE_ENV=development webpack serve",
