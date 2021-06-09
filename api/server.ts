@@ -11,6 +11,19 @@ import routes from './src/routes';
 const app = express();
 const isDevelopment = process.env.NODE_ENV === 'development';
 
+const getCertificates = (isDevelopment: boolean): { key: Buffer; cert: Buffer } => {
+  if (isDevelopment) {
+    return {
+      key: fs.readFileSync(__dirname + '/src/certificates/local.ya-praktikum.tech.pem'),
+      cert: fs.readFileSync(__dirname + '/src/certificates/local.ya-praktikum.tech-key.pem')
+    };
+  }
+  return {
+    key: fs.readFileSync(__dirname + '/src/certificates/privkey.pem'),
+    cert: fs.readFileSync(__dirname + '/src/certificates/fullchain.pem')
+  };
+};
+
 app.use(
   cors({
     credentials: true,
@@ -26,10 +39,9 @@ app.use('/api', routes);
 
 const port = process.env.PORT || 8080;
 
-const certificateIsExist =
-  !isDevelopment &&
-  fs.existsSync(__dirname + '/src/certificates/privkey.pem') &&
-  fs.existsSync(__dirname + '/src/certificates/fullchain.pem');
+const certificates = getCertificates(isDevelopment);
+
+const isCertExist = certificates.cert && certificates.key;
 
 (async () => {
   await sequelize.sync({ force: true });
@@ -37,19 +49,11 @@ const certificateIsExist =
   await Theme.create({ name: 'dark' } as Theme);
   await Theme.create({ name: 'light' } as Theme);
 
-  if (certificateIsExist) {
-    https
-      .createServer(
-        {
-          key: fs.readFileSync(__dirname + '/src/certificates/privkey.pem'),
-          cert: fs.readFileSync(__dirname + '/src/certificates/fullchain.pem')
-        },
-        app
-      )
-      .listen(port, () => {
-        // eslint-disable-next-line no-console
-        console.log('Application is started on localhost HTTPS:', port);
-      });
+  if (isCertExist) {
+    https.createServer(certificates, app).listen(port, () => {
+      // eslint-disable-next-line no-console
+      console.log('Application is started on localhost HTTPS:', port);
+    });
   } else {
     app.listen(port, () => {
       // eslint-disable-next-line no-console
