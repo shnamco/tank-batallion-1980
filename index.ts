@@ -8,8 +8,8 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 
 const getCertificates = (): { key: Buffer; cert: Buffer } => {
   return {
-    key: fs.readFileSync(__dirname + '/src/certificates/local.ya-praktikum.tech-key.pem'),
-    cert: fs.readFileSync(__dirname + '/src/certificates/local.ya-praktikum.tech.pem')
+    key: fs.readFileSync('server/certificates/local.ya-praktikum.tech-key.pem'),
+    cert: fs.readFileSync('server/certificates/local.ya-praktikum.tech.pem')
   };
 };
 

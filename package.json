@@ -8,8 +8,9 @@
   "scripts": {
     "start:webpack": "webpack --mode=development --watch",
     "start:server": "wait-on dist/server.js && nodemon -r esm dist/server.js",
+    "start:serve": "npm run build && node -r esm dist/server.js",
     "start": "npm run clean && cross-env NODE_ENV=development npm-run-all --print-label --parallel start:server start:webpack",
-    "build": "cross-env NODE_ENV=production npm run clean && webpack --mode production",
+    "build": "npm run clean && webpack --mode=production --config webpack/client.config.ts && webpack --mode=production --config webpack/server.config.ts",
     "api:start": "cross-env NODE_ENV=production ts-node --project api/tsconfig.json api/server.ts",
     "api:start-dev": "cross-env NODE_ENV=development ts-node --project api/tsconfig.json api/server.ts",
     "clean": "rimraf dist",

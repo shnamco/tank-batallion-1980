@@ -1,9 +1,19 @@
 version: "3.3"
 services:
-  nodejs:
+  server:
+    container_name: server
+    restart: always
+    build:
+      context: ./
+      dockerfile: ./server/Dockerfile
+    ports:
+      - "3000:3000"
+  api:
     container_name: api
     restart: always
-    build: .
+    build:
+      context: ./
+      dockerfile: ./api/Dockerfile
     ports:
       - "8080:8080"
     depends_on:
