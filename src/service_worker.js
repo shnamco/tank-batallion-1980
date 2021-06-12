@@ -27,7 +27,9 @@ self.addEventListener('activate', async (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  event.respondWith(checkCache(event.request));
+  if (event.request.method === 'GET') {
+    event.respondWith(checkCache(event.request));
+  }
 });
 
 async function checkCache(req) {
