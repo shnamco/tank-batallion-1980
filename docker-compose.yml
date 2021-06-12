@@ -4,7 +4,7 @@ services:
     container_name: server
     restart: always
     build:
-      context: ./
+      context: .
       dockerfile: ./server/Dockerfile
     ports:
       - "3000:3000"
@@ -12,7 +12,7 @@ services:
     container_name: api
     restart: always
     build:
-      context: ./
+      context: .
       dockerfile: ./api/Dockerfile
     ports:
       - "8080:8080"
