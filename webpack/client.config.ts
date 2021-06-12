@@ -1,21 +1,14 @@
 import path from 'path';
-import webpack from 'webpack';
+import webpack, {WebpackPluginInstance} from 'webpack';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import { GenerateSW } from 'workbox-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
-import CopyPlugin from 'copy-webpack-plugin';
 
 const clientConfig = (_: undefined, { mode }: { mode: 'production' | 'development' }): webpack.Configuration => {
   const isProd = mode === 'production';
   const isDev = !isProd;
 
-  const plugins = [
-    new CopyPlugin({
-      patterns: [
-        {
-          from: path.resolve('src/service_worker.js')
-        }
-      ]
-    }),
+  const plugins: WebpackPluginInstance[] = [
     new CleanWebpackPlugin(),
     new ForkTsCheckerWebpackPlugin({
       async: false,
@@ -25,6 +18,19 @@ const clientConfig = (_: undefined, { mode }: { mode: 'production' | 'developmen
     }),
     new webpack.NormalModuleReplacementPlugin(/src\/environment\/environment\.ts/, isProd ? './environment.prod.ts' : './environment.ts')
   ];
+
+  if (isProd) {
+    plugins.push(new GenerateSW({
+      clientsClaim: true,
+      skipWaiting: true,
+      maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+      modifyURLPrefix: { auto: '/' },
+      cleanupOutdatedCaches: true,
+      exclude: [/\.map$/],
+      navigateFallback: '/index.html',
+      navigationPreload: false,
+    }));
+  }
 
   return {
     mode: isDev ? 'development' : 'production',
