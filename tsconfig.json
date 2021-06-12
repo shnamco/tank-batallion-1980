@@ -2,6 +2,7 @@
   "compilerOptions": {
 		"target": "ESNext",
     "baseUrl": "./",
+    "outDir": "./dist",
     "paths": {
       "@components/*": ["src/components/*"],
       "@pages/*": ["src/pages/*"],
@@ -11,9 +12,10 @@
       "@utils/*": ["src/utils/*"],
       "@store/*": ["src/store/*"]
     },
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "importHelpers": true,
     "allowJs": true,
-    "esModuleInterop": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "commonjs",
@@ -23,8 +25,9 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react",
-    "skipLibCheck": true
+    "skipLibCheck": true,
   },
+  "include": ["src", "server"],
   "exclude": [
     "node_modules"
   ]

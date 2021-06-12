@@ -25,6 +25,7 @@
     }
   }
   &__item.logout {
+    display: flex;
     color: var(--red);
   }
 }
@@ -47,4 +48,15 @@
 
 .logout__icon {
   margin-left: 10px;
+  &:after {
+    content: '';
+    position: absolute;
+    display: flex;
+    align-items: center;
+    background-image: url(../../assets/bang.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 40px;
+    height: 40px;
+  }
 }

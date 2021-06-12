@@ -1,25 +1,30 @@
-import axios from 'axios';
 import { NextFunction, Request, Response } from 'express';
+import axios from 'axios';
 
-const PRAKTIKUM_AUTH_ENDPOINT = 'https://ya-praktikum.tech/api/v2/auth/user';
-
-export const authMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  res.locals.user = null;
-
-  const authData = {
-    authCookie: req.cookies.authCookie,
-    uuid: req.cookies.uuid
+export const authMiddleware = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
+  const requestCookies = {
+    uuid: request.cookies.uuid,
+    authCookie: request.cookies.authCookie
   };
-  const cookies = Object.entries(authData)
-    .map(([key, value]) => `${key}=${value}`)
-    .join(';');
-  try {
-    const { data } = await axios.get(PRAKTIKUM_AUTH_ENDPOINT, {
-      headers: { Cookie: cookies }
-    });
-    res.locals.user = data;
-  } catch (err) {
-    res.locals.user = null;
+
+  response.locals.user = null;
+
+  if (requestCookies.authCookie && requestCookies.uuid) {
+    const cookies = Object.entries(requestCookies)
+      .map(([key, value]) => `${key}=${value}`)
+      .join(';');
+
+    try {
+      const { data } = await axios.get('https://ya-praktikum.tech/api/v2/auth/user', {
+        headers: { Cookie: cookies }
+      });
+
+      response.locals.user = data;
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error(err);
+    }
   }
-  await next();
+
+  next();
 };

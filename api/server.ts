@@ -14,8 +14,8 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 const getCertificates = (isDevelopment: boolean): { key: Buffer; cert: Buffer } => {
   if (isDevelopment) {
     return {
-      key: fs.readFileSync(__dirname + '/src/certificates/local.ya-praktikum.tech.pem'),
-      cert: fs.readFileSync(__dirname + '/src/certificates/local.ya-praktikum.tech-key.pem')
+      key: fs.readFileSync(__dirname + '/src/certificates/local.ya-praktikum.tech-key.pem'),
+      cert: fs.readFileSync(__dirname + '/src/certificates/local.ya-praktikum.tech.pem')
     };
   }
   return {
