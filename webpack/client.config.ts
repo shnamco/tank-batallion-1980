@@ -2,12 +2,20 @@ import path from 'path';
 import webpack from 'webpack';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin';
 
 const clientConfig = (_: undefined, { mode }: { mode: 'production' | 'development' }): webpack.Configuration => {
   const isProd = mode === 'production';
   const isDev = !isProd;
 
   const plugins = [
+    new CopyPlugin({
+      patterns: [
+        {
+          from: path.resolve('src/service_worker.js')
+        }
+      ]
+    }),
     new CleanWebpackPlugin(),
     new ForkTsCheckerWebpackPlugin({
       async: false,
