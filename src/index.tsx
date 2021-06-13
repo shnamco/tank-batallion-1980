@@ -5,10 +5,16 @@ import './index.pcss';
 import { App } from './app';
 import { Provider } from 'react-redux';
 import { store } from '@store/core/store';
+import { register } from '@utils/service_worker';
+import { BrowserRouter } from 'react-router-dom';
 
-ReactDOM.render(
+ReactDOM.hydrate(
   <Provider store={store}>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </Provider>,
   document.getElementById('root')
 );
+
+register();

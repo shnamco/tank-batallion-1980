@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { ROUTE } from '../../interfaces/route';
-import bang from '../../assets/bang.svg';
 import { logOut } from '@store/auth/auth.thunks';
 import { connect, ConnectedProps } from 'react-redux';
 import './menu.pcss';
@@ -111,7 +110,7 @@ class MenuComponent extends Component<PropsFromRedux & MenuProps, MenuState> {
               className={`menu-list__item ${this.state.cursor === this.logout?.id ? 'active' : null} logout`}
             >
               <span>{this.logout?.name}</span>
-              <img src={bang} alt="bang" className="logout__icon" />
+              <span className="logout__icon"></span>
             </li>
           </ul>
         </div>

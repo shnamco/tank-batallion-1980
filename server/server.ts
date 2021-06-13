@@ -1,27 +1,19 @@
-import express, { Express } from 'express';
-import { createServer, Server } from 'https';
+import path from 'path';
+import express from 'express';
+import compression from 'compression';
+import 'babel-polyfill';
 import cookieParser from 'cookie-parser';
-import { readFileSync } from 'fs';
 import { authMiddleware } from './middlewares/auth';
+import { renderMiddleware } from './middlewares/render';
 
-const server: Express = express();
+const app = express();
 
-const options = {
-  key: readFileSync(__dirname + '/certificates/local.ya-praktikum.tech-key.pem'),
-  cert: readFileSync(__dirname + '/certificates/local.ya-praktikum.tech.pem')
-};
+app.use(cookieParser());
+app.use(express.json());
+app.use(compression());
+app.use(express.static(path.resolve(__dirname, '../dist')));
 
-server.use(cookieParser());
+app.use(authMiddleware);
+app.get('/*', renderMiddleware);
 
-server.get('/*', authMiddleware);
-
-server.get('/*', (req, res) => {
-  res.send('ok');
-});
-
-export const getApp = (isDev: boolean): Server | Express => {
-  if (isDev) {
-    return createServer(options, server);
-  }
-  return server;
-};
+export { app };
