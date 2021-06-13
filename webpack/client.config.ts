@@ -1,8 +1,9 @@
 import path from 'path';
-import webpack, {WebpackPluginInstance} from 'webpack';
+import webpack, { WebpackPluginInstance } from 'webpack';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import { GenerateSW } from 'workbox-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin';
 
 const clientConfig = (_: undefined, { mode }: { mode: 'production' | 'development' }): webpack.Configuration => {
   const isProd = mode === 'production';
@@ -10,6 +11,14 @@ const clientConfig = (_: undefined, { mode }: { mode: 'production' | 'developmen
 
   const plugins: WebpackPluginInstance[] = [
     new CleanWebpackPlugin(),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: path.resolve(path.join('src', 'assets', 'favicon.ico')),
+          to: path.resolve('dist')
+        }
+      ]
+    }),
     new ForkTsCheckerWebpackPlugin({
       async: false,
       eslint: {
@@ -20,16 +29,16 @@ const clientConfig = (_: undefined, { mode }: { mode: 'production' | 'developmen
   ];
 
   if (isProd) {
-    plugins.push(new GenerateSW({
-      clientsClaim: true,
-      skipWaiting: true,
-      maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
-      modifyURLPrefix: { auto: '/' },
-      cleanupOutdatedCaches: true,
-      exclude: [/\.map$/],
-      navigateFallback: '/index.html',
-      navigationPreload: false,
-    }));
+    plugins.push(
+      new GenerateSW({
+        clientsClaim: true,
+        skipWaiting: true,
+        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+        cleanupOutdatedCaches: true,
+        exclude: [/\.map$/],
+        navigationPreload: false
+      })
+    );
   }
 
   return {
