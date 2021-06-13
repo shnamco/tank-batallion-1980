@@ -29,16 +29,16 @@ const clientConfig = (_: undefined, { mode }: { mode: 'production' | 'developmen
   ];
 
   if (isProd) {
-    plugins.push(
-      new GenerateSW({
-        clientsClaim: true,
-        skipWaiting: true,
-        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
-        cleanupOutdatedCaches: true,
-        exclude: [/\.map$/],
-        navigationPreload: false
-      })
-    );
+    plugins.push(new GenerateSW({
+      clientsClaim: true,
+      skipWaiting: true,
+      maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+      modifyURLPrefix: { auto: '/' },
+      cleanupOutdatedCaches: true,
+      exclude: [/\.map$/],
+      navigateFallback: '/index.html',
+      navigationPreload: false
+    }));
   }
 
   return {

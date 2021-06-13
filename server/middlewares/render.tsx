@@ -33,7 +33,9 @@ const getHtml = (reactHtml: string, state: RootState, helmetData: HelmetData): s
 export const renderMiddleware = async (request: Request, response: Response): Promise<void> => {
   const location: string = request.url;
 
-  if (!response.locals.user) {
+  if (response.locals.user) {
+    await store.dispatch(AuthActions.logInSuccessAction());
+  } else {
     await store.dispatch(AuthActions.logInRedirectAction());
   }
 
