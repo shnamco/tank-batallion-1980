@@ -36,7 +36,6 @@ const clientConfig = (_: undefined, { mode }: { mode: 'production' | 'developmen
       modifyURLPrefix: { auto: '/' },
       cleanupOutdatedCaches: true,
       exclude: [/\.map$/],
-      navigateFallback: '/index.html',
       navigationPreload: false
     }));
   }
