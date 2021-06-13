@@ -35,8 +35,6 @@ export const renderMiddleware = async (request: Request, response: Response): Pr
 
   if (response.locals.user) {
     await store.dispatch(AuthActions.logInSuccessAction());
-  } else {
-    await store.dispatch(AuthActions.logInRedirectAction());
   }
 
   const jsx = (
