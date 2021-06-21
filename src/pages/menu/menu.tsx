@@ -135,6 +135,5 @@ const MENU_LIST = [
   new MenuItem(0, 'PLAY', ROUTE.GAME),
   new MenuItem(1, 'PROFILE', ROUTE.PROFILE),
   new MenuItem(2, 'HIGH SCORES', ROUTE.SCORE),
-  new MenuItem(3, 'FORUM', ROUTE.FORUMS),
   new MenuItem(4, 'LOG OUT', ROUTE.LOGIN)
 ];

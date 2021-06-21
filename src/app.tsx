@@ -14,8 +14,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getProfile, getUserTheme } from '@store/auth/auth.thunks';
 import { selectTheme } from '@store/auth/auth.selectors';
 import { THEME } from '@store/auth/auth.reducer';
+import { hot } from 'react-hot-loader/root';
 
-export const App: React.FC = () => {
+export const App: React.FC = hot(() => {
   const dispatch = useDispatch();
   const theme = useSelector(selectTheme);
 
@@ -55,4 +56,4 @@ export const App: React.FC = () => {
       </ErrorBoundry>
     </div>
   );
-};
+});
