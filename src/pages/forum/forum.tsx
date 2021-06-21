@@ -95,10 +95,6 @@ export class Forum extends React.Component<RouteComponentProps<RouteParams>, For
 
         this.props.history.push(this.state.topics[activeIndx].link);
       }
-
-      if (e.key === 'Escape') {
-        this.props.history.push(`/${ROUTE.FORUMS}`);
-      }
     };
 
     window.addEventListener('keydown', keyHandler);

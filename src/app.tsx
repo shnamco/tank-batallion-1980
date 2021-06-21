@@ -6,8 +6,6 @@ import { Signup } from '@pages/signup/signup';
 import { Private } from '@components/private_route/private_route';
 import { Game } from '@pages/game/game';
 import { Profile } from '@pages/profile/profile';
-import { Forums } from '@pages/forums/forums';
-import { Forum } from '@pages/forum/forum';
 import { Score } from '@pages/score/score';
 import { Menu } from '@pages/menu/menu';
 import { useDispatch, useSelector } from 'react-redux';
@@ -45,8 +43,6 @@ export const App: React.FC = hot(() => {
                 <Game levelNo={1} playerLives={3} enemiesLeft={20} playerScore={0} />
               </Route>
               <Route path="/profile" component={Profile} />
-              <Route path="/forums" component={Forums} />
-              <Route path="/forum/:id" component={Forum} />
               <Route path="/score" component={Score} />
               <Route path="/menu" component={Menu} />
               <Redirect to="/menu" />
