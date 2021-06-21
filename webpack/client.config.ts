@@ -1,5 +1,5 @@
 import path from 'path';
-import webpack, { WebpackPluginInstance } from 'webpack';
+import webpack, {HotModuleReplacementPlugin, WebpackPluginInstance} from 'webpack';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import { GenerateSW } from 'workbox-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
@@ -8,6 +8,8 @@ import CopyPlugin from 'copy-webpack-plugin';
 const clientConfig = (_: undefined, { mode }: { mode: 'production' | 'development' }): webpack.Configuration => {
   const isProd = mode === 'production';
   const isDev = !isProd;
+
+  const entry: string[] = ['./src/index.tsx'];
 
   const plugins: WebpackPluginInstance[] = [
     new CleanWebpackPlugin(),
@@ -29,20 +31,25 @@ const clientConfig = (_: undefined, { mode }: { mode: 'production' | 'developmen
   ];
 
   if (isProd) {
-    plugins.push(new GenerateSW({
-      clientsClaim: true,
-      skipWaiting: true,
-      maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
-      modifyURLPrefix: { auto: '/' },
-      cleanupOutdatedCaches: true,
-      exclude: [/\.map$/],
-      navigationPreload: false
-    }));
+    plugins.push(
+      new GenerateSW({
+        clientsClaim: true,
+        skipWaiting: true,
+        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+        modifyURLPrefix: { auto: '/' },
+        cleanupOutdatedCaches: true,
+        exclude: [/\.map$/],
+        navigationPreload: false
+      })
+    );
+  } else {
+    entry.push('react-hot-loader/patch');
+    plugins.push(new HotModuleReplacementPlugin());
   }
 
   return {
     mode: isDev ? 'development' : 'production',
-    entry: path.resolve('src/index.tsx'),
+    entry,
     devtool: 'source-map',
     target: 'web',
     output: {
@@ -58,7 +65,8 @@ const clientConfig = (_: undefined, { mode }: { mode: 'production' | 'developmen
         '@styles': path.resolve('./src/styles/'),
         '@services': path.resolve('./src/services/'),
         '@utils': path.resolve('./src/utils/'),
-        '@store': path.resolve('./src/store/')
+        '@store': path.resolve('./src/store/'),
+        'react-dom': '@hot-loader/react-dom'
       },
       extensions: ['.ts', '.tsx', '.js', '.json'],
       fallback: {
@@ -83,9 +91,7 @@ const clientConfig = (_: undefined, { mode }: { mode: 'production' | 'developmen
         {
           test: /\.(ts|js)x?$/,
           exclude: /node_modules/,
-          use: {
-            loader: 'babel-loader'
-          }
+          loader: 'babel-loader'
         }
       ]
     },
