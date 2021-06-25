@@ -25,8 +25,17 @@ type FormProps = {
   changeUserTheme: (id: number) => void;
 };
 
-class Form extends Component<FormProps> {
+interface FormState {
+  fullscreenTitle: string;
+}
+
+class Form extends Component<FormProps, FormState> {
   public mainMenu = ROUTE.MENU;
+
+  constructor(props: FormProps) {
+    super(props);
+    this.state = { fullscreenTitle: 'ENTER FULLSCREEN' };
+  }
 
   public componentDidMount(): void {
     this.props.requestProfile();
@@ -68,6 +77,16 @@ class Form extends Component<FormProps> {
     return 'DARK';
   }
 
+  public fullscreenClicked(): void {
+    if (document.fullscreenElement) {
+      this.setState({ fullscreenTitle: 'ENTER FULLSCREEN' });
+      document.exitFullscreen();
+    } else {
+      this.setState({ fullscreenTitle: 'LEAVE FULLSCREEN' });
+      document.getElementById('root')?.requestFullscreen();
+    }
+  }
+
   public render(): React.ReactElement {
     const { first_name, second_name, display_name, email, login, phone } = this.props.profile;
 
@@ -89,6 +108,9 @@ class Form extends Component<FormProps> {
             </button>
             <button type="button" onClick={this.themeClicked.bind(this)} className="profile__switch">
               SWITCH TO {this.theme}
+            </button>
+            <button type="button" onClick={this.fullscreenClicked.bind(this)} className="profile__switch">
+              {this.state.fullscreenTitle}
             </button>
             <Link to={this.mainMenu} className="profile__link">
               BACK TO THE MAIN MENU
