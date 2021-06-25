@@ -122,8 +122,12 @@ export const signUp = (
 
 export const getUserTheme = (): ThunkAction<void, RootState, unknown, AnyAction> => {
   return (dispatch: Dispatch<AuthActions.AuthActions>) => {
+    const theme = Number(localStorage.getItem('theme'));
+    dispatch(AuthActions.getThemeSuccess(theme));
+
     themeApi.userTheme().then((res) => {
       if (res.status === 200) {
+        storeTheme(res.response.id);
         dispatch(AuthActions.getThemeSuccess(res.response.id));
       }
     });
@@ -134,8 +138,13 @@ export const changeUserTheme = (id: number): ThunkAction<void, RootState, unknow
   return (dispatch: Dispatch<AuthActions.AuthActions>) => {
     themeApi.changeTheme(id).then((res) => {
       if (res.status === 200) {
+        storeTheme(res.response.id);
         dispatch(AuthActions.getThemeSuccess(res.response.id));
       }
     });
   };
+};
+
+const storeTheme = (theme: number): void => {
+  localStorage.setItem('theme', JSON.stringify(theme));
 };

@@ -12,7 +12,7 @@ export interface AuthState {
 
 export const initialState: AuthState = {
   isLoggedIn: true,
-  userTheme: THEME.DARK
+  userTheme: (Number(localStorage.getItem('theme')) as THEME) ?? THEME.DARK
 };
 
 export const authReducer = (state = initialState, action: AuthActions): AuthState => {
