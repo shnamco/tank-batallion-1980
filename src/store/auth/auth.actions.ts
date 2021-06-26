@@ -1,4 +1,5 @@
 import { Action } from 'redux';
+import { Profile } from '@services/profile_api';
 
 export enum AUTH_ACTIONS {
   LOG_IN = '[AUTH] LOG IN',
@@ -7,12 +8,16 @@ export enum AUTH_ACTIONS {
   LOG_IN_REDIRECT = '[AUTH] LOG IN REDIRECT',
   SIGN_UP = '[AUTH] SIGN UP',
   LOG_OUT = '[AUTH] LOG OUT',
-  GET_PROFILE = '[AUTH] GET PROFILE',
+  GET_PROFILE_SUCCESS = '[AUTH] GET PROFILE SUCCESS',
   GET_THEME_SUCCESS = '[AUTH] GET THEME SUCCESS'
 }
 
 interface GetThemeAction extends Action<AUTH_ACTIONS.GET_THEME_SUCCESS> {
   payload: { theme: number };
+}
+
+interface GetProfileSuccessAction extends Action<AUTH_ACTIONS.GET_PROFILE_SUCCESS> {
+  payload: { profile: Profile };
 }
 
 export const logInAction = (): Action<AUTH_ACTIONS.LOG_IN> => {
@@ -31,8 +36,8 @@ export const logInRedirectAction = (): Action<AUTH_ACTIONS.LOG_IN_REDIRECT> => {
   return { type: AUTH_ACTIONS.LOG_IN_REDIRECT };
 };
 
-export const getProfileAction = (): Action<AUTH_ACTIONS.GET_PROFILE> => {
-  return { type: AUTH_ACTIONS.GET_PROFILE };
+export const getProfileSuccessAction = (profile: Profile): GetProfileSuccessAction => {
+  return { type: AUTH_ACTIONS.GET_PROFILE_SUCCESS, payload: { profile } };
 };
 
 export const signUpAction = (): Action<AUTH_ACTIONS.SIGN_UP> => {
@@ -54,5 +59,5 @@ export type AuthActions =
   | Action<AUTH_ACTIONS.LOG_IN_SUCCESS>
   | Action<AUTH_ACTIONS.LOG_IN_FAILURE>
   | Action<AUTH_ACTIONS.LOG_IN_REDIRECT>
-  | Action<AUTH_ACTIONS.GET_PROFILE>
+  | GetProfileSuccessAction
   | Action<AUTH_ACTIONS.SIGN_UP>;

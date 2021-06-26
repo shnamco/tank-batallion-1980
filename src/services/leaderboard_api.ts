@@ -7,13 +7,13 @@ import { Leader } from '@store/leaderbord/interfaces/leader';
 class Api {
   constructor(private baseUrl: string, private httpClient: HTTPClient) {}
 
-  public leaderboardList = (data: LeaderboardRequest): Promise<ResponseProxy<Leader[]>> => {
+  public leaderboardList = (data: LeaderboardRequest): Promise<ResponseProxy<{ data: Leader }[]>> => {
     const response = this.httpClient.post(`${this.baseUrl}/leaderboard/all`, {
       data,
       headers: { 'Content-Type': 'application/json' }
     });
 
-    return JSONMapper<Leader[]>(response);
+    return JSONMapper<{ data: Leader }[]>(response);
   };
 
   public newLeader = (data: NewLeaderRequest): Promise<ResponseProxy<unknown>> => {

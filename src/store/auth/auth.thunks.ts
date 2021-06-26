@@ -9,6 +9,7 @@ import { HistoryProxy } from '../../interfaces/history';
 import { authApi, LoginReq, Reason, SignUpReq } from '@services/auth_api';
 import { oauthApi } from '@services/oauth_api';
 import { themeApi } from '@services/theme_api';
+import { Profile } from '@services/profile_api';
 
 export const logIn = (
   data: LoginReq,
@@ -69,14 +70,13 @@ export const loginWithYandex = (code: string, history: HistoryProxy): ThunkActio
 
 export const getProfile = (): ThunkAction<void, RootState, unknown, AnyAction> => {
   return (dispatch: Dispatch<AuthActions.AuthActions>) => {
-    dispatch(AuthActions.getProfileAction());
-
     authApi
       .getProfile()
       .then((res) => {
         if (res.status !== 200) {
           throw new Error(`${res.response}`);
         }
+        dispatch(AuthActions.getProfileSuccessAction(res.response as Profile));
       })
       .catch(() => {
         dispatch(AuthActions.logInRedirectAction());

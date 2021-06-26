@@ -11,7 +11,7 @@ import { selectLeaderList } from '@store/leaderbord/leaderboard.selectors';
 import { Leader } from '@store/leaderbord/interfaces/leader';
 
 interface ScoreProps extends RouteComponentProps {
-  leaders: Array<Leader['data']>;
+  leaders: Leader[];
   getLeaderboard: () => void;
 }
 

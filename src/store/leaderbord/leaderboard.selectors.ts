@@ -7,11 +7,9 @@ export const selectLeaderboardReducer = createSelector(
   (leaderboardReducer) => leaderboardReducer
 );
 
-export const selectLeaderList = createSelector(selectLeaderboardReducer, (leaderboardReducer) =>
-  leaderboardReducer.list.map((item) => ({ ...item.data })).sort(compare)
-);
+export const selectLeaderList = createSelector(selectLeaderboardReducer, (leaderboardReducer) => leaderboardReducer.list.sort(compare));
 
-const compare = <T extends Leader['data']>(a: T, b: T): number => {
+const compare = <T extends Leader>(a: T, b: T): number => {
   if (a.score > b.score) {
     return -1;
   }

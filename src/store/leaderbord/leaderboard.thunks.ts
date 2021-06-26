@@ -11,7 +11,8 @@ export const getLeaderboard = (): ThunkAction<void, RootState, unknown, AnyActio
       .leaderboardList({ ratingFieldName: 'battalionId', limit: 30, cursor: 0 })
       .then((res) => {
         if (res.status === 200) {
-          dispatch(LeaderboardActions.getLeaderboardSuccessAction(res.response));
+          const list = res.response.map((item) => item.data);
+          dispatch(LeaderboardActions.getLeaderboardSuccessAction(list));
         } else {
           dispatch(LeaderboardActions.getLeaderboardFailedAction());
         }
