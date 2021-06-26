@@ -32,7 +32,8 @@ interface FormState {
 
 class Form extends Component<FormProps, FormState> {
   public mainMenu = ROUTE.MENU;
-  public audio = new Audio('https://docs.google.com/uc?export=download&id=1To1ASaIsiFjEUfBiwXDmgl2hkjXF6kr7');
+  public audio =
+    typeof Audio !== 'undefined' ? new Audio('https://docs.google.com/uc?export=download&id=1To1ASaIsiFjEUfBiwXDmgl2hkjXF6kr7') : undefined;
 
   constructor(props: FormProps) {
     super(props);
@@ -90,9 +91,11 @@ class Form extends Component<FormProps, FormState> {
   }
 
   public soundClicked(): void {
-    this.setState({ isPlaying: !this.state.isPlaying }, () => {
-      this.state.isPlaying ? this.audio.play() : this.audio.pause();
-    });
+    if (this.audio) {
+      this.setState({ isPlaying: !this.state.isPlaying }, () => {
+        this.state.isPlaying ? this.audio?.play() : this.audio?.pause();
+      });
+    }
   }
 
   public get soundTitle(): string {
