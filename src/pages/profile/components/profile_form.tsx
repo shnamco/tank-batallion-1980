@@ -26,15 +26,17 @@ type FormProps = {
 };
 
 interface FormState {
-  fullscreenTitle: string;
+  isFullscreen: boolean;
+  isPlaying: boolean;
 }
 
 class Form extends Component<FormProps, FormState> {
   public mainMenu = ROUTE.MENU;
+  public audio = new Audio('https://docs.google.com/uc?export=download&id=1To1ASaIsiFjEUfBiwXDmgl2hkjXF6kr7');
 
   constructor(props: FormProps) {
     super(props);
-    this.state = { fullscreenTitle: 'ENTER FULLSCREEN' };
+    this.state = { isFullscreen: false, isPlaying: false };
   }
 
   public componentDidMount(): void {
@@ -79,12 +81,26 @@ class Form extends Component<FormProps, FormState> {
 
   public fullscreenClicked(): void {
     if (document.fullscreenElement) {
-      this.setState({ fullscreenTitle: 'ENTER FULLSCREEN' });
+      this.setState({ isFullscreen: false });
       document.exitFullscreen();
     } else {
-      this.setState({ fullscreenTitle: 'LEAVE FULLSCREEN' });
+      this.setState({ isFullscreen: true });
       document.getElementById('root')?.requestFullscreen();
     }
+  }
+
+  public soundClicked(): void {
+    this.setState({ isPlaying: !this.state.isPlaying }, () => {
+      this.state.isPlaying ? this.audio.play() : this.audio.pause();
+    });
+  }
+
+  public get soundTitle(): string {
+    return this.state.isPlaying ? 'SOUND OFF' : 'SOUND ON';
+  }
+
+  public get fullscreenTitle(): string {
+    return this.state.isFullscreen ? 'LEAVE FULLSCREEN' : 'ENTER FULLSCREEN';
   }
 
   public render(): React.ReactElement {
@@ -110,7 +126,10 @@ class Form extends Component<FormProps, FormState> {
               SWITCH TO {this.theme}
             </button>
             <button type="button" onClick={this.fullscreenClicked.bind(this)} className="profile__switch">
-              {this.state.fullscreenTitle}
+              {this.fullscreenTitle}
+            </button>
+            <button type="button" onClick={this.soundClicked.bind(this)} className="profile__switch">
+              {this.soundTitle}
             </button>
             <Link to={this.mainMenu} className="profile__link">
               BACK TO THE MAIN MENU
