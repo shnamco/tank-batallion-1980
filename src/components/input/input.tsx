@@ -24,9 +24,7 @@ export class Input extends Component<InputProps, InputState> {
   public static defaultProps: InputProps = {
     type: 'text',
     className: 'input',
-    disabled: false,
-    autoComplete: 'off',
-    name: 'field'
+    disabled: false
   };
 
   constructor(props: InputProps) {
