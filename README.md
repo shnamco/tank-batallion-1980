@@ -1,4 +1,4 @@
-# Tank Batallion 1980
+# [Tank Batallion 1980](https://neapol-tanks-4.ya-praktikum.tech)
 
 The task is to reproduce the original arcade game ["Tank Batallion"](https://en.wikipedia.org/wiki/Tank_Battalion), released by Namco in 1980.
 
@@ -6,8 +6,10 @@ The task is to reproduce the original arcade game ["Tank Batallion"](https://en.
 
 ## Running the project locally
 
-- `webpack serve`
-- OR `make docker-serve`, then visit `localhost:8000`
+- `npm start` start SSR app
+- `npm run api:start` start api
+- `npm run test` start test
+- `docker-compose up -d --build` serve app in docker containers
 
 ## Gameplay references
 
