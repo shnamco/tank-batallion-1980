@@ -24,9 +24,7 @@ export class Input extends Component<InputProps, InputState> {
   public static defaultProps: InputProps = {
     type: 'text',
     className: 'input',
-    disabled: false,
-    autoComplete: 'new-password',
-    autofill: 'false'
+    disabled: false
   };
 
   constructor(props: InputProps) {
@@ -82,7 +80,7 @@ export class Input extends Component<InputProps, InputState> {
     return (
       <>
         <div className={this.createClassName}>
-          <input {...props} onChange={this.inputHandler} value={value} onBlur={this.validate} autoComplete="off" />
+          <input {...props} onChange={this.inputHandler} value={value} onBlur={this.validate} />
           <label htmlFor={this.props.className} />
           <Underline count={6} />
           <span className="form-control__invalid">{label}</span>

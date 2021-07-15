@@ -3,10 +3,10 @@ import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import './signup_form.pcss';
 import '@styles/login.pcss';
 import { Input } from '@components/input/input';
-import { Reason, SignUpReq } from '@service/auth_api';
+import { Reason, SignUpReq } from '../../../../services/auth_api';
 import { connect, ConnectedProps } from 'react-redux';
 import { signUp } from '@store/auth/auth.thunks';
-import { HistoryProxy } from '@utils/history';
+import { HistoryProxy } from '../../../../interfaces/history';
 
 type FormState = {
   loginError: string;

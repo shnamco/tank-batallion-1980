@@ -1,4 +1,4 @@
-import { Profile } from '@service/profile_api';
+import { Profile } from '../../services/profile_api';
 import { PROFILE_ACTIONS, ProfileAction } from './profile.actions';
 
 export type ProfileState = {

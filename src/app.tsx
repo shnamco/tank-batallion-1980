@@ -1,29 +1,38 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import { ErrorBoundry } from '@components/error_boundary/error_boundary';
 import { Login } from '@pages/login/login';
 import { Signup } from '@pages/signup/signup';
 import { Private } from '@components/private_route/private_route';
 import { Game } from '@pages/game/game';
 import { Profile } from '@pages/profile/profile';
-import { Forums } from '@pages/forums/forums';
-import { Forum } from '@pages/forum/forum';
 import { Score } from '@pages/score/score';
 import { Menu } from '@pages/menu/menu';
-import './app.pcss';
-import { useDispatch } from 'react-redux';
-import { getProfile } from '@store/auth/auth.thunks';
+import { useDispatch, useSelector } from 'react-redux';
+import { getProfile, getUserTheme } from '@store/auth/auth.thunks';
+import { selectTheme } from '@store/auth/auth.selectors';
+import { THEME } from '@store/auth/auth.reducer';
+import { hot } from 'react-hot-loader/root';
 
-export const App: React.FC = () => {
+export const App: React.FC = hot(() => {
   const dispatch = useDispatch();
+  const theme = useSelector(selectTheme);
+
+  const style = (): string => {
+    if (theme === THEME.LIGHT) {
+      return 'invert(1)';
+    }
+    return 'invert(0)';
+  };
 
   useEffect(() => {
     dispatch(getProfile());
+    dispatch(getUserTheme());
   });
 
   return (
-    <ErrorBoundry>
-      <BrowserRouter>
+    <div style={{ filter: style() }}>
+      <ErrorBoundry>
         <Switch>
           <Route path="/login" component={Login} />
           <Route path="/signup" component={Signup} />
@@ -34,15 +43,13 @@ export const App: React.FC = () => {
                 <Game levelNo={1} playerLives={3} enemiesLeft={20} playerScore={0} />
               </Route>
               <Route path="/profile" component={Profile} />
-              <Route path="/forums" component={Forums} />
-              <Route path="/forum/:id" component={Forum} />
               <Route path="/score" component={Score} />
               <Route path="/menu" component={Menu} />
               <Redirect to="/menu" />
             </Switch>
           </Private>
         </Switch>
-      </BrowserRouter>
-    </ErrorBoundry>
+      </ErrorBoundry>
+    </div>
   );
-};
+});

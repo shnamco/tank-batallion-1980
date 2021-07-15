@@ -4,24 +4,41 @@ import { Input } from '@components/input/input';
 import './profile_form.pcss';
 import '@styles/variables.pcss';
 import '@styles/profile.pcss';
-import { ROUTE } from '@utils/route';
-import { Profile, RequestData } from '@service/profile_api';
+import { ROUTE } from '../../../interfaces/route';
+import { Profile, RequestData } from '@services/profile_api';
 import { connect } from 'react-redux';
 import { RootState } from '@store/core/store';
 import { ThunkDispatch } from 'redux-thunk';
 import { changeProfile, requestProfile } from '@store/profile/profile.thunks';
 import { ProfileAction } from '@store/profile/profile.actions';
-import { selectProfileError, selectProfile } from '@store/profile/profile.selectors';
+import { selectProfile, selectProfileError } from '@store/profile/profile.selectors';
+import { THEME } from '@store/auth/auth.reducer';
+import { selectTheme } from '@store/auth/auth.selectors';
+import { changeUserTheme } from '@store/auth/auth.thunks';
 
 type FormProps = {
   profile: Profile;
   error: null | string;
+  theme: THEME;
   requestProfile: () => void;
   changeProfile: (requestData: RequestData) => void;
+  changeUserTheme: (id: number) => void;
 };
 
-class Form extends Component<FormProps> {
+interface FormState {
+  isFullscreen: boolean;
+  isPlaying: boolean;
+}
+
+class Form extends Component<FormProps, FormState> {
   public mainMenu = ROUTE.MENU;
+  public audio =
+    typeof Audio !== 'undefined' ? new Audio('https://docs.google.com/uc?export=download&id=1To1ASaIsiFjEUfBiwXDmgl2hkjXF6kr7') : undefined;
+
+  constructor(props: FormProps) {
+    super(props);
+    this.state = { isFullscreen: false, isPlaying: false };
+  }
 
   public componentDidMount(): void {
     this.props.requestProfile();
@@ -50,6 +67,45 @@ class Form extends Component<FormProps> {
     this.props.changeProfile(requestData);
   };
 
+  public themeClicked(): void {
+    const theme = THEME.DARK === this.props.theme ? THEME.LIGHT : THEME.DARK;
+
+    this.props.changeUserTheme(theme);
+  }
+
+  public get theme(): string {
+    if (THEME.DARK === this.props.theme) {
+      return 'LIGHT';
+    }
+    return 'DARK';
+  }
+
+  public fullscreenClicked(): void {
+    if (document.fullscreenElement) {
+      this.setState({ isFullscreen: false });
+      document.exitFullscreen();
+    } else {
+      this.setState({ isFullscreen: true });
+      document.getElementById('root')?.requestFullscreen();
+    }
+  }
+
+  public soundClicked(): void {
+    if (this.audio) {
+      this.setState({ isPlaying: !this.state.isPlaying }, () => {
+        this.state.isPlaying ? this.audio?.play() : this.audio?.pause();
+      });
+    }
+  }
+
+  public get soundTitle(): string {
+    return this.state.isPlaying ? 'SOUND OFF' : 'SOUND ON';
+  }
+
+  public get fullscreenTitle(): string {
+    return this.state.isFullscreen ? 'LEAVE FULLSCREEN' : 'ENTER FULLSCREEN';
+  }
+
   public render(): React.ReactElement {
     const { first_name, second_name, display_name, email, login, phone } = this.props.profile;
 
@@ -66,7 +122,18 @@ class Form extends Component<FormProps> {
             {<span className="profile__form-error">{this.props.error && this.props.error}</span>}
           </div>
           <div className="profile__form-actions">
-            <button className="profile__button">UPDATE PROFILE</button>
+            <button type="submit" className="profile__button">
+              UPDATE PROFILE
+            </button>
+            <button type="button" onClick={this.themeClicked.bind(this)} className="profile__switch">
+              SWITCH TO {this.theme}
+            </button>
+            <button type="button" onClick={this.fullscreenClicked.bind(this)} className="profile__switch">
+              {this.fullscreenTitle}
+            </button>
+            <button type="button" onClick={this.soundClicked.bind(this)} className="profile__switch">
+              {this.soundTitle}
+            </button>
             <Link to={this.mainMenu} className="profile__link">
               BACK TO THE MAIN MENU
             </Link>
@@ -80,14 +147,16 @@ class Form extends Component<FormProps> {
 function mapStateToProps(state: RootState) {
   return {
     profile: selectProfile(state),
-    error: selectProfileError(state)
+    error: selectProfileError(state),
+    theme: selectTheme(state)
   };
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch<RootState, void, ProfileAction>) {
   return {
     requestProfile: () => dispatch(requestProfile()),
-    changeProfile: (requestData: RequestData) => dispatch(changeProfile(requestData))
+    changeProfile: (requestData: RequestData) => dispatch(changeProfile(requestData)),
+    changeUserTheme: (id: number) => dispatch(changeUserTheme(id))
   };
 }
 

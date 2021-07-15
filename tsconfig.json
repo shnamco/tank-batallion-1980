@@ -2,28 +2,32 @@
   "compilerOptions": {
 		"target": "ESNext",
     "baseUrl": "./",
+    "outDir": "./dist",
     "paths": {
       "@components/*": ["src/components/*"],
       "@pages/*": ["src/pages/*"],
       "@core/*": ["src/core/*"],
       "@styles/*": ["src/styles/*"],
-      "@service/*": ["src/service/*"],
+      "@services/*": ["src/services/*"],
       "@utils/*": ["src/utils/*"],
       "@store/*": ["src/store/*"]
     },
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "importHelpers": true,
+    "allowJs": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
+    "module": "commonjs",
     "moduleResolution": "node",
+    "experimentalDecorators": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react"
+    "jsx": "react",
+    "skipLibCheck": true,
   },
-  "include": ["src/**/*"],
+  "include": ["src", "server"],
   "exclude": [
     "node_modules"
   ]

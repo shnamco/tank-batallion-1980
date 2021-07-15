@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+		"target": "es6",
+    "baseUrl": "./",
+    "importHelpers": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "outDir": "build",
+    "rootDir": "src",
+    "forceConsistentCasingInFileNames": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "emitDecoratorMetadata": true
+  },
+  "include": ["src"]
+}

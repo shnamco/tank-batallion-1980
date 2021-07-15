@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux';
-import { authApi } from '@service/auth_api';
-import { Error, Profile, profileApi, RequestData } from '@service/profile_api';
+import { authApi } from '@services/auth_api';
+import { Error, Profile, profileApi, RequestData } from '@services/profile_api';
 import { ProfileAction, setError, setProfile } from '@store/profile/profile.actions';
 
 export const requestProfile = () => {

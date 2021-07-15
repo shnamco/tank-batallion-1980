@@ -1,8 +1,8 @@
 node_modules
 dist
 tsconfig.json
-webpack.config.js
-postcss.config.js
-server.js
+webpack.config.ts
+index.ts
 jest.config.js
 setupTest.js
+webpack

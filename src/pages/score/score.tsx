@@ -1,48 +1,28 @@
 import React from 'react';
 import './score.pcss';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import { ROUTE } from '@utils/route';
+import { ROUTE } from '../../interfaces/route';
+import { RootState } from '@store/core/store';
+import { ThunkDispatch } from 'redux-thunk';
+import { ProfileAction } from '@store/profile/profile.actions';
+import { connect } from 'react-redux';
+import { getLeaderboard } from '@store/leaderbord/leaderboard.thunks';
+import { selectLeaderList } from '@store/leaderbord/leaderboard.selectors';
+import { Leader } from '@store/leaderbord/interfaces/leader';
 
-type ScoreType = {
-  name: string;
-  score: number;
-  level: number;
-  active: boolean;
-};
+interface ScoreProps extends RouteComponentProps {
+  leaders: Leader[];
+  getLeaderboard: () => void;
+}
 
 type ListenerType = () => void;
 
-interface ScoreState {
-  leaders: ScoreType[];
-}
-
-export class Score extends React.Component<RouteComponentProps, ScoreState> {
-  public state = {
-    leaders: [
-      {
-        name: 'MARIO99',
-        score: 90000,
-        level: 22,
-        active: true
-      },
-      {
-        name: 'LUIGIxx',
-        score: 32600,
-        level: 14,
-        active: false
-      },
-      {
-        name: 'PR1NCESS_Lea',
-        score: 10000,
-        level: 7,
-        active: false
-      }
-    ]
-  };
-
+class ScoreComponent extends React.Component<ScoreProps> {
   public listeners: ListenerType[] = [];
 
   public componentDidMount(): void {
+    this.props.getLeaderboard();
+
     const listener = this.keyListener();
 
     this.listeners.push(listener);
@@ -55,7 +35,7 @@ export class Score extends React.Component<RouteComponentProps, ScoreState> {
   public keyListener = (): ListenerType => {
     const keyHandler = (e: KeyboardEvent) => {
       if (e.key === 'ArrowUp') {
-        const leaders = this.state.leaders;
+        const leaders = this.props.leaders;
         let activeIndx = leaders.findIndex((forum) => forum.active);
 
         leaders[activeIndx].active = false;
@@ -72,7 +52,7 @@ export class Score extends React.Component<RouteComponentProps, ScoreState> {
       }
 
       if (e.key === 'ArrowDown') {
-        const leaders = this.state.leaders;
+        const leaders = this.props.leaders;
 
         let activeIndx = leaders.findIndex((forum) => forum.active);
 
@@ -100,13 +80,13 @@ export class Score extends React.Component<RouteComponentProps, ScoreState> {
   };
 
   public get renderForums(): React.ReactNode {
-    const profileName = 'MARIO99';
+    const leaderName = this.props.leaders[0]?.name;
 
-    return this.state.leaders.map((player) => {
+    return this.props.leaders.map((player) => {
       return (
         <tr className="forums__row" key={player.name}>
           <td className={player.active ? 'forums__title active' : 'forums__title'}>
-            <span className={player.name === profileName ? 'eagle-after' : ''}>{player.name}</span>
+            <span className={player.name === leaderName ? 'eagle-after' : ''}>{player.name}</span>
           </td>
           <td>
             <div className="forums__topic">{player.score}</div>
@@ -149,3 +129,17 @@ export class Score extends React.Component<RouteComponentProps, ScoreState> {
     );
   }
 }
+
+function mapStateToProps(state: RootState) {
+  return {
+    leaders: selectLeaderList(state)
+  };
+}
+
+function mapDispatchToProps(dispatch: ThunkDispatch<RootState, void, ProfileAction>) {
+  return {
+    getLeaderboard: () => dispatch(getLeaderboard())
+  };
+}
+
+export const Score = connect(mapStateToProps, mapDispatchToProps)(ScoreComponent);

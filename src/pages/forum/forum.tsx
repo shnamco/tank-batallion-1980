@@ -1,7 +1,7 @@
 import React from 'react';
 import './forum.pcss';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import { ROUTE } from '@utils/route';
+import { ROUTE } from '../../interfaces/route';
 
 type ForumType = {
   title: string;
@@ -94,10 +94,6 @@ export class Forum extends React.Component<RouteComponentProps<RouteParams>, For
         const activeIndx = this.state.topics.findIndex((forum) => forum.active);
 
         this.props.history.push(this.state.topics[activeIndx].link);
-      }
-
-      if (e.key === 'Escape') {
-        this.props.history.push(`/${ROUTE.FORUMS}`);
       }
     };
 

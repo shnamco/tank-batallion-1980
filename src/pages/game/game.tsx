@@ -1,12 +1,23 @@
 import React from 'react';
 import { TankBatallion } from '@core/tank_batallion';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { ROUTE } from '@utils/route';
+import { ROUTE } from '../../interfaces/route';
 import { keyPressHandler } from '@utils/use_key_press';
 import './game.pcss';
 import { CANVAS_SIZE, AUX_CANVAS_HEIGHT, GameState } from '@core/game_types';
+import { RootState } from '@store/core/store';
+import { ThunkDispatch } from 'redux-thunk';
+import { ProfileAction } from '@store/profile/profile.actions';
+import { newLeader } from '@store/leaderbord/leaderboard.thunks';
+import { connect } from 'react-redux';
+import { NewLeaderRequest } from '@services/leaderboard_api';
+import { selectProfile } from '@store/auth/auth.selectors';
+import { Profile } from '@services/profile_api';
 
-interface GameProps extends RouteComponentProps, GameState {}
+interface GameProps extends RouteComponentProps, GameState {
+  profile: Profile | null;
+  newLeader: (data: NewLeaderRequest) => void;
+}
 
 class GameComponent extends React.Component<GameProps, GameState> {
   private readonly mainCanvas: React.RefObject<HTMLCanvasElement>;
@@ -48,6 +59,17 @@ class GameComponent extends React.Component<GameProps, GameState> {
   }
 
   public componentWillUnmount(): void {
+    this.props.newLeader({
+      data: {
+        battalionId: this.props.profile?.id ?? 0,
+        name: this.props.profile?.display_name ?? 'player',
+        score: this.tb?.gameState.playerScore ?? 0,
+        level: this.tb?.gameState.levelNo ?? 0,
+        active: true
+      },
+      ratingFieldName: 'battalionId'
+    });
+
     this.tb?.stop();
     if (this.escPressHandler) {
       this.escPressHandler();
@@ -74,4 +96,16 @@ class GameComponent extends React.Component<GameProps, GameState> {
   }
 }
 
-export const Game = withRouter(GameComponent);
+function mapStateToProps(state: RootState) {
+  return {
+    profile: selectProfile(state)
+  };
+}
+
+function mapDispatchToProps(dispatch: ThunkDispatch<RootState, void, ProfileAction>) {
+  return {
+    newLeader: (data: NewLeaderRequest) => dispatch(newLeader(data))
+  };
+}
+
+export const Game = connect(mapStateToProps, mapDispatchToProps)(withRouter(GameComponent));

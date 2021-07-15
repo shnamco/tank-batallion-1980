@@ -1,11 +1,15 @@
 import * as AuthActions from '@store/auth/auth.actions';
-import { authApi, LoginReq, Reason, SignUpReq } from '@service/auth_api';
 import { Dispatch } from 'react';
-import { ROUTE } from '@utils/route';
 import { ThunkAction } from 'redux-thunk';
 import { RootState } from '@store/core/store';
 import { AnyAction } from 'redux';
-import { HistoryProxy } from '@utils/history';
+import { environment } from '../../environment/environment';
+import { ROUTE } from '../../interfaces/route';
+import { HistoryProxy } from '../../interfaces/history';
+import { authApi, LoginReq, Reason, SignUpReq } from '@services/auth_api';
+import { oauthApi } from '@services/oauth_api';
+import { themeApi } from '@services/theme_api';
+import { Profile } from '@services/profile_api';
 
 export const logIn = (
   data: LoginReq,
@@ -31,16 +35,48 @@ export const logIn = (
   };
 };
 
+export const getServiceId = (): ThunkAction<void, RootState, unknown, AnyAction> => {
+  return async (dispatch: Dispatch<AuthActions.AuthActions>) => {
+    oauthApi
+      .serviceId(environment.redirectUri)
+      .then((res) => {
+        if (res.status === 200) {
+          const id = res.response.service_id;
+
+          window.location.href = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${id}&redirect_uri=${environment.redirectUri}`;
+        }
+      })
+      .catch(() => {
+        dispatch(AuthActions.logInFailureAction());
+      });
+  };
+};
+
+export const loginWithYandex = (code: string, history: HistoryProxy): ThunkAction<void, RootState, unknown, AnyAction> => {
+  return async (dispatch: Dispatch<AuthActions.AuthActions>) => {
+    oauthApi
+      .signIn({ code, redirect_uri: environment.redirectUri })
+      .then((res) => {
+        if (res.status === 200 || (res.response as Reason).reason === 'User already in system') {
+          dispatch(AuthActions.logInSuccessAction());
+          history.push(`/${ROUTE.MENU}`);
+        }
+      })
+      .catch(() => {
+        dispatch(AuthActions.logInFailureAction());
+      });
+  };
+};
+
 export const getProfile = (): ThunkAction<void, RootState, unknown, AnyAction> => {
   return (dispatch: Dispatch<AuthActions.AuthActions>) => {
-    dispatch(AuthActions.getProfileAction());
-
     authApi
       .getProfile()
       .then((res) => {
         if (res.status !== 200) {
           throw new Error(`${res.response}`);
         }
+        dispatch(AuthActions.getProfileSuccessAction(res.response as Profile));
       })
       .catch(() => {
         dispatch(AuthActions.logInRedirectAction());
@@ -82,4 +118,33 @@ export const signUp = (
         dispatch(AuthActions.logInFailureAction());
       });
   };
+};
+
+export const getUserTheme = (): ThunkAction<void, RootState, unknown, AnyAction> => {
+  return (dispatch: Dispatch<AuthActions.AuthActions>) => {
+    const theme = Number(localStorage.getItem('theme'));
+    dispatch(AuthActions.getThemeSuccess(theme));
+
+    themeApi.userTheme().then((res) => {
+      if (res.status === 200) {
+        storeTheme(res.response.id);
+        dispatch(AuthActions.getThemeSuccess(res.response.id));
+      }
+    });
+  };
+};
+
+export const changeUserTheme = (id: number): ThunkAction<void, RootState, unknown, AnyAction> => {
+  return (dispatch: Dispatch<AuthActions.AuthActions>) => {
+    themeApi.changeTheme(id).then((res) => {
+      if (res.status === 200) {
+        storeTheme(res.response.id);
+        dispatch(AuthActions.getThemeSuccess(res.response.id));
+      }
+    });
+  };
+};
+
+const storeTheme = (theme: number): void => {
+  localStorage.setItem('theme', JSON.stringify(theme));
 };

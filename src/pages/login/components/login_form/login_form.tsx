@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
-import './login_form.pcss';
 import '@styles/variables.pcss';
 import '@styles/login.pcss';
-import { LoginReq, Reason } from '@service/auth_api';
+import { LoginReq, Reason } from '@services/auth_api';
 import { Input } from '@components/input/input';
-import { logIn } from '@store/auth/auth.thunks';
+import { logIn, getServiceId } from '@store/auth/auth.thunks';
 import { connect, ConnectedProps } from 'react-redux';
-import { HistoryProxy } from '@utils/history';
+import { HistoryProxy } from '../../../../interfaces/history';
 
 type FormState = {
   error: string;
@@ -15,9 +14,10 @@ type FormState = {
 
 interface FormProps extends RouteComponentProps {
   logIn: (data: LoginReq, onError: (response: string | Reason) => void, history: HistoryProxy) => unknown;
+  logInWith: () => unknown;
 }
 
-const connector = connect(null, { logIn });
+const connector = connect(null, { logIn, logInWith: getServiceId });
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -43,6 +43,10 @@ class Form extends Component<FormProps & PropsFromRedux, FormState> {
     this.props.logIn(requestData as LoginReq, this.onError.bind(this), this.props.history);
   };
 
+  public loginWithClicked = (): void => {
+    this.props.logInWith();
+  };
+
   private onError(res: string | Reason): void {
     this.setState({
       error: (res as Reason).reason
@@ -59,7 +63,12 @@ class Form extends Component<FormProps & PropsFromRedux, FormState> {
             <Input name="password" type="password" placeholder="Password" error={this.state.error} />
           </div>
           <div className="login__form-block">
-            <button className="login__button">LOG IN</button>
+            <button type="submit" className="login__button">
+              LOG IN
+            </button>
+            <a onClick={this.loginWithClicked} type="button" className="login__yandex">
+              LOG IN WITH YANDEX
+            </a>
             <Link to="signup" className="login__link">
               SIGN UP
             </Link>

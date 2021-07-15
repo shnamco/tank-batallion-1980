@@ -1,4 +1,5 @@
 import { Action } from 'redux';
+import { Profile } from '@services/profile_api';
 
 export enum AUTH_ACTIONS {
   LOG_IN = '[AUTH] LOG IN',
@@ -7,39 +8,56 @@ export enum AUTH_ACTIONS {
   LOG_IN_REDIRECT = '[AUTH] LOG IN REDIRECT',
   SIGN_UP = '[AUTH] SIGN UP',
   LOG_OUT = '[AUTH] LOG OUT',
-  GET_PROFILE = '[AUTH] GET PROFILE'
+  GET_PROFILE_SUCCESS = '[AUTH] GET PROFILE SUCCESS',
+  GET_THEME_SUCCESS = '[AUTH] GET THEME SUCCESS'
 }
 
-interface LogInAction extends Action<AUTH_ACTIONS.LOG_IN> {
-  payload: { password: string; username: string };
+interface GetThemeAction extends Action<AUTH_ACTIONS.GET_THEME_SUCCESS> {
+  payload: { theme: number };
 }
 
-export const logInAction = (): Action<AUTH_ACTIONS> => {
+interface GetProfileSuccessAction extends Action<AUTH_ACTIONS.GET_PROFILE_SUCCESS> {
+  payload: { profile: Profile };
+}
+
+export const logInAction = (): Action<AUTH_ACTIONS.LOG_IN> => {
   return { type: AUTH_ACTIONS.LOG_IN };
 };
 
-export const logInSuccessAction = (): Action<AUTH_ACTIONS> => {
+export const logInSuccessAction = (): Action<AUTH_ACTIONS.LOG_IN_SUCCESS> => {
   return { type: AUTH_ACTIONS.LOG_IN_SUCCESS };
 };
 
-export const logInFailureAction = (): Action<AUTH_ACTIONS> => {
+export const logInFailureAction = (): Action<AUTH_ACTIONS.LOG_IN_FAILURE> => {
   return { type: AUTH_ACTIONS.LOG_IN_FAILURE };
 };
 
-export const logInRedirectAction = (): Action<AUTH_ACTIONS> => {
+export const logInRedirectAction = (): Action<AUTH_ACTIONS.LOG_IN_REDIRECT> => {
   return { type: AUTH_ACTIONS.LOG_IN_REDIRECT };
 };
 
-export const getProfileAction = (): Action<AUTH_ACTIONS> => {
-  return { type: AUTH_ACTIONS.GET_PROFILE };
+export const getProfileSuccessAction = (profile: Profile): GetProfileSuccessAction => {
+  return { type: AUTH_ACTIONS.GET_PROFILE_SUCCESS, payload: { profile } };
 };
 
-export const signUpAction = (): Action<AUTH_ACTIONS> => {
+export const signUpAction = (): Action<AUTH_ACTIONS.SIGN_UP> => {
   return { type: AUTH_ACTIONS.SIGN_UP };
 };
 
-export const logOutAction = (): Action<AUTH_ACTIONS> => {
+export const logOutAction = (): Action<AUTH_ACTIONS.LOG_OUT> => {
   return { type: AUTH_ACTIONS.LOG_OUT };
 };
 
-export type AuthActions = LogInAction | Action<AUTH_ACTIONS>;
+export const getThemeSuccess = (theme: number): GetThemeAction => {
+  return { type: AUTH_ACTIONS.GET_THEME_SUCCESS, payload: { theme } };
+};
+
+export type AuthActions =
+  | GetThemeAction
+  | Action<AUTH_ACTIONS.LOG_OUT>
+  | Action<AUTH_ACTIONS.LOG_IN>
+  | Action<AUTH_ACTIONS.LOG_IN_SUCCESS>
+  | Action<AUTH_ACTIONS.LOG_IN_FAILURE>
+  | Action<AUTH_ACTIONS.LOG_IN_REDIRECT>
+  | GetProfileSuccessAction
+  | Action<AUTH_ACTIONS.SIGN_UP>;
